@@ -1,42 +1,45 @@
 # Our Ebook Maker
 
-Turn a PDF or a text file into an EPUB ebook, entirely in your browser.
+Turn a scanned PDF into text, entirely in your browser — the first step to making a clean ebook.
 
 **Live site:** https://mdtowfiqul.github.io/our-ebook-maker/
 
 ## What it does
 
-- **Text PDFs** → EPUB in seconds (the text is already in the file).
-- **Scanned PDFs** → page-by-page OCR with Tesseract, in Bengali, English or
-  Arabic (or Bengali+English / Arabic+English). Scanned pages are detected
-  automatically in Auto mode.
-- **Test first 5 pages** before committing to a whole scanned book.
-- **.txt upload** → EPUB directly (for text already made with vFlat or elsewhere).
-- **Chapter detection** — Chapter / অধ্যায় / পরিচ্ছেদ / পর্ব / Part headings
-  become the ebook's table of contents.
-- **Two downloads** — the EPUB, and the raw .txt for proofreading in
-  Google AI Studio (see `guide.html` for the full proofreading prompt).
-- **Optional cover image** and an optional CC BY-SA 4.0 licence page at the end.
+- **Scanned PDF → text:** every page is read with OCR in the browser
+  (tesseract.js, Bengali + English + Arabic together — no language to pick).
+- **Test first 5 pages** before running a whole book, so you can judge OCR
+  quality first.
+- **Download the raw .txt** for proofreading, with the CC BY-SA 4.0 licence
+  text appended at the end (optional, on by default).
+- **Proofread here:** a button in the download section opens the guide,
+  which explains proofreading with Gemini / Google AI Studio step by step
+  and carries the full proofreading prompt to copy.
+- **Cover (optional):** try to find a cover online (Open Library), or make
+  a simple text cover on a gradient — for the final EPUB after proofreading.
+
+## What it deliberately does NOT do
+
+There is **no EPUB download from scanned text**. A scanned text must be
+proofread first; only then does it become a clean ebook. The guide covers
+that finishing path: proofread text → Google Docs → .docx → an online
+docx-to-EPUB converter.
 
 ## Privacy and cost
 
-There is no server and no sign-up. The PDF, the OCR and the EPUB building
+There is no server and no sign-up. The PDF, the OCR and the text building
 all happen in the visitor's browser tab. Nothing is uploaded anywhere, so
 the site costs nothing to run on GitHub Pages.
 
 ## How it is built
 
-Plain HTML/CSS/JavaScript, no build step, no Jekyll needed. GitHub Pages
-serves the repo root.
+Plain HTML/JavaScript with Tailwind CDN, in the Our Boighar visual style
+(gradient hero, Hind Siliguri font, EN/BN toggle). No build step, no Jekyll
+needed. GitHub Pages serves the repo root.
 
-- [pdf.js](https://mozilla.github.io/pdf.js/) — PDF text extraction and page rendering
+- [pdf.js](https://mozilla.github.io/pdf.js/) — page rendering for OCR
 - [tesseract.js](https://tesseract.projectnaptha.com/) (v5) — in-browser OCR
-- [JSZip](https://stuk.github.io/jszip/) — builds the EPUB (a ZIP with the
-  `mimetype` file first and uncompressed, `META-INF/container.xml`,
-  `OEBPS/content.opf`, `OEBPS/toc.ncx`, chapter XHTML files)
-
-The EPUB produced is EPUB 2, which opens in Google Play Books and most
-EPUB readers.
+- [Open Library](https://openlibrary.org/) — optional cover search, no key needed
 
 ## Honest limits
 

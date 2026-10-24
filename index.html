@@ -3,97 +3,120 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Our Ebook Maker — PDF to EPUB, in your browser</title>
-<meta name="description" content="Turn a PDF or text file into an EPUB ebook, entirely in your browser. Scanned PDFs are read with OCR. Nothing is uploaded anywhere.">
-<link rel="stylesheet" href="style.css">
+<title>Our Ebook Maker — Scanned PDF to text, in your browser</title>
+<meta name="description" content="Turn a scanned PDF into text with OCR, entirely in your browser. Download the text, proofread it, and make a clean ebook. Nothing is uploaded anywhere.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<style>
+  body{font-family:'Hind Siliguri',system-ui,sans-serif}
+  .serif{font-family:'Noto Serif Bengali',serif}
+  .hero-bg{background:linear-gradient(150deg,#33248f,#171233)}
+  .accent-bg{background-color:#e0521f}
+  .accent-bg:hover{filter:brightness(1.08)}
+  .accent-text{color:#e0521f}
+  .hero-accent{color:#ff9e6e}
+  #preview{white-space:pre-wrap;max-height:320px;overflow:auto}
+</style>
 </head>
-<body>
-<header class="hero">
-<span class="tag">100% free &bull; No sign-up &bull; No server</span>
-<h1>📖 Our Ebook Maker</h1>
-<p>Upload a PDF or a text file, get back a proper EPUB ebook. Scanned books are read with OCR, right here on your device. Your file never leaves your phone or computer.</p>
+<body class="bg-[#f8f9fa] text-[#212529] min-h-screen">
+
+<header class="sticky top-0 z-30 bg-white/95 backdrop-blur shadow-sm border-b border-neutral-200">
+  <div class="max-w-3xl mx-auto px-3 sm:px-4 py-2.5 flex items-center gap-2">
+    <a href="index.html" class="font-extrabold text-lg sm:text-2xl text-emerald-800 flex items-center gap-2">
+      <span>📖</span><span data-bn="আমাদের ইবুক মেকার" data-en="Our Ebook Maker">Our Ebook Maker</span>
+    </a>
+    <span class="flex-1"></span>
+    <a href="guide.html" class="hidden sm:block font-bold text-sm text-neutral-600 hover:text-emerald-700" data-bn="প্রুফরিডিং গাইড" data-en="Proofreading Guide">Proofreading Guide</a>
+    <button id="lang-toggle" class="flex items-center gap-1.5 bg-[#fdf3e7] border border-orange-100 rounded-full px-3.5 h-10 text-sm font-extrabold hover:brightness-95 transition" title="Language / ভাষা">
+      <span>🌐</span><span id="lang-label">EN</span>
+    </button>
+  </div>
 </header>
-<nav class="top">
-<a href="index.html">Maker</a>
-<a href="guide.html">Full guide &amp; proofreading</a>
-<a href="https://mdtowfiqul.github.io/our-boighar/">Our Boighar — read ebooks</a>
-<a href="https://mdtowfiqul.github.io/our-islamic-archive/">Our Islamic Archive</a>
-</nav>
-<main>
 
-<div class="card">
-<h2>1. Your book</h2>
-<label for="file">PDF or .txt file</label>
-<input type="file" id="file" accept=".pdf,.txt,text/plain,application/pdf">
-<p class="muted" id="fileinfo">No file chosen yet.</p>
-<div class="row">
-<div>
-<label for="title">Book title</label>
-<input type="text" id="title" placeholder="e.g. Seeratun Nabi">
-</div>
-<div>
-<label for="author">Author (optional)</label>
-<input type="text" id="author" placeholder="e.g. Author name">
-</div>
-</div>
-<label for="lang">Book language (for scanned pages / OCR)</label>
-<select id="lang">
-<option value="ben">Bengali</option>
-<option value="eng">English</option>
-<option value="ara">Arabic</option>
-<option value="ben+eng">Bengali + English</option>
-<option value="ara+eng">Arabic + English</option>
-</select>
-<label for="mode">How to read the PDF</label>
-<select id="mode">
-<option value="auto">Auto — text pages instantly, scanned pages with OCR (recommended)</option>
-<option value="text">Text only — fastest, skips scanned pages</option>
-<option value="ocr">OCR every page — for fully scanned books</option>
-</select>
-<label for="cover">Cover image (optional, JPG or PNG)</label>
-<input type="file" id="cover" accept="image/*">
-<label><input type="checkbox" id="license" checked> Add the CC BY-SA 4.0 licence text at the end of the book</label>
-</div>
+<div class="max-w-3xl mx-auto px-3 sm:px-4">
+  <section class="hero-bg text-white rounded-[1.8rem] mt-4 px-5 py-8 sm:p-10 shadow-xl">
+    <span class="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-amber-200 text-xs sm:text-sm font-bold px-3.5 py-1.5 rounded-full">
+      <span class="w-2 h-2 rounded-full bg-amber-300"></span>
+      <span data-bn="১০০% ফ্রি • সাইন-আপ নেই • কিছু আপলোড হয় না" data-en="100% free • No sign-up • Nothing is uploaded">100% free • No sign-up • Nothing is uploaded</span>
+    </span>
+    <h1 class="serif text-[30px] sm:text-5xl font-extrabold leading-tight mt-4">
+      <span class="hero-accent" data-bn="স্ক্যান করা PDF" data-en="Scanned PDF">Scanned PDF</span>
+      <span data-bn="থেকে লেখা, আপনার ব্রাউজারেই" data-en="to text, in your browser">to text, in your browser</span>
+    </h1>
+    <p class="text-white/75 mt-2 text-sm sm:text-base" data-bn="বইয়ের স্ক্যান করা PDF দিন, OCR করা লেখা নিন। তারপর প্রুফরিড করে পরিষ্কার ইবুক বানান।" data-en="Give a scanned book PDF, get back OCR text. Then proofread it and make a clean ebook.">Give a scanned book PDF, get back OCR text. Then proofread it and make a clean ebook.</p>
+  </section>
 
-<div class="card">
-<h2>2. Check quality first (scanned books)</h2>
-<p class="muted">Scanned books take time and OCR is never perfect. Test the first 5 pages before you commit to a whole book.</p>
-<button id="testBtn" class="secondary">Test first 5 pages</button>
-<button id="runBtn">Make the full EPUB</button>
-<button id="cancelBtn" class="danger" disabled>Cancel</button>
-<div class="progress"><div id="bar"></div></div>
-<p id="status" class="muted">Waiting for a file.</p>
-<div id="preview" style="display:none"></div>
-</div>
+  <main class="pb-10">
+  <section class="bg-white rounded-2xl shadow p-5 mt-6">
+    <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="১. আপনার বই" data-en="1. Your book">1. Your book</h2>
+    <label class="block font-bold mt-4 mb-1" for="file" data-bn="স্ক্যান করা PDF ফাইল" data-en="Scanned PDF file">Scanned PDF file</label>
+    <input type="file" id="file" accept=".pdf,application/pdf" class="w-full">
+    <p class="text-sm text-neutral-500 mt-1" id="fileinfo" data-bn="এখনো কোনো ফাইল বাছা হয়নি।" data-en="No file chosen yet.">No file chosen yet.</p>
+    <div class="grid sm:grid-cols-2 gap-3 mt-3">
+      <div>
+        <label class="block font-bold mb-1" for="title" data-bn="বইয়ের নাম" data-en="Book title">Book title</label>
+        <input type="text" id="title" class="w-full border border-neutral-300 rounded-xl px-3 py-2.5 outline-none focus:border-emerald-600" placeholder="Book title" data-bn-ph="বইয়ের নাম" data-en-ph="Book title">
+      </div>
+      <div>
+        <label class="block font-bold mb-1" for="author" data-bn="লেখক (ঐচ্ছিক)" data-en="Author (optional)">Author (optional)</label>
+        <input type="text" id="author" class="w-full border border-neutral-300 rounded-xl px-3 py-2.5 outline-none focus:border-emerald-600" placeholder="Author name" data-bn-ph="লেখকের নাম" data-en-ph="Author name">
+      </div>
+    </div>
+    <label class="flex items-start gap-2 mt-4 text-sm font-bold">
+      <input type="checkbox" id="license" checked class="mt-1">
+      <span data-bn="বইয়ের শেষে CC BY-SA 4.0 লাইসেন্সের লেখা যোগ করুন" data-en="Add the CC BY-SA 4.0 licence text at the end of the book">Add the CC BY-SA 4.0 licence text at the end of the book</span>
+    </label>
+    <p class="text-sm text-neutral-500 mt-3" data-bn="ভাষা আলাদা করে বাছতে হবে না — বাংলা, ইংরেজি ও আরবি একসাথে চেনা হয়।" data-en="No need to pick a language — Bengali, English and Arabic are recognised together.">No need to pick a language — Bengali, English and Arabic are recognised together.</p>
+  </section>
 
-<div class="card" id="results" style="display:none">
-<h2>3. Download</h2>
-<p id="summary" class="muted"></p>
-<button id="epubBtn">⬇ Download EPUB</button>
-<button id="txtBtn" class="secondary">⬇ Download raw .txt (for proofreading)</button>
-<p class="muted">Tip: open the EPUB in Google Play Books, or read it on <a href="https://mdtowfiqul.github.io/our-boighar/">Our Boighar</a>. If the text has OCR mistakes, use the raw .txt with the <a href="guide.html">proofreading guide</a> first — that is how a clean, professional ebook is made.</p>
-</div>
+  <section class="bg-white rounded-2xl shadow p-5 mt-6">
+    <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="২. Check quality first" data-en="2. Check quality first">2. Check quality first</h2>
+    <p class="text-sm text-neutral-500 mt-1" data-bn="স্ক্যান করা বই সময় নেয়, আর OCR কখনো নিখুঁত নয়। পুরো বই চালানোর আগে প্রথম ৫ পৃষ্ঠা পরীক্ষা করুন।" data-en="Scanned books take time and OCR is never perfect. Test the first 5 pages before running the whole book.">Scanned books take time and OCR is never perfect. Test the first 5 pages before running the whole book.</p>
+    <div class="flex flex-wrap gap-2 mt-4">
+      <button id="testBtn" class="bg-white text-emerald-800 border-2 border-emerald-800 rounded-xl px-5 py-3 font-bold disabled:opacity-50" data-bn="প্রথম ৫ পৃষ্ঠা পরীক্ষা করুন" data-en="Test first 5 pages">Test first 5 pages</button>
+      <button id="runBtn" class="accent-bg text-white rounded-xl px-5 py-3 font-bold disabled:opacity-50" data-bn="পুরো বই পড়ুন" data-en="Read the full book">Read the full book</button>
+      <button id="cancelBtn" class="bg-red-800 text-white rounded-xl px-5 py-3 font-bold disabled:opacity-50" disabled data-bn="বাতিল" data-en="Cancel">Cancel</button>
+    </div>
+    <div class="h-4 bg-neutral-100 rounded-full overflow-hidden mt-4"><div id="bar" class="h-full bg-emerald-700" style="width:0%"></div></div>
+    <p id="status" class="text-sm text-neutral-500 mt-2" data-bn="ফাইলের অপেক্ষায়।" data-en="Waiting for a file.">Waiting for a file.</p>
+    <div id="preview" class="hidden bg-[#faf8f2] border border-neutral-200 rounded-xl p-3 text-sm mt-3"></div>
+    <p class="text-sm text-neutral-500 mt-3" data-bn="লম্বা OCR চলার সময় স্ক্রিন অন রাখুন — ফোন ঘুমিয়ে গেলে কাজ থেমে যাবে।" data-en="Keep your screen on during a long OCR run — a phone that sleeps pauses the work.">Keep your screen on during a long OCR run — a phone that sleeps pauses the work.</p>
+  </section>
 
-<div class="card">
-<h2>How it works</h2>
-<ul class="tips">
-<li><strong>Text PDFs</strong> are converted in seconds — the text is already inside the file.</li>
-<li><strong>Scanned PDFs</strong> are detected page by page. Each image-only page is read with OCR (Tesseract) in Bengali, English or Arabic, whichever you picked.</li>
-<li><strong>Chapter headings</strong> (Chapter, অধ্যায়, পরিচ্ছেদ, পর্ব, Part, etc.) become the ebook's table of contents automatically.</li>
-<li><strong>Nothing is uploaded.</strong> The PDF, the OCR and the EPUB building all happen in this browser tab. Close the tab and your file is gone.</li>
-</ul>
-<div class="warn"><strong>Be honest about scanned books:</strong> old, faded or low-resolution scans will still have OCR mistakes, and curved phone-camera photos are the hardest of all — flat scans work best. That is why the 5-page test exists, and why the <a href="guide.html">proofreading step</a> stays part of making a good ebook. This tool does the heavy lifting; proofreading does the finishing.</div>
-<p class="muted">Keep your screen on during a long OCR run — a phone that sleeps pauses the work. The tool tries to keep the screen awake while it runs.</p>
-</div>
+  <section id="results" class="bg-white rounded-2xl shadow p-5 mt-6 hidden">
+    <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="৩. ডাউনলোড" data-en="3. Download">3. Download</h2>
+    <p id="summary" class="text-sm text-neutral-500 mt-1"></p>
+    <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mt-4">
+      <p class="font-bold" data-bn="⚠️ এটি কাঁচা স্ক্যান লেখা — এখনো প্রুফরিড করা হয়নি।" data-en="⚠️ This is raw scanned text — not proofread yet.">⚠️ This is raw scanned text — not proofread yet.</p>
+      <p class="text-sm text-neutral-600 mt-1" data-bn="পরিষ্কার ইবুক বানাতে আগে প্রুফরিড করতে হবে। এখানেই প্রুফরিড করুন, অথবা .txt ডাউনলোড করে Gemini দিয়ে করুন।" data-en="Proofread it before making a clean ebook. Proofread right here, or download the .txt and do it with Gemini.">Proofread it before making a clean ebook. Proofread right here, or download the .txt and do it with Gemini.</p>
+    </div>
+    <div class="flex flex-wrap gap-2 mt-4">
+      <button id="txtBtn" class="accent-bg text-white rounded-xl px-5 py-3 font-bold" data-bn="⬇ .txt ডাউনলোড করুন" data-en="⬇ Download .txt">⬇ Download .txt</button>
+      <a id="proofBtn" href="guide.html#proofread" class="bg-emerald-700 text-white rounded-xl px-5 py-3 font-bold inline-block" data-bn="✍️ এখানে প্রুফরিড করুন" data-en="✍️ Proofread here">✍️ Proofread here</a>
+    </div>
 
-</main>
-<footer>
-Our Ebook Maker — part of the Our family: Our Days, Our Boighar, Our Islamic Archive.<br>
-Made for readers and ebook makers. Use only books you have the right to share.
-</footer>
+    <div class="border-t border-neutral-100 mt-6 pt-4">
+      <h3 class="font-extrabold" data-bn="বইয়ের প্রচ্ছদ (ঐচ্ছিক)" data-en="Book cover (optional)">Book cover (optional)</h3>
+      <p class="text-sm text-neutral-500 mt-1" data-bn="প্রুফরিডের পর চূড়ান্ত ইবুক বানাতে প্রচ্ছদ লাগবে। কভার না থাকলে অনলাইন থেকে খুঁজে নিন, না পেলে লেখা-প্রচ্ছদ বানিয়ে নিন।" data-en="You will need a cover when you make the final EPUB after proofreading. If you have none, try finding one online, or make a simple text cover.">You will need a cover when you make the final EPUB after proofreading. If you have none, try finding one online, or make a simple text cover.</p>
+      <div class="flex flex-wrap gap-2 mt-3">
+        <button id="coverOnlineBtn" class="bg-white text-emerald-800 border-2 border-emerald-800 rounded-xl px-4 py-2.5 font-bold disabled:opacity-50" data-bn="অনলাইনে কভার খুঁজুন" data-en="Find a cover online">Find a cover online</button>
+        <button id="coverTextBtn" class="bg-white text-emerald-800 border-2 border-emerald-800 rounded-xl px-4 py-2.5 font-bold" data-bn="লেখা-প্রচ্ছদ বানান" data-en="Make a text cover">Make a text cover</button>
+      </div>
+      <p id="coverStatus" class="text-sm text-neutral-500 mt-2"></p>
+      <img id="coverImg" class="hidden w-40 rounded-xl shadow mt-3" alt="">
+      <div><a id="coverDownloadBtn" class="hidden accent-bg text-white rounded-xl px-4 py-2.5 font-bold inline-block mt-3" download="cover.png" data-bn="⬇ কভার ডাউনলোড করুন" data-en="⬇ Download cover">⬇ Download cover</a></div>
+    </div>
+  </section>
+  </main>
+
+  <footer class="text-center text-neutral-500 text-sm py-6">
+    <span data-bn="আমাদের পরিবারের অংশ: Our Days, Our Boighar, Our Islamic Archive" data-en="Part of the Our family: Our Days, Our Boighar, Our Islamic Archive">Part of the Our family: Our Days, Our Boighar, Our Islamic Archive</span>
+  </footer>
+</div>
 <script src="app.js"></script>
 </body>
 </html>
