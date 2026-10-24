@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Full guide — Our Ebook Maker</title>
+<meta name="description" content="How to make a clean EPUB: extract text, proofread with AI Studio, add a cover, and finish the book.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="hero">
+<h1>📖 Our Ebook Maker — Full Guide</h1>
+<p>From a PDF to a clean, professional EPUB, in three steps. The tool on the home page replaces the old vFlat step — the rest of this guide is how a good ebook is finished.</p>
+</header>
+<nav class="top">
+<a href="index.html">Maker</a>
+<a href="guide.html">Full guide &amp; proofreading</a>
+<a href="https://mdtowfiqul.github.io/our-boighar/">Our Boighar</a>
+</nav>
+<main>
+
+<div class="card">
+<h2>Step 1 — Get the text out (this site does it)</h2>
+<ol class="steps">
+<li>Open the <a href="index.html">Maker</a>, upload your PDF, pick the book's language, and press <strong>Test first 5 pages</strong>.</li>
+<li>If the preview reads cleanly, press <strong>Make the full EPUB</strong>. Text pages convert in seconds; scanned pages are read with OCR, page by page, so a full book can take a while — keep the screen on.</li>
+<li>You get two downloads: the <strong>EPUB</strong> itself, and the <strong>raw .txt</strong>. The .txt is for Step 2.</li>
+</ol>
+<p class="muted">Flat scans work best. Curved phone-camera photos of pages are the hardest for any OCR, including this one. If a scan is very faded or blurry, no tool will read it perfectly — that is what proofreading is for.</p>
+<p>You can also upload a <strong>.txt file directly</strong> (for example, one you already made with vFlat) and turn it into an EPUB here, skipping OCR entirely.</p>
+</div>
+
+<div class="card">
+<h2>Step 2 — Proofreading (the step that makes it professional)</h2>
+<p>Open <a href="https://aistudio.google.com/">Google AI Studio</a>, attach your .txt file chapter by chapter, and paste this prompt:</p>
+<textarea id="prompt" readonly>Act as an expert Digital Archivist, Master Typographer, and EPUB Formatter. Your task is to digitize raw, unformatted text (often containing OCR errors) from old, copyright-free (public domain) books and convert it into pristine, beautifully structured Markdown optimized for professional EPUB conversion.
+
+I will provide the text to you chapter-by-chapter (or section-by-section).
+
+Please apply the following strict guidelines to every submission:
+
+1. STRUCTURAL HIERARCHY (Semantic Markdown):
+- Use `#` for the Book Title (only on the title page/first prompt).
+- Use `##` for Chapter Titles or Major Sections (e.g., `## Chapter I`).
+- Use `###` for Sub-chapters or Section Breaks.
+- Separate scenes or thematic breaks using a standard horizontal rule: `***`.
+- Give page break at the end of the chapter or where necessary.
+
+2. OCR ERROR CORRECTION & CLEANUP:
+- Remove all original page numbers, running headers, and running footers.
+- Fix broken line breaks (hard returns in the middle of sentences). Join fragmented sentences into cohesive paragraphs.
+- Correct common OCR errors ("scannos") without altering the original meaning (e.g., fix "rn" misread as "m", "l" misread as "1", "thc" to "the").
+- DO NOT modernize the author's vocabulary or intentional archaic spellings (e.g., keep "to-morrow", "shew", "colour" if they appear in the original text).
+
+3. PROFESSIONAL TYPOGRAPHY:
+- Replace double hyphens (`--`) with proper em-dashes (`—`) without spaces on either side.
+- Replace spaced hyphens with en-dashes (`–`) where appropriate (e.g., date ranges).
+- Standardize quotation marks. Use proper Markdown italicization `*like this*` for emphasis, book titles, and foreign words.
+- Ensure proper spacing after punctuation.
+
+4. SPECIAL FORMATTING:
+- Blockquotes: Prefix multi-line quotes or letters with `> `.
+- Poetry/Song Lyrics: Use double spaces at the end of a line to create a soft line break, preserving the stanza structure.
+- Footnotes: Footnote Entry should be added next to the footnote number and footnote entry should be within Third bracket within the text, not separately. Footnote number should be in superscript. Endnote & Citation too.
+
+5. NAVIGATION & DIGITAL LINKED INDEX:
+- Table of Contents (TOC): If processing a TOC, remove all original page numbers. Convert the entries into a digital linked list targeting chapter anchors. Format: `- [Chapter Name](#chapter-name)`.
+- Back-of-Book Index: Original printed page numbers are useless in reflowable EPUBs. When processing an Index, REMOVE all page numbers. Convert the index into a hierarchical, digital linked index. Format each main entry as a Markdown hyperlink pointing to an anchor of the term itself.
+  Example: Convert "Astrophysics ........... 45, 67" to `- [Astrophysics](#astrophysics)`.
+  Retain original sub-entries as indented sub-bullets under the main term.
+
+6. CLEAN CODE:
+- Output ONLY the formatted Markdown.
+- Do not include conversational filler (e.g., "Here is your text," "Let me know if you need changes").
+
+7. For Bangla & Arabic Language:
+- Correct Bangla OCR spelling error, য় can be mistaken as য
+- Title and Heading should be center aligned.
+- All the text should be in Justified Alignment except Arabic which must be right aligned.
+- For Arabic text: correct the Arabic sentence if there is error and add Harkat to it. Don't use any bracket in Arabic text.
+In case of Quranic ayah follow this format,
+آيه ۝١٩١ (the number is for example)</textarea>
+<button onclick="navigator.clipboard.writeText(document.getElementById('prompt').value).then(()=>{this.textContent='Copied!'});">Copy the full prompt</button>
+<p>Then write <strong>continue</strong> and run again, chapter by chapter, until the whole book is done. Copy each response as Markdown. You can open several AI Studio tabs at once and proofread several books in parallel — it saves a lot of time.</p>
+<p class="muted">Note: a PDF can also be attached directly to AI Studio for proofreading, but the licence text below must still appear somewhere in the book. A .docx file cannot be attached directly to AI Studio — use .txt or PDF.</p>
+<p class="muted">Fonts that look like the original book: <strong>Noto Serif Bengali</strong> or <strong>SulaimanLipi</strong>. The EPUBs made here already use justified text, centred headings, and right-aligned Arabic.</p>
+</div>
+
+<div class="card">
+<h2>Step 3 — Cover and finish</h2>
+<ul class="tips">
+<li><strong>On this site:</strong> just add a cover image on the Maker page and it becomes the ebook's cover automatically.</li>
+<li><strong>Full-page cover trick (Google Docs route):</strong> tap the image, open Image options → Size &amp; rotation → uncheck "lock aspect ratio", set position to "Fix position on page", then expand the image to fill the page.</li>
+<li><strong>After proofreading:</strong> save the proofread text as a .txt, upload it to the Maker, and download the finished EPUB. Check it opens in Google Play Books or any EPUB reader before sharing it.</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>Licence text (included automatically)</h2>
+<p>The Maker adds this at the end of every book when the licence box is ticked:</p>
+<textarea id="lic" readonly>This book is licensed under the Creative Commons Attribution-ShareAlike 4.0 International License (CC BY-SA 4.0).
+
+You are free to:
+- Share— copy and redistribute the material in any medium or format
+- Adapt — remix, transform, and build upon the material for any purpose, even commercially
+
+Under the following terms:
+- Attribution — You must give appropriate credit, provide a link to the license, and indicate if changes were made.
+- ShareAlike — If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.
+- No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.</textarea>
+<button onclick="navigator.clipboard.writeText(document.getElementById('lic').value).then(()=>{this.textContent='Copied!'});">Copy licence text</button>
+</div>
+
+<div class="card">
+<h2>One rule to keep in mind</h2>
+<p>Make and share ebooks only from books you have the right to share — old, copyright-free books, or books whose writer or publisher has approved sharing. That keeps the work honest and keeps writers and publishers unharmed.</p>
+</div>
+
+</main>
+<footer>Our Ebook Maker — part of the Our family: Our Days, Our Boighar, Our Islamic Archive.</footer>
+</body>
+</html>
