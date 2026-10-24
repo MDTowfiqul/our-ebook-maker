@@ -36,9 +36,9 @@
 <div class="max-w-3xl mx-auto px-3 sm:px-4">
   <section class="hero-bg text-white rounded-[1.8rem] mt-4 px-5 py-8 sm:p-10 shadow-xl">
     <h1 class="serif text-[30px] sm:text-5xl font-extrabold leading-tight">
-      <span class="hero-accent" data-bn="যেভাবে ইপাব বই বানাবেন" data-en="How to make an EPUB book">How to make an EPUB book</span>
+      <span class="hero-accent" data-bn="যেভাবে ইবুক বানাবেন" data-en="How to make an ebook">How to make an ebook</span>
     </h1>
-    <p class="text-white/75 mt-2 text-sm sm:text-base" data-bn="PDF বই থেকে পরিষ্কার ইপাব — পুরো পদ্ধতি ধাপে ধাপে।" data-en="From a PDF book to a clean EPUB — the full method, step by step.">From a PDF book to a clean EPUB — the full method, step by step.</p>
+    <p class="text-white/75 mt-2 text-sm sm:text-base" data-bn="PDF বই থেকে পরিষ্কার ইবুক — পুরো পদ্ধতি ধাপে ধাপে।" data-en="From a PDF book to a clean ebook — the full method, step by step.">From a PDF book to a clean ebook — the full method, step by step.</p>
   </section>
 
   <main class="pb-10">
@@ -48,7 +48,7 @@
     <ol class="list-decimal pl-5 mt-2 space-y-2 text-[15px]">
       <li>মেকারে PDF আপলোড করুন, বইয়ের নাম ও লেখক লিখুন।</li>
       <li>“Test first 5 pages” দিয়ে প্রথম ৫ পৃষ্ঠা পরীক্ষা করুন — লেখা পরিষ্কার মনে হলে “Read the full book” চাপুন।</li>
-      <li>শেষ হলে “.txt ডাউনলোড করুন” চাপুন। লাইসেন্সের টিক দেওয়া থাকলে CC BY-SA 4.0 লেখাটি বইয়ের শেষে নিজে থেকেই যোগ হয়ে যাবে।</li>
+      <li>শেষ হলে “হাতে প্রুফরিড” পপ-আপ থেকে “.txt ডাউনলোড করুন” চাপুন।</li>
       <li>অন্য অ্যাপে গেলে স্ক্যান থামতে পারে — প্রতি পৃষ্ঠার পর অগ্রগতি সেভ হয়, ফিরে এসে “Resume” চাপলেই যেখানে থেমেছিল সেখান থেকে চলবে।</li>
     </ol>
     <h3 class="font-extrabold mt-5" data-bn="খ) vFlat অ্যাপ দিয়ে (বিকল্প পদ্ধতি)" data-en="B) With the vFlat app (alternative)">B) With the vFlat app (alternative)</h3>
@@ -57,7 +57,7 @@
       <li>PDF লোড করুন।</li>
       <li>OCR করুন।</li>
       <li>.txt হিসেবে এক্সপোর্ট করুন।</li>
-      <li>কোনো txt এডিটরে বইয়ের শেষে বা সুবিধাজনক জায়গায় নিচের লাইসেন্সের লেখাটি পেস্ট করুন (লাইসেন্সের অংশটি নিচে দেওয়া আছে)।</li>
+      <li>এবার হাতের প্রুফরিডিং ধাপে যান (নিচে ২য় ধাপ)।</li>
     </ol>
   </section>
 
@@ -97,7 +97,7 @@
 
   <section class="bg-white rounded-2xl shadow p-5 mt-6">
     <h2 class="serif text-xl font-extrabold" data-bn="স্বয়ংক্রিয় প্রুফরিড (নতুন)" data-en="Automatic proofreading (new)">Automatic proofreading (new)</h2>
-    <p class="mt-2 text-[15px]" data-bn="উপরের হাতের ধাপগুলো না করে মেকারেই স্বয়ংক্রিয়ভাবে প্রুফরিড করাতে পারেন: পুরো বইয়ের OCR শেষ হলে “Automatic proofreading” অংশে আপনার Google Gemini API key (ফ্রি, বেশিরভাগের জন্য এটাই সহজ) বা OpenRouter API key দিন, মডেল বাছুন, বোতাম চাপুন। Key দিলে টুলটি আপনার key দিয়ে ফ্রি মডেলগুলোর তালিকা দেখায় এবং প্রতিটি মডেলের ফ্রি লিমিটের ধারণা দেয়। লেখা টুকরো টুকরো করে (প্রায় ৮,০০০ অক্ষর) একই প্রম্পট দিয়ে পাঠানো হয়, উত্তরগুলো জোড়া লাগে। লিমিট শেষ হলে টুল নিজে থেকে অপেক্ষা করে আবার চেষ্টা করে, আর প্রতি অংশের পর অগ্রগতি সেভ হয়। শেষ হলে তিনটি উপায়: .md ডাউনলোড, .docx ডাউনলোড (তারপর হাতে converter দিয়ে EPUB), অথবা “Make EPUB automatically” — প্রচ্ছদসহ চূড়ান্ত EPUB এখানেই তৈরি হয়ে যাবে। Key শুধু আপনার ব্রাউজারেই থাকে, সরাসরি Google বা OpenRouter-এ যায় — আমাদের কোনো সার্ভারে যায় না।" data-en="Instead of the manual steps above, you can proofread automatically in the Maker: after the full OCR finishes, paste your Google Gemini API key (free, easiest for most people) or OpenRouter API key in the “Automatic proofreading” section, pick a model, and press the button. Once you enter a key, the tool shows the free models available on that key and what their free limits look like. The text is sent in chunks (about 8,000 characters) with the same prompt, and the answers are joined. If a limit is hit, the tool waits and retries on its own, and progress is saved after every chunk. When it finishes you get three choices: download .md, download .docx (then convert to EPUB by hand), or “Make EPUB automatically” — the finished EPUB, cover included, is built right there. The key stays only in your browser and goes directly to Google or OpenRouter — never to any server of ours.">Instead of the manual steps above, you can proofread automatically in the Maker: after the full OCR finishes, paste your Google Gemini API key (free, easiest for most people) or OpenRouter API key in the “Automatic proofreading” section, pick a model, and press the button. Once you enter a key, the tool shows the free models available on that key and what their free limits look like. The text is sent in chunks (about 8,000 characters) with the same prompt, and the answers are joined. If a limit is hit, the tool waits and retries on its own, and progress is saved after every chunk. When it finishes you get three choices: download .md, download .docx (then convert to EPUB by hand), or “Make EPUB automatically” — the finished EPUB, cover included, is built right there. The key stays only in your browser and goes directly to Google or OpenRouter — never to any server of ours.</p>
+    <p class="mt-2 text-[15px]" data-bn="উপরের হাতের ধাপগুলো না করে মেকারেই স্বয়ংক্রিয়ভাবে প্রুফরিড করাতে পারেন: পুরো বইয়ের OCR শেষ হলে “স্বয়ংক্রিয় প্রুফরিড” বোতাম চাপলেই পপ-আপ খুলবে — সেখানে আপনার Google Gemini API key (ফ্রি, বেশিরভাগের জন্য এটাই সহজ) বা OpenRouter API key দিন, মডেল বাছুন, বোতাম চাপুন। Key দিলে টুলটি আপনার key দিয়ে ফ্রি মডেলগুলোর তালিকা দেখায় এবং প্রতিটি মডেলের ফ্রি লিমিটের ধারণা দেয়। লেখা টুকরো টুকরো করে (প্রায় ৮,০০০ অক্ষর) একই প্রম্পট দিয়ে পাঠানো হয়, উত্তরগুলো জোড়া লাগে। লিমিট শেষ হলে টুল নিজে থেকে অপেক্ষা করে আবার চেষ্টা করে, আর প্রতি অংশের পর অগ্রগতি সেভ হয়। শেষ হলে বেছে নিন: .md, .docx, EPUB, PDF (প্রিন্ট), অথবা Calibre দিয়ে AZW3/MOBI/KFX — কোন ফরম্যাট কোন কাজে, সেটা পপ-আপেই লেখা থাকে। Key শুধু আপনার ব্রাউজারেই থাকে, সরাসরি Google বা OpenRouter-এ যায় — আমাদের কোনো সার্ভারে যায় না।" data-en="Instead of the manual steps above, you can proofread automatically in the Maker: after the full OCR finishes, tap the “Automatic proofreading” button and a pop-up will open — paste your Google Gemini API key (free, easiest for most people) or OpenRouter API key there, pick a model, and press the button. Once you enter a key, the tool shows the free models available on that key and what their free limits look like. The text is sent in chunks (about 8,000 characters) with the same prompt, and the answers are joined. If a limit is hit, the tool waits and retries on its own, and progress is saved after every chunk. When it finishes, choose: .md, .docx, EPUB, PDF (print), or AZW3/MOBI/KFX via Calibre — which format is for which work is written right in the pop-up. The key stays only in your browser and goes directly to Google or OpenRouter — never to any server of ours.">Instead of the manual steps above, you can proofread automatically in the Maker: after the full OCR finishes, tap the “Automatic proofreading” button and a pop-up will open — paste your Google Gemini API key (free, easiest for most people) or OpenRouter API key there, pick a model, and press the button. Once you enter a key, the tool shows the free models available on that key and what their free limits look like. The text is sent in chunks (about 8,000 characters) with the same prompt, and the answers are joined. If a limit is hit, the tool waits and retries on its own, and progress is saved after every chunk. When it finishes, choose: .md, .docx, EPUB, PDF (print), or AZW3/MOBI/KFX via Calibre — which format is for which work is written right in the pop-up. The key stays only in your browser and goes directly to Google or OpenRouter — never to any server of ours.</p>
   </section>
 
   <section id="muse" class="bg-white rounded-2xl shadow p-5 mt-6">
@@ -177,19 +177,20 @@ In case of Quranic ayah follow this format,
   </section>
 
   <section class="bg-white rounded-2xl shadow p-5 mt-6">
-    <h2 class="serif text-xl font-extrabold" data-bn="লাইসেন্সের লেখা" data-en="Licence text">Licence text</h2>
-    <p class="text-sm text-neutral-500 mt-1" data-bn="মেকার এটি বইয়ের শেষে যোগ করে। এখান থেকেও কপি করতে পারেন।" data-en="The Maker adds this at the end of the book. You can also copy it from here.">The Maker adds this at the end of the book. You can also copy it from here.</p>
-    <textarea id="lic" readonly rows="12" class="w-full border border-neutral-300 rounded-xl p-3 text-sm mt-3">This book is licensed under the Creative Commons Attribution-ShareAlike 4.0 International License (CC BY-SA 4.0).
+    <h2 class="serif text-xl font-extrabold" data-bn="ক্রেডিট — কে বইটি বানালো" data-en="Credit — who made the ebook">Credit — who made the ebook</h2>
+    <p class="mt-2 text-[15px]" data-bn="মেকারে আপনার নাম দিলে তৈরি ইবুকের শেষে একটি “About this ebook” পেজ যোগ হয় — সেখানে ইবুক নির্মাতার নাম, Our Ebook Maker এবং Our Boighar-এর উল্লেখ থাকে। সাইটের ফুটারেও একই ক্রেডিট দেওয়া আছে।" data-en="If you enter your name in the Maker, the finished ebook gets an “About this ebook” page at the end — naming the ebook creator, Our Ebook Maker, and Our Boighar. The same credit is in the site footer.">If you enter your name in the Maker, the finished ebook gets an “About this ebook” page at the end — naming the ebook creator, Our Ebook Maker, and Our Boighar. The same credit is in the site footer.</p>
+  </section>
 
-You are free to:
-- Share— copy and redistribute the material in any medium or format
-- Adapt — remix, transform, and build upon the material for any purpose, even commercially
-
-Under the following terms:
-- Attribution — You must give appropriate credit, provide a link to the license, and indicate if changes were made.
-- ShareAlike — If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.
-- No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.</textarea>
-    <button id="copyLic" class="accent-bg text-white rounded-xl px-5 py-3 font-bold mt-3" data-bn="লাইসেন্সের লেখা কপি করুন" data-en="Copy licence text">Copy licence text</button>
+  <section class="bg-white rounded-2xl shadow p-5 mt-6">
+    <h2 class="serif text-xl font-extrabold" data-bn="কোন ফরম্যাট, কোন কাজে?" data-en="Which format, for which work?">Which format, for which work?</h2>
+    <p class="mt-2 text-[15px]" data-bn="মেকারে স্বয়ংক্রিয় প্রুফরিডের পর ফরম্যাট বাছতে হয়। এক নজরে:" data-en="After automatic proofreading in the Maker, you pick a format. At a glance:">After automatic proofreading in the Maker, you pick a format. At a glance:</p>
+    <ul class="list-disc pl-5 mt-2 space-y-2 text-[15px]">
+      <li><b>EPUB</b> — ফোন, ট্যাবলেট ও প্রায় সব রিডিং অ্যাপের জন্য সেরা। মেকারেই তৈরি হয়।</li>
+      <li><b>PDF</b> — লেআউট একদম ঠিক থাকে; প্রিন্ট ও শেয়ারের জন্য। মেকার থেকে প্রিন্ট ভিউ খুলে “Save as PDF” করলেই তৈরি — ব্রাউজার নিজে বাংলা/আরবি সঠিকভাবে সাজায়।</li>
+      <li><b>AZW3</b> — Amazon Kindle ডিভাইস ও অ্যাপের জন্য। <b>MOBI</b> — পুরোনো Kindle-এর জন্য। <b>KFX</b> — নতুন Kindle ফরম্যাট।</li>
+      <li>AZW3 / MOBI / KFX ব্রাউজারে সরাসরি বানানো যায় না — এগুলো Amazon-এর নিজস্ব ফরম্যাট। উপায়: মেকার থেকে EPUB ডাউনলোড করে ফ্রি <a href="https://calibre-ebook.com/download" class="text-emerald-700 font-bold underline">Calibre</a> সফটওয়্যারে Convert করুন (AZW3 বা MOBI বাছুন; KFX-এর জন্য “KFX Output” প্লাগইন লাগে)। Kindle-এ সরাসরি পাঠাতে চাইলে EPUB-ই Send to Kindle দিয়ে পাঠানো যায়।</li>
+    </ul>
+    <p class="mt-2 text-[15px]" data-bn="বইয়ের মতো ফরম্যাট: ডকুমেন্ট ও ইবুক আউটপুটে টাইটেল পেজ, নতুন পেজে অধ্যায়, জাস্টিফাইড লেখা থাকে। প্রিন্টের মতো হুবহু সাজসজ্জা (ড্রপ ক্যাপ, অলংকরণ, বিশেষ ফন্ট) চাইলে ডাউনলোডের পর Google Docs/Word-এ হাতে সাজানোই সেরা।" data-en="Book-like format: document and ebook outputs use a title page, chapters starting on new pages, and justified text. For an exactly-like-print layout (drop caps, ornaments, special fonts), formatting by hand in Google Docs/Word after download is still best.">Book-like format: document and ebook outputs use a title page, chapters starting on new pages, and justified text. For an exactly-like-print layout (drop caps, ornaments, special fonts), formatting by hand in Google Docs/Word after download is still best.</p>
   </section>
 
   <section class="bg-white rounded-2xl shadow p-5 mt-6">
@@ -227,7 +228,7 @@ Under the following terms:
     });
   }
   document.getElementById('copyPrompt').addEventListener('click', function () { copy('prompt', this); });
-  document.getElementById('copyLic').addEventListener('click', function () { copy('lic', this); });
+
   var museBtn = document.getElementById('copyMuse');
   if (museBtn) museBtn.addEventListener('click', function () { copy('musePrompt', this); });
 })();
