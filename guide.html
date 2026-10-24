@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Proofreading Guide — Our Ebook Maker</title>
-<meta name="description" content="How to proofread scanned text with Gemini / Google AI Studio and turn it into a clean EPUB.">
+<meta name="description" content="How to make an EPUB from a scanned book, step by step: OCR to text, proofread with Gemini / Google AI Studio, Google Docs, and convert to EPUB.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@500;700&display=swap" rel="stylesheet">
@@ -36,23 +36,68 @@
 <div class="max-w-3xl mx-auto px-3 sm:px-4">
   <section class="hero-bg text-white rounded-[1.8rem] mt-4 px-5 py-8 sm:p-10 shadow-xl">
     <h1 class="serif text-[30px] sm:text-5xl font-extrabold leading-tight">
-      <span class="hero-accent" data-bn="প্রুফরিডিং" data-en="Proofreading">Proofreading</span>
-      <span data-bn="গাইড" data-en="Guide">Guide</span>
+      <span class="hero-accent" data-bn="যেভাবে ইপাব বই বানাবেন" data-en="How to make an EPUB book">How to make an EPUB book</span>
     </h1>
-    <p class="text-white/75 mt-2 text-sm sm:text-base" data-bn="কাঁচা স্ক্যান লেখা থেকে পরিষ্কার, পেশাদার ইবুক — ধাপে ধাপে।" data-en="From raw scanned text to a clean, professional ebook — step by step.">From raw scanned text to a clean, professional ebook — step by step.</p>
+    <p class="text-white/75 mt-2 text-sm sm:text-base" data-bn="স্ক্যান করা বই থেকে পরিষ্কার ইপাব — পুরো পদ্ধতি ধাপে ধাপে।" data-en="From a scanned book to a clean EPUB — the full method, step by step.">From a scanned book to a clean EPUB — the full method, step by step.</p>
   </section>
 
   <main class="pb-10">
-  <section id="proofread" class="bg-white rounded-2xl shadow p-5 mt-6">
-    <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="Gemini দিয়ে প্রুফরিড করুন — ৫ ধাপে" data-en="Proofread with Gemini — in 5 steps">Proofread with Gemini — in 5 steps</h2>
-    <ol class="list-decimal pl-5 mt-3 space-y-2 text-[15px]">
-      <li><span data-bn="মেকার থেকে .txt ডাউনলোড করুন (অথবা আপনার নিজের .txt ব্যবহার করুন)।" data-en="Download the .txt from the Maker (or use your own .txt).">Download the .txt from the Maker (or use your own .txt).</span></li>
-      <li><span data-bn="Google AI Studio (Gemini) খুলুন, অধ্যায় ধরে ধরে .txt attach করুন।" data-en="Open Google AI Studio (Gemini) and attach the .txt chapter by chapter.">Open Google AI Studio (Gemini) and attach the .txt chapter by chapter.</span></li>
-      <li><span data-bn="নিচের প্রম্পটটি পেস্ট করুন।" data-en="Paste the prompt below.">Paste the prompt below.</span></li>
-      <li><span data-bn="প্রতিটি উত্তরের পর “continue” লিখে আবার run করুন, পুরো বই শেষ না হওয়া পর্যন্ত।" data-en="After each answer, write “continue” and run again until the whole book is done.">After each answer, write “continue” and run again until the whole book is done.</span></li>
-      <li><span data-bn="প্রতিটি উত্তর Markdown হিসেবে copy করুন। তারপর Google Docs-এ নিন (Noto Serif Bengali / SulaimanLipi ফন্ট), .docx-এ export করুন, অনলাইন docx-to-EPUB converter দিয়ে চূড়ান্ত EPUB বানান।" data-en="Copy each answer as Markdown. Then take it into Google Docs (Noto Serif Bengali / SulaimanLipi font), export as .docx, and use an online docx-to-EPUB converter for the final EPUB.">Copy each answer as Markdown. Then take it into Google Docs (Noto Serif Bengali / SulaimanLipi font), export as .docx, and use an online docx-to-EPUB converter for the final EPUB.</span></li>
+  <section class="bg-white rounded-2xl shadow p-5 mt-6">
+    <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="First Step: .txt export" data-en="First Step: .txt export">First Step: .txt export</h2>
+    <h3 class="font-extrabold mt-4" data-bn="ক) এই সাইট দিয়ে (সহজ পদ্ধতি)" data-en="A) With this site (easiest)">A) With this site (easiest)</h3>
+    <ol class="list-decimal pl-5 mt-2 space-y-2 text-[15px]">
+      <li>মেকারে স্ক্যান করা PDF আপলোড করুন, বইয়ের নাম ও লেখক লিখুন।</li>
+      <li>“Test first 5 pages” দিয়ে প্রথম ৫ পৃষ্ঠা পরীক্ষা করুন — লেখা পরিষ্কার মনে হলে “Read the full book” চাপুন।</li>
+      <li>শেষ হলে “.txt ডাউনলোড করুন” চাপুন। লাইসেন্সের টিক দেওয়া থাকলে CC BY-SA 4.0 লেখাটি বইয়ের শেষে নিজে থেকেই যোগ হয়ে যাবে।</li>
+      <li>অন্য অ্যাপে গেলে স্ক্যান থামতে পারে — প্রতি পৃষ্ঠার পর অগ্রগতি সেভ হয়, ফিরে এসে “Resume” চাপলেই যেখানে থেমেছিল সেখান থেকে চলবে।</li>
     </ol>
-    <p class="text-sm text-neutral-500 mt-3" data-bn="টিপস: একসাথে কয়েকটি AI Studio ট্যাব খুলে কয়েকটি বই একসাথে প্রুফরিড করলে সময় কম লাগে। সরাসরি PDF-ও AI Studio-তে attach করা যায়, তবে লাইসেন্সের লেখাটা বইয়ের কোথাও থাকতে হবে। .docx সরাসরি AI Studio-তে দেওয়া যায় না।" data-en="Tip: open several AI Studio tabs and proofread several books in parallel to save time. A PDF can also be attached directly to AI Studio, but the licence text must appear somewhere in the book. A .docx cannot be attached directly to AI Studio.">Tip: open several AI Studio tabs and proofread several books in parallel to save time. A PDF can also be attached directly to AI Studio, but the licence text must appear somewhere in the book. A .docx cannot be attached directly to AI Studio.</p>
+    <h3 class="font-extrabold mt-5" data-bn="খ) vFlat অ্যাপ দিয়ে (বিকল্প পদ্ধতি)" data-en="B) With the vFlat app (alternative)">B) With the vFlat app (alternative)</h3>
+    <ol class="list-decimal pl-5 mt-2 space-y-2 text-[15px]">
+      <li><a href="https://t.me/sharingmyprivacy/3" class="text-emerald-700 font-bold underline">এই লিঙ্ক থেকে</a> vFlat অ্যাপ ডাউনলোড করে ইন্সটল করুন।</li>
+      <li>PDF লোড করুন।</li>
+      <li>OCR করুন।</li>
+      <li>.txt হিসেবে এক্সপোর্ট করুন।</li>
+      <li>কোনো txt এডিটরে বইয়ের শেষে বা সুবিধাজনক জায়গায় নিচের লাইসেন্সের লেখাটি পেস্ট করুন (লাইসেন্সের অংশটি নিচে দেওয়া আছে)।</li>
+    </ol>
+  </section>
+
+  <section id="proofread" class="bg-white rounded-2xl shadow p-5 mt-6">
+    <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="2nd Step: প্রুফরিডিং" data-en="2nd Step: Proofreading">2nd Step: Proofreading</h2>
+    <h3 class="font-extrabold mt-4" data-bn="For PC — Google AI Studio (Gemini) দিয়ে" data-en="For PC — with Google AI Studio (Gemini)">For PC — with Google AI Studio (Gemini)</h3>
+    <ol class="list-decimal pl-5 mt-2 space-y-2 text-[15px]" start="5">
+      <li><a href="https://aistudio.google.com/" class="text-emerald-700 font-bold underline">aistudio.google.com</a> লিঙ্কে প্রবেশ করুন।</li>
+      <li><b>+</b> চিহ্নে চাপ দিন, text ফাইলটি add করুন।</li>
+      <li><b>৬.১।</b> লাল গোল করা চিহ্নে (সিস্টেম নির্দেশনা / system instruction) চাপ দিয়ে নিচের প্রম্পটটি পেস্ট করুন।</li>
+      <li><b>৭।</b> প্রম্পটে <b>continue</b> লিখুন।</li>
+      <li><b>৯।</b> Run বোতামে চাপ দিন (Ctrl + Enter)।</li>
+      <li><b>১০।</b> Response generate শেষ হওয়ার পর আবার <b>continue</b> লিখে Run চাপ দিন।</li>
+      <li><b>১১।</b> এভাবে কন্টিনিউ করুন, যতক্ষণ না পুরো বই শেষ হচ্ছে।</li>
+      <li><b>১২।</b> যেকোনো রেসপন্সে চাপ দিলেই থ্রি ডট পাবেন, সেখান থেকে <b>Copy as Markdown</b> করুন।</li>
+      <li><b>১৩।</b> বামের ডট দিয়ে সহজেই এক response থেকে অন্য response-এ যেতে পারবেন।</li>
+      <li><b>১৩।</b> Markdown টেক্সট <b>Markdown to Google Docs Converter</b> (Free Online Tool, Bidirectional Conversion)-এ পেস্ট করুন।</li>
+      <li><b>১৪।</b> Google Doc ওয়েবসাইট বা Google Doc অ্যাপে কপি করুন। Font <b>Noto Serif Bengali / SulaimanLipi</b> করুন — আসল বইয়ের মতো লাগবে।</li>
+      <li>Cover pic ফুল পেজ করতে চাইলে: ছবিতে চাপ দিন, Image option আসবে। Size &amp; rotation-এ <b>lock aspect ratio uncheck</b> করুন, position <b>“Fix position on page”</b> করুন, ফুল পেজ image এক্সপান্ড করুন।</li>
+      <li><b>১৫।</b> .docx version-এ export করুন।</li>
+      <li><b>১৬।</b> অনলাইন docx-to-EPUB converter দিয়ে doc ফাইল convert করুন।</li>
+    </ol>
+    <h3 class="font-extrabold mt-5" data-bn="For phone" data-en="For phone">For phone</h3>
+    <ol class="list-decimal pl-5 mt-2 space-y-2 text-[15px]" start="14">
+      <li>যেখানে পেস্ট করবেন সেখানে চেপে ধরে রাখুন। পেস্ট option আসলে পেস্ট করুন। কিবোর্ডের পপআপ থেকে পেস্ট করবেন না — ফরম্যাটিং থাকবে না।</li>
+    </ol>
+    <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mt-4 text-[15px]">
+      <p class="font-bold" data-bn="NB" data-en="NB">NB</p>
+      <ul class="list-disc pl-5 mt-1 space-y-1">
+        <li>সরাসরি PDF ফাইল attach করেও AI Studio-তে প্রুফরিডিং করতে পারবেন। তবে কপিরাইট সংক্রান্ত লেখাটা বইয়ের কোথাও attach করতে হবে।</li>
+        <li>ডাইরেক্ট doc ফাইল AI Studio-তে add করা যায় না।</li>
+        <li>অনেকগুলো tab open করে বেশ কয়েকটা বই একসাথে proofread করতে পারেন — সময় আরো কম লাগবে।</li>
+        <li>কিছু না বুঝলে গ্রুপে মেসেজ দিন।</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="bg-white rounded-2xl shadow p-5 mt-6">
+    <h2 class="serif text-xl font-extrabold" data-bn="স্বয়ংক্রিয় প্রুফরিড (নতুন)" data-en="Automatic proofreading (new)">Automatic proofreading (new)</h2>
+    <p class="mt-2 text-[15px]" data-bn="উপরের হাতের ধাপগুলো না করে মেকারেই স্বয়ংক্রিয়ভাবে প্রুফরিড করাতে পারেন: পুরো বইয়ের OCR শেষ হলে “Automatic proofreading” অংশে আপনার OpenRouter API key দিন, মডেল বাছুন, বোতাম চাপুন। লেখা টুকরো টুকরো করে একই প্রম্পট দিয়ে পাঠানো হয়, উত্তরগুলো জোড়া লাগিয়ে প্রুফরিড করা ফাইল ডাউনলোড করতে পারবেন। Key শুধু আপনার ব্রাউজারেই থাকে, সরাসরি OpenRouter-এ যায় — আমাদের কোনো সার্ভারে যায় না।" data-en="Instead of the manual steps above, you can proofread automatically in the Maker: after the full OCR finishes, paste your OpenRouter API key in the “Automatic proofreading” section, pick a model, and press the button. The text is sent in chunks with the same prompt, and the answers are joined into a proofread file you can download. The key stays only in your browser and goes directly to OpenRouter — never to any server of ours.">Instead of the manual steps above, you can proofread automatically in the Maker: after the full OCR finishes, paste your OpenRouter API key in the “Automatic proofreading” section, pick a model, and press the button. The text is sent in chunks with the same prompt, and the answers are joined into a proofread file you can download. The key stays only in your browser and goes directly to OpenRouter — never to any server of ours.</p>
   </section>
 
   <section class="bg-white rounded-2xl shadow p-5 mt-6">
@@ -105,14 +150,6 @@ Please apply the following strict guidelines to every submission:
 In case of Quranic ayah follow this format,
 آيه ۝١٩١ (the number is for example)</textarea>
     <button id="copyPrompt" class="accent-bg text-white rounded-xl px-5 py-3 font-bold mt-3" data-bn="পুরো প্রম্পট কপি করুন" data-en="Copy the full prompt">Copy the full prompt</button>
-  </section>
-
-  <section class="bg-white rounded-2xl shadow p-5 mt-6">
-    <h2 class="serif text-xl font-extrabold" data-bn="প্রচ্ছদ ও শেষ ধাপ" data-en="Cover and finishing">Cover and finishing</h2>
-    <ul class="list-disc pl-5 mt-3 space-y-2 text-[15px]">
-      <li><span data-bn="মেকারে কভার না থাকলে অনলাইনে খুঁজুন, না পেলে লেখা-প্রচ্ছদ বানান — তারপর চূড়ান্ত EPUB-এ ব্যবহার করুন।" data-en="If the Maker found no cover, search online or make a text cover there, then use it in the final EPUB.">If the Maker found no cover, search online or make a text cover there, then use it in the final EPUB.</span></li>
-      <li><span data-bn="Google Docs-এ ফুল-পেজ কভার চাইলে: ছবিতে চাপ দিন → Image options → Size & rotation-এ “lock aspect ratio” আনচেক করুন, position “Fix position on page” করুন, ছবি পুরো পেজে ছড়িয়ে দিন।" data-en="For a full-page cover in Google Docs: tap the image → Image options → uncheck “lock aspect ratio” under Size & rotation, set position to “Fix position on page”, then expand the image to fill the page.">For a full-page cover in Google Docs: tap the image → Image options → uncheck “lock aspect ratio” under Size & rotation, set position to “Fix position on page”, then expand the image to fill the page.</span></li>
-    </ul>
   </section>
 
   <section class="bg-white rounded-2xl shadow p-5 mt-6">

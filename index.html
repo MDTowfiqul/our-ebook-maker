@@ -85,6 +85,14 @@
     <p id="status" class="text-sm text-neutral-500 mt-2" data-bn="ফাইলের অপেক্ষায়।" data-en="Waiting for a file.">Waiting for a file.</p>
     <div id="preview" class="hidden bg-[#faf8f2] border border-neutral-200 rounded-xl p-3 text-sm mt-3"></div>
     <p class="text-sm text-neutral-500 mt-3" data-bn="লম্বা OCR চলার সময় স্ক্রিন অন রাখুন — ফোন ঘুমিয়ে গেলে কাজ থেমে যাবে।" data-en="Keep your screen on during a long OCR run — a phone that sleeps pauses the work.">Keep your screen on during a long OCR run — a phone that sleeps pauses the work.</p>
+    <div id="resumeBox" class="hidden bg-emerald-50 border border-emerald-200 rounded-xl p-4 mt-4">
+      <p id="resumeInfo" class="font-bold text-sm"></p>
+      <div class="flex flex-wrap gap-2 mt-3">
+        <button id="resumeBtn" class="accent-bg text-white rounded-xl px-4 py-2.5 font-bold" data-bn="যেখানে থেমেছিল সেখান থেকে চালান" data-en="Resume from where it stopped">Resume from where it stopped</button>
+        <button id="discardBtn" class="bg-white text-neutral-700 border border-neutral-300 rounded-xl px-4 py-2.5 font-bold" data-bn="আবার নতুন করে শুরু করুন" data-en="Start fresh instead">Start fresh instead</button>
+      </div>
+    </div>
+    <p class="text-sm text-neutral-500 mt-3" data-bn="অন্য অ্যাপে গেলে ব্রাউজার স্ক্যান থামিয়ে দিতে পারে — এটা ফোনের নিয়ম, এড়ানো যায় না। তবে প্রতি পৃষ্ঠার পর অগ্রগতি সেভ হয়, তাই কিছু হারাবে না: ফিরে এসে Resume চাপলেই যেখানে থেমেছিল সেখান থেকে চলবে।" data-en="If you switch to another app, the browser may pause the scan — that is the phone's rule and cannot be overridden. But progress is saved after every page, so nothing is lost: come back and tap Resume to continue exactly where it stopped.">If you switch to another app, the browser may pause the scan — that is the phone's rule and cannot be overridden. But progress is saved after every page, so nothing is lost: come back and tap Resume to continue exactly where it stopped.</p>
   </section>
 
   <section id="results" class="bg-white rounded-2xl shadow p-5 mt-6 hidden">
@@ -101,7 +109,9 @@
 
     <div class="border-t border-neutral-100 mt-6 pt-4">
       <h3 class="font-extrabold" data-bn="বইয়ের প্রচ্ছদ (ঐচ্ছিক)" data-en="Book cover (optional)">Book cover (optional)</h3>
-      <p class="text-sm text-neutral-500 mt-1" data-bn="প্রুফরিডের পর চূড়ান্ত ইবুক বানাতে প্রচ্ছদ লাগবে। কভার না থাকলে অনলাইন থেকে খুঁজে নিন, না পেলে লেখা-প্রচ্ছদ বানিয়ে নিন।" data-en="You will need a cover when you make the final EPUB after proofreading. If you have none, try finding one online, or make a simple text cover.">You will need a cover when you make the final EPUB after proofreading. If you have none, try finding one online, or make a simple text cover.</p>
+      <p class="text-sm text-neutral-500 mt-1" data-bn="প্রুফরিডের পর চূড়ান্ত ইবুক বানাতে প্রচ্ছদ লাগবে। কভার থাকলে আপলোড করুন, না থাকলে নিচের বোতামে অনলাইনে খুঁজুন বা লেখা-প্রচ্ছদ বানান।" data-en="You will need a cover when you make the final EPUB after proofreading. If you already have a cover, upload it. If not, find one online or make a text cover below.">You will need a cover when you make the final EPUB after proofreading. If you already have a cover, upload it. If not, find one online or make a text cover below.</p>
+      <label class="block font-bold mt-4 mb-1" for="coverFile" data-bn="কভার ছবি আপলোড করুন (যদি থাকে)" data-en="Upload a cover image (if you have one)">Upload a cover image (if you have one)</label>
+      <input type="file" id="coverFile" accept="image/*" class="w-full">
       <div class="flex flex-wrap gap-2 mt-3">
         <button id="coverOnlineBtn" class="bg-white text-emerald-800 border-2 border-emerald-800 rounded-xl px-4 py-2.5 font-bold disabled:opacity-50" data-bn="অনলাইনে কভার খুঁজুন" data-en="Find a cover online">Find a cover online</button>
         <button id="coverTextBtn" class="bg-white text-emerald-800 border-2 border-emerald-800 rounded-xl px-4 py-2.5 font-bold" data-bn="লেখা-প্রচ্ছদ বানান" data-en="Make a text cover">Make a text cover</button>
@@ -110,6 +120,24 @@
       <img id="coverImg" class="hidden w-40 rounded-xl shadow mt-3" alt="">
       <div><a id="coverDownloadBtn" class="hidden accent-bg text-white rounded-xl px-4 py-2.5 font-bold inline-block mt-3" download="cover.png" data-bn="⬇ কভার ডাউনলোড করুন" data-en="⬇ Download cover">⬇ Download cover</a></div>
     </div>
+  </section>
+
+  <section id="autoProofCard" class="bg-white rounded-2xl shadow p-5 mt-6 hidden">
+    <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="৪. স্বয়ংক্রিয় প্রুফরিড (ঐচ্ছিক)" data-en="4. Automatic proofreading (optional)">4. Automatic proofreading (optional)</h2>
+    <p class="text-sm text-neutral-600 mt-1" data-bn="OCR-এর পর হাতে Gemini-তে না গিয়ে এখানেই স্বয়ংক্রিয়ভাবে প্রুফরিড করান। আপনার OpenRouter API key শুধু আপনার ব্রাউজারেই থাকে — আমাদের কোনো সার্ভারে যায় না, আমরাও তা দেখি না। Key সরাসরি OpenRouter-এ পাঠানো হয়।" data-en="After OCR, proofread automatically right here instead of going to Gemini by hand. Your OpenRouter API key stays only in your browser — it goes to no server of ours, and we never see it. It is sent directly to OpenRouter.">After OCR, proofread automatically right here instead of going to Gemini by hand. Your OpenRouter API key stays only in your browser — it goes to no server of ours, and we never see it. It is sent directly to OpenRouter.</p>
+    <label class="block font-bold mt-4 mb-1" for="proofKey" data-bn="আপনার OpenRouter API key" data-en="Your OpenRouter API key">Your OpenRouter API key</label>
+    <input type="password" id="proofKey" autocomplete="off" class="w-full border border-neutral-300 rounded-xl px-3 py-2.5 outline-none focus:border-emerald-600" placeholder="sk-or-…" data-bn-ph="sk-or-…" data-en-ph="sk-or-…">
+    <p class="text-sm text-neutral-500 mt-1" data-bn="Key না থাকলে OpenRouter অ্যাকাউন্ট থেকে একটি বানিয়ে নিন। Key ব্রাউজারে সেভ থাকে, পরের বার আবার লিখতে হবে না।" data-en="If you have no key, create one from your OpenRouter account. The key is saved in your browser, so you won't need to type it again.">If you have no key, create one from your OpenRouter account. The key is saved in your browser, so you won't need to type it again.</p>
+    <label class="block font-bold mt-4 mb-1" for="proofModel" data-bn="মডেল" data-en="Model">Model</label>
+    <input type="text" id="proofModel" value="google/gemini-2.5-flash" class="w-full border border-neutral-300 rounded-xl px-3 py-2.5 outline-none focus:border-emerald-600">
+    <p class="text-sm text-neutral-500 mt-1" data-bn="লেখা টুকরো টুকরো করে একই প্রুফরিডিং প্রম্পট দিয়ে পাঠানো হয়, উত্তরগুলো জোড়া লাগিয়ে প্রুফরিড করা ফাইল বানানো হয়। খরচ আপনার OpenRouter অ্যাকাউন্ট থেকে কাটবে।" data-en="The text is sent in chunks with the same proofreading prompt, and the answers are joined into one proofread file. The cost comes from your OpenRouter account.">The text is sent in chunks with the same proofreading prompt, and the answers are joined into one proofread file. The cost comes from your OpenRouter account.</p>
+    <div class="flex flex-wrap gap-2 mt-4">
+      <button id="autoProofBtn" class="accent-bg text-white rounded-xl px-5 py-3 font-bold disabled:opacity-50" data-bn="স্বয়ংক্রিয়ভাবে প্রুফরিড করুন" data-en="Proofread automatically">Proofread automatically</button>
+      <button id="proofCancelBtn" class="bg-red-800 text-white rounded-xl px-5 py-3 font-bold disabled:opacity-50" disabled data-bn="বাতিল" data-en="Cancel">Cancel</button>
+    </div>
+    <div class="h-4 bg-neutral-100 rounded-full overflow-hidden mt-4"><div id="proofBar" class="h-full bg-emerald-700" style="width:0%"></div></div>
+    <p id="proofStatus" class="text-sm text-neutral-500 mt-2"></p>
+    <div><button id="proofDownloadBtn" class="hidden accent-bg text-white rounded-xl px-5 py-3 font-bold mt-3" data-bn="⬇ প্রুফরিড করা ফাইল ডাউনলোড করুন" data-en="⬇ Download proofread file">⬇ Download proofread file</button></div>
   </section>
   </main>
 
