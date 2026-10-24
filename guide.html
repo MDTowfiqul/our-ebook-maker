@@ -38,7 +38,7 @@
     <h1 class="serif text-[30px] sm:text-5xl font-extrabold leading-tight">
       <span class="hero-accent" data-bn="যেভাবে ইপাব বই বানাবেন" data-en="How to make an EPUB book">How to make an EPUB book</span>
     </h1>
-    <p class="text-white/75 mt-2 text-sm sm:text-base" data-bn="স্ক্যান করা বই থেকে পরিষ্কার ইপাব — পুরো পদ্ধতি ধাপে ধাপে।" data-en="From a scanned book to a clean EPUB — the full method, step by step.">From a scanned book to a clean EPUB — the full method, step by step.</p>
+    <p class="text-white/75 mt-2 text-sm sm:text-base" data-bn="PDF বই থেকে পরিষ্কার ইপাব — পুরো পদ্ধতি ধাপে ধাপে।" data-en="From a PDF book to a clean EPUB — the full method, step by step.">From a PDF book to a clean EPUB — the full method, step by step.</p>
   </section>
 
   <main class="pb-10">
@@ -46,7 +46,7 @@
     <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="First Step: .txt export" data-en="First Step: .txt export">First Step: .txt export</h2>
     <h3 class="font-extrabold mt-4" data-bn="ক) এই সাইট দিয়ে (সহজ পদ্ধতি)" data-en="A) With this site (easiest)">A) With this site (easiest)</h3>
     <ol class="list-decimal pl-5 mt-2 space-y-2 text-[15px]">
-      <li>মেকারে স্ক্যান করা PDF আপলোড করুন, বইয়ের নাম ও লেখক লিখুন।</li>
+      <li>মেকারে PDF আপলোড করুন, বইয়ের নাম ও লেখক লিখুন।</li>
       <li>“Test first 5 pages” দিয়ে প্রথম ৫ পৃষ্ঠা পরীক্ষা করুন — লেখা পরিষ্কার মনে হলে “Read the full book” চাপুন।</li>
       <li>শেষ হলে “.txt ডাউনলোড করুন” চাপুন। লাইসেন্সের টিক দেওয়া থাকলে CC BY-SA 4.0 লেখাটি বইয়ের শেষে নিজে থেকেই যোগ হয়ে যাবে।</li>
       <li>অন্য অ্যাপে গেলে স্ক্যান থামতে পারে — প্রতি পৃষ্ঠার পর অগ্রগতি সেভ হয়, ফিরে এসে “Resume” চাপলেই যেখানে থেমেছিল সেখান থেকে চলবে।</li>
@@ -97,7 +97,31 @@
 
   <section class="bg-white rounded-2xl shadow p-5 mt-6">
     <h2 class="serif text-xl font-extrabold" data-bn="স্বয়ংক্রিয় প্রুফরিড (নতুন)" data-en="Automatic proofreading (new)">Automatic proofreading (new)</h2>
-    <p class="mt-2 text-[15px]" data-bn="উপরের হাতের ধাপগুলো না করে মেকারেই স্বয়ংক্রিয়ভাবে প্রুফরিড করাতে পারেন: পুরো বইয়ের OCR শেষ হলে “Automatic proofreading” অংশে আপনার OpenRouter API key দিন, মডেল বাছুন, বোতাম চাপুন। লেখা টুকরো টুকরো করে একই প্রম্পট দিয়ে পাঠানো হয়, উত্তরগুলো জোড়া লাগিয়ে প্রুফরিড করা ফাইল ডাউনলোড করতে পারবেন। Key শুধু আপনার ব্রাউজারেই থাকে, সরাসরি OpenRouter-এ যায় — আমাদের কোনো সার্ভারে যায় না।" data-en="Instead of the manual steps above, you can proofread automatically in the Maker: after the full OCR finishes, paste your OpenRouter API key in the “Automatic proofreading” section, pick a model, and press the button. The text is sent in chunks with the same prompt, and the answers are joined into a proofread file you can download. The key stays only in your browser and goes directly to OpenRouter — never to any server of ours.">Instead of the manual steps above, you can proofread automatically in the Maker: after the full OCR finishes, paste your OpenRouter API key in the “Automatic proofreading” section, pick a model, and press the button. The text is sent in chunks with the same prompt, and the answers are joined into a proofread file you can download. The key stays only in your browser and goes directly to OpenRouter — never to any server of ours.</p>
+    <p class="mt-2 text-[15px]" data-bn="উপরের হাতের ধাপগুলো না করে মেকারেই স্বয়ংক্রিয়ভাবে প্রুফরিড করাতে পারেন: পুরো বইয়ের OCR শেষ হলে “Automatic proofreading” অংশে আপনার Google Gemini API key (ফ্রি, বেশিরভাগের জন্য এটাই সহজ) বা OpenRouter API key দিন, মডেল বাছুন, বোতাম চাপুন। Key দিলে টুলটি আপনার key দিয়ে ফ্রি মডেলগুলোর তালিকা দেখায় এবং প্রতিটি মডেলের ফ্রি লিমিটের ধারণা দেয়। লেখা টুকরো টুকরো করে (প্রায় ৮,০০০ অক্ষর) একই প্রম্পট দিয়ে পাঠানো হয়, উত্তরগুলো জোড়া লাগে। লিমিট শেষ হলে টুল নিজে থেকে অপেক্ষা করে আবার চেষ্টা করে, আর প্রতি অংশের পর অগ্রগতি সেভ হয়। শেষ হলে তিনটি উপায়: .md ডাউনলোড, .docx ডাউনলোড (তারপর হাতে converter দিয়ে EPUB), অথবা “Make EPUB automatically” — প্রচ্ছদসহ চূড়ান্ত EPUB এখানেই তৈরি হয়ে যাবে। Key শুধু আপনার ব্রাউজারেই থাকে, সরাসরি Google বা OpenRouter-এ যায় — আমাদের কোনো সার্ভারে যায় না।" data-en="Instead of the manual steps above, you can proofread automatically in the Maker: after the full OCR finishes, paste your Google Gemini API key (free, easiest for most people) or OpenRouter API key in the “Automatic proofreading” section, pick a model, and press the button. Once you enter a key, the tool shows the free models available on that key and what their free limits look like. The text is sent in chunks (about 8,000 characters) with the same prompt, and the answers are joined. If a limit is hit, the tool waits and retries on its own, and progress is saved after every chunk. When it finishes you get three choices: download .md, download .docx (then convert to EPUB by hand), or “Make EPUB automatically” — the finished EPUB, cover included, is built right there. The key stays only in your browser and goes directly to Google or OpenRouter — never to any server of ours.">Instead of the manual steps above, you can proofread automatically in the Maker: after the full OCR finishes, paste your Google Gemini API key (free, easiest for most people) or OpenRouter API key in the “Automatic proofreading” section, pick a model, and press the button. Once you enter a key, the tool shows the free models available on that key and what their free limits look like. The text is sent in chunks (about 8,000 characters) with the same prompt, and the answers are joined. If a limit is hit, the tool waits and retries on its own, and progress is saved after every chunk. When it finishes you get three choices: download .md, download .docx (then convert to EPUB by hand), or “Make EPUB automatically” — the finished EPUB, cover included, is built right there. The key stays only in your browser and goes directly to Google or OpenRouter — never to any server of ours.</p>
+  </section>
+
+  <section id="muse" class="bg-white rounded-2xl shadow p-5 mt-6">
+    <h2 class="serif text-xl font-extrabold" data-bn="Muse দিয়ে প্রুফরিড (সহজ হাতের পদ্ধতি)" data-en="Proofread with Muse (the easy manual way)">Proofread with Muse (the easy manual way)</h2>
+    <p class="mt-2 text-[15px]" data-bn="কোনো API key নেই, আর AI Studio-র লম্বা ধাপগুলোও করতে চান না? তাহলে আপনার নিজের Muse-কেই (এই চ্যাটের AI) দিয়ে প্রুফরিড করান — কোনো key লাগে না।" data-en="No API key, and you don't want AI Studio's long steps either? Then let your own Muse (the AI in this chat) proofread it for you — no key needed.">No API key, and you don't want AI Studio's long steps either? Then let your own Muse (the AI in this chat) proofread it for you — no key needed.</p>
+    <ol class="list-decimal pl-5 mt-2 space-y-2 text-[15px]">
+      <li>মেকার থেকে .txt ফাইলটি ডাউনলোড করুন।</li>
+      <li>Muse চ্যাট খুলে .txt ফাইলটি আপলোড করুন।</li>
+      <li>নিচের নির্দেশনাটি কপি করে একই মেসেজে পেস্ট করুন।</li>
+      <li>Muse এক অংশ শেষ করলে “continue” লিখুন — এভাবে পুরো বই শেষ হবে।</li>
+      <li>প্রতিটি শেষ হওয়া অংশ কপি করে এক ফাইলে জোড়া লাগান, তারপর উপরের ২য় ধাপের মতো Google Docs → .docx → converter দিয়ে EPUB বানান। অথবা প্রুফরিড করা লেখা মেকারে ফিরিয়ে আনার দরকার নেই — Docs-এর পথটাই এখানে সবচেয়ে সহজ।</li>
+    </ol>
+    <textarea id="musePrompt" readonly rows="12" class="w-full border border-neutral-300 rounded-xl p-3 text-sm mt-3">Please proofread this book for me, in chunks, so I can make a clean EPUB from it.
+
+Rules:
+- This file is OCR text from a book. Fix OCR errors, broken line breaks, stray characters in footnotes, and repeated page headers that split paragraphs in half.
+- Do NOT change the author's wording, meaning, or theological terms. Do NOT modernize old spellings.
+- For Bangla: correct OCR spelling mistakes (for example য় misread as য). Centre titles and headings.
+- For Arabic text: correct errors, add harkat, do not use brackets. Never alter Quranic verses or Hadith texts — only fix clear OCR mistakes in them.
+- Format the output as clean Markdown: # for the book title, ## for chapter titles, ### for sub-sections, *** for scene breaks. Remove page numbers, running headers and footers. Join fragmented sentences into proper paragraphs.
+- Footnotes: keep the footnote entry next to its number, in superscript, within third brackets.
+- Work through the file in chunks of about 8,000 characters. After each chunk, stop and say DONE, and wait for me to say "continue" before doing the next chunk.
+- Output ONLY the proofread Markdown for each chunk — no explanations, no "here is your text".</textarea>
+    <button id="copyMuse" class="accent-bg text-white rounded-xl px-5 py-3 font-bold mt-3" data-bn="Muse-র নির্দেশনা কপি করুন" data-en="Copy the Muse instruction">Copy the Muse instruction</button>
   </section>
 
   <section class="bg-white rounded-2xl shadow p-5 mt-6">
@@ -169,8 +193,13 @@ Under the following terms:
   </section>
 
   <section class="bg-white rounded-2xl shadow p-5 mt-6">
-    <h2 class="serif text-xl font-extrabold" data-bn="একটি নিয়ম মনে রাখুন" data-en="One rule to keep in mind">One rule to keep in mind</h2>
-    <p class="mt-2 text-[15px]" data-bn="শুধু সেই বইয়ের ইবুক বানান ও শেয়ার করুন যার অধিকার আপনার আছে — পুরোনো, কপিরাইটমুক্ত বই, অথবা লেখক/প্রকাশকের অনুমোদিত বই। এতে লেখক ও প্রকাশকের ক্ষতি হয় না।" data-en="Make and share ebooks only from books you have the right to share — old, copyright-free books, or books whose writer or publisher has approved sharing. That keeps writers and publishers unharmed.">Make and share ebooks only from books you have the right to share — old, copyright-free books, or books whose writer or publisher has approved sharing. That keeps writers and publishers unharmed.</p>
+    <h2 class="serif text-xl font-extrabold" data-bn="শেয়ার করার নিয়ম — দুটি উদ্দেশ্য" data-en="Sharing rules — two purposes">Sharing rules — two purposes</h2>
+    <p class="mt-2 text-[15px]" data-bn="বই বানানোর আগে Our Boighar-এ দেখুন বইটি আছে কি না — থাকলে আবার বানানোর দরকার নেই (তবু নিজের জন্য বানাতে চাইলে পারেন)।" data-en="Before making a book, check Our Boighar to see if it is already there — if it is, there is no need to make it again (though you may still make your own copy if you want).">Before making a book, check Our Boighar to see if it is already there — if it is, there is no need to make it again (though you may still make your own copy if you want).</p>
+    <ol class="list-decimal pl-5 mt-2 space-y-2 text-[15px]">
+      <li><b>শুধু নিজের জন্য:</b> যেকোনো PDF বই (পুরোনো বা নতুন) কনভার্ট করতে পারেন, কোনো সমস্যা নেই। শুধু নতুন বইয়ের (১০ বছরের কম পুরোনো) তৈরি ইবুক অনলাইনে শেয়ার করবেন না।</li>
+      <li><b>সবার জন্য, সবার সাথে শেয়ার করতে:</b> শেয়ার করা যাবে শুধু তখনই, যখন বইটি ১০+ বছরের পুরোনো, অথবা লেখক/প্রকাশক নিজে PDF প্রকাশ করেছেন বা অনলাইনে শেয়ার করতে আপত্তি নেই বলে জানিয়েছেন।</li>
+    </ol>
+    <p class="mt-2 text-[15px]">শেয়ার করার মতো ইবুক তৈরি হলে বইটি <a href="https://mdtowfiqul.github.io/our-boighar/" class="text-emerald-700 font-bold underline">Our Boighar</a> কমিউনিটিতে (সাইটের About পেজে দেওয়া Facebook গ্রুপ / Telegram) পাঠান — যাচাই করে লাইব্রেরিতে যোগ করা হবে। এতে লেখক ও প্রকাশকের ক্ষতি হয় না।</p>
   </section>
   </main>
   <footer class="text-center text-neutral-500 text-sm py-6">
@@ -199,6 +228,8 @@ Under the following terms:
   }
   document.getElementById('copyPrompt').addEventListener('click', function () { copy('prompt', this); });
   document.getElementById('copyLic').addEventListener('click', function () { copy('lic', this); });
+  var museBtn = document.getElementById('copyMuse');
+  if (museBtn) museBtn.addEventListener('click', function () { copy('musePrompt', this); });
 })();
 </script>
 </body>

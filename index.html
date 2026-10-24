@@ -3,14 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Our Ebook Maker — Scanned PDF to text, in your browser</title>
-<meta name="description" content="Turn a scanned PDF into text with OCR, entirely in your browser. Download the text, proofread it, and make a clean ebook. Nothing is uploaded anywhere.">
+<title>Our Ebook Maker — PDF to text, in your browser</title>
+<meta name="description" content="Turn a PDF into text with OCR, entirely in your browser. Download the text, proofread it, and make a clean ebook. Nothing is uploaded anywhere.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
   body{font-family:'Hind Siliguri',system-ui,sans-serif}
   .serif{font-family:'Noto Serif Bengali',serif}
@@ -44,16 +45,27 @@
       <span data-bn="১০০% ফ্রি • সাইন-আপ নেই • কিছু আপলোড হয় না" data-en="100% free • No sign-up • Nothing is uploaded">100% free • No sign-up • Nothing is uploaded</span>
     </span>
     <h1 class="serif text-[30px] sm:text-5xl font-extrabold leading-tight mt-4">
-      <span class="hero-accent" data-bn="স্ক্যান করা PDF" data-en="Scanned PDF">Scanned PDF</span>
+      <span class="hero-accent" data-bn="PDF" data-en="PDF">PDF</span>
       <span data-bn="থেকে লেখা, আপনার ব্রাউজারেই" data-en="to text, in your browser">to text, in your browser</span>
     </h1>
-    <p class="text-white/75 mt-2 text-sm sm:text-base" data-bn="বইয়ের স্ক্যান করা PDF দিন, OCR করা লেখা নিন। তারপর প্রুফরিড করে পরিষ্কার ইবুক বানান।" data-en="Give a scanned book PDF, get back OCR text. Then proofread it and make a clean ebook.">Give a scanned book PDF, get back OCR text. Then proofread it and make a clean ebook.</p>
+    <p class="text-white/75 mt-2 text-sm sm:text-base" data-bn="বইয়ের PDF দিন, OCR করা লেখা নিন। তারপর প্রুফরিড করে পরিষ্কার ইবুক বানান।" data-en="Give a book PDF, get back OCR text. Then proofread it and make a clean ebook.">Give a book PDF, get back OCR text. Then proofread it and make a clean ebook.</p>
   </section>
 
   <main class="pb-10">
+  <section class="bg-amber-50 border-2 border-amber-300 rounded-2xl shadow p-5 mt-6">
+    <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="⚠️ শুরু করার আগে — এটা পড়ুন" data-en="⚠️ Before you make an ebook — read this first">⚠️ Before you make an ebook — read this first</h2>
+    <p class="mt-2 text-[15px]" data-bn="প্রথমে Our Boighar-এ বইটি আছে কি না দেখুন:" data-en="First, check whether the book is already on Our Boighar:">First, check whether the book is already on Our Boighar:</p>
+    <p class="mt-1 text-[15px]">🔍 <a href="https://mdtowfiqul.github.io/our-boighar/" class="text-emerald-700 font-bold underline" data-bn="Our Boighar-এ খুঁজুন" data-en="Search Our Boighar">Search Our Boighar</a> <span data-bn="— বইটি সেখানে থাকলে আবার বানানোর দরকার নেই। (তবু নিজের জন্য বানাতে চাইলে বানাতে পারেন।)" data-en="— if the book is already there, there is no need to make it again. (If you still want your own copy, you can make it anyway.)">— if the book is already there, there is no need to make it again. (If you still want your own copy, you can make it anyway.)</span></p>
+    <p class="font-bold mt-4" data-bn="ইবুক বানানোর ২টি উদ্দেশ্য:" data-en="An ebook is made for 2 purposes:">An ebook is made for 2 purposes:</p>
+    <ol class="list-decimal pl-5 mt-1 space-y-2 text-[15px]">
+      <li><b data-bn="শুধু নিজের জন্য" data-en="For yourself only">For yourself only</b> — <span data-bn="যেকোনো PDF বই (পুরোনো বা নতুন) কনভার্ট করতে পারেন, কোনো সমস্যা নেই। শুধু নতুন বইয়ের (১০ বছরের কম পুরোনো) তৈরি ইবুক অনলাইনে শেয়ার করবেন না।" data-en="you may convert any PDF book, old or new, no problem. Just do not share the finished ebook online if the book is less than 10 years old.">you may convert any PDF book, old or new, no problem. Just do not share the finished ebook online if the book is less than 10 years old.</span></li>
+      <li><b data-bn="সবার জন্য, সবার সাথে শেয়ার করতে" data-en="For everyone, to share with everyone">For everyone, to share with everyone</b> — <span data-bn="শেয়ার করা যাবে শুধু তখনই, যখন বইটি ১০+ বছরের পুরোনো, অথবা লেখক/প্রকাশক নিজে PDF প্রকাশ করেছেন বা অনলাইনে শেয়ার করতে আপত্তি নেই বলে জানিয়েছেন।" data-en="you may share it only when the book is 10+ years old, OR the writer or publisher has published the PDF publicly themselves or has no problem with it being shared online.">you may share it only when the book is 10+ years old, OR the writer or publisher has published the PDF publicly themselves or has no problem with it being shared online.</span></li>
+    </ol>
+    <p class="mt-3 text-[15px]" data-bn="শেয়ার করার মতো ইবুক তৈরি হলে Our Boighar-এ দেওয়ার জন্য বইটি Our Boighar কমিউনিটিতে (সাইটের About পেজে দেওয়া Facebook গ্রুপ / Telegram) পাঠান — যাচাই করে লাইব্রেরিতে যোগ করা হবে।" data-en="When you have an ebook that may be shared, send it to the Our Boighar community (Facebook group / Telegram linked on the site's About page) so it can be checked and added to the library.">When you have an ebook that may be shared, send it to the Our Boighar community (Facebook group / Telegram linked on the site's About page) so it can be checked and added to the library.</p>
+  </section>
   <section class="bg-white rounded-2xl shadow p-5 mt-6">
     <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="১. আপনার বই" data-en="1. Your book">1. Your book</h2>
-    <label class="block font-bold mt-4 mb-1" for="file" data-bn="স্ক্যান করা PDF ফাইল" data-en="Scanned PDF file">Scanned PDF file</label>
+    <label class="block font-bold mt-4 mb-1" for="file" data-bn="PDF ফাইল" data-en="PDF file">PDF file</label>
     <input type="file" id="file" accept=".pdf,application/pdf" class="w-full">
     <p class="text-sm text-neutral-500 mt-1" id="fileinfo" data-bn="এখনো কোনো ফাইল বাছা হয়নি।" data-en="No file chosen yet.">No file chosen yet.</p>
     <div class="grid sm:grid-cols-2 gap-3 mt-3">
@@ -66,6 +78,20 @@
         <input type="text" id="author" class="w-full border border-neutral-300 rounded-xl px-3 py-2.5 outline-none focus:border-emerald-600" placeholder="Author name" data-bn-ph="লেখকের নাম" data-en-ph="Author name">
       </div>
     </div>
+    <div class="border-t border-neutral-100 mt-5 pt-4">
+      <h3 class="font-extrabold" data-bn="বইয়ের প্রচ্ছদ (ঐচ্ছিক)" data-en="Book cover (optional)">Book cover (optional)</h3>
+      <p class="text-sm text-neutral-500 mt-1" data-bn="প্রুফরিডের পর চূড়ান্ত ইবুক বানাতে প্রচ্ছদ লাগবে। কভার থাকলে আপলোড করুন, না থাকলে নিচের বোতামে অনলাইনে খুঁজুন বা লেখা-প্রচ্ছদ বানান। স্টাইল পছন্দ না হলে বারবার বানিয়ে আরেকটি স্টাইল নিন।" data-en="You will need a cover when you make the final EPUB after proofreading. If you already have a cover, upload it. If not, find one online or make a text cover below. If you don't like a style, generate another one.">You will need a cover when you make the final EPUB after proofreading. If you already have a cover, upload it. If not, find one online or make a text cover below. If you don't like a style, generate another one.</p>
+      <label class="block font-bold mt-4 mb-1" for="coverFile" data-bn="কভার ছবি আপলোড করুন (যদি থাকে)" data-en="Upload a cover image (if you have one)">Upload a cover image (if you have one)</label>
+      <input type="file" id="coverFile" accept="image/*" class="w-full">
+      <div class="flex flex-wrap gap-2 mt-3">
+        <button id="coverOnlineBtn" class="bg-white text-emerald-800 border-2 border-emerald-800 rounded-xl px-4 py-2.5 font-bold disabled:opacity-50" data-bn="অনলাইনে কভার খুঁজুন" data-en="Find a cover online">Find a cover online</button>
+        <button id="coverTextBtn" class="bg-white text-emerald-800 border-2 border-emerald-800 rounded-xl px-4 py-2.5 font-bold" data-bn="লেখা-প্রচ্ছদ বানান" data-en="Make a text cover">Make a text cover</button>
+        <button id="coverAnotherBtn" class="bg-white text-emerald-800 border-2 border-emerald-800 rounded-xl px-4 py-2.5 font-bold" data-bn="আরেকটি স্টাইল বানান" data-en="Generate another style">Generate another style</button>
+      </div>
+      <p id="coverStatus" class="text-sm text-neutral-500 mt-2"></p>
+      <img id="coverImg" class="hidden w-40 rounded-xl shadow mt-3" alt="">
+      <div><a id="coverDownloadBtn" class="hidden accent-bg text-white rounded-xl px-4 py-2.5 font-bold inline-block mt-3" download="cover.png" data-bn="⬇ কভার ডাউনলোড করুন" data-en="⬇ Download cover">⬇ Download cover</a></div>
+    </div>
     <label class="flex items-start gap-2 mt-4 text-sm font-bold">
       <input type="checkbox" id="license" checked class="mt-1">
       <span data-bn="বইয়ের শেষে CC BY-SA 4.0 লাইসেন্সের লেখা যোগ করুন" data-en="Add the CC BY-SA 4.0 licence text at the end of the book">Add the CC BY-SA 4.0 licence text at the end of the book</span>
@@ -75,7 +101,7 @@
 
   <section class="bg-white rounded-2xl shadow p-5 mt-6">
     <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="২. Check quality first" data-en="2. Check quality first">2. Check quality first</h2>
-    <p class="text-sm text-neutral-500 mt-1" data-bn="স্ক্যান করা বই সময় নেয়, আর OCR কখনো নিখুঁত নয়। পুরো বই চালানোর আগে প্রথম ৫ পৃষ্ঠা পরীক্ষা করুন।" data-en="Scanned books take time and OCR is never perfect. Test the first 5 pages before running the whole book.">Scanned books take time and OCR is never perfect. Test the first 5 pages before running the whole book.</p>
+    <p class="text-sm text-neutral-500 mt-1" data-bn="বই সময় নেয়, আর OCR কখনো নিখুঁত নয়। পুরো বই চালানোর আগে প্রথম ৫ পৃষ্ঠা পরীক্ষা করুন।" data-en="Books take time and OCR is never perfect. Test the first 5 pages before running the whole book.">Books take time and OCR is never perfect. Test the first 5 pages before running the whole book.</p>
     <div class="flex flex-wrap gap-2 mt-4">
       <button id="testBtn" class="bg-white text-emerald-800 border-2 border-emerald-800 rounded-xl px-5 py-3 font-bold disabled:opacity-50" data-bn="প্রথম ৫ পৃষ্ঠা পরীক্ষা করুন" data-en="Test first 5 pages">Test first 5 pages</button>
       <button id="runBtn" class="accent-bg text-white rounded-xl px-5 py-3 font-bold disabled:opacity-50" data-bn="পুরো বই পড়ুন" data-en="Read the full book">Read the full book</button>
@@ -99,46 +125,64 @@
     <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="৩. ডাউনলোড" data-en="3. Download">3. Download</h2>
     <p id="summary" class="text-sm text-neutral-500 mt-1"></p>
     <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mt-4">
-      <p class="font-bold" data-bn="⚠️ এটি কাঁচা স্ক্যান লেখা — এখনো প্রুফরিড করা হয়নি।" data-en="⚠️ This is raw scanned text — not proofread yet.">⚠️ This is raw scanned text — not proofread yet.</p>
-      <p class="text-sm text-neutral-600 mt-1" data-bn="পরিষ্কার ইবুক বানাতে আগে প্রুফরিড করতে হবে। এখানেই প্রুফরিড করুন, অথবা .txt ডাউনলোড করে Gemini দিয়ে করুন।" data-en="Proofread it before making a clean ebook. Proofread right here, or download the .txt and do it with Gemini.">Proofread it before making a clean ebook. Proofread right here, or download the .txt and do it with Gemini.</p>
+      <p class="font-bold" data-bn="⚠️ এটি কাঁচা OCR লেখা — এখনো প্রুফরিড করা হয়নি।" data-en="⚠️ This is raw OCR text — not proofread yet.">⚠️ This is raw OCR text — not proofread yet.</p>
+      <p class="text-sm text-neutral-600 mt-1" data-bn="পরিষ্কার ইবুক বানাতে আগে প্রুফরিড করতে হবে। এখানেই প্রুফরিড করুন, অথবা .txt ডাউনলোড করে Gemini বা Muse দিয়ে করুন।" data-en="Proofread it before making a clean ebook. Proofread right here, or download the .txt and do it with Gemini or Muse.">Proofread it before making a clean ebook. Proofread right here, or download the .txt and do it with Gemini or Muse.</p>
     </div>
     <div class="flex flex-wrap gap-2 mt-4">
       <button id="txtBtn" class="accent-bg text-white rounded-xl px-5 py-3 font-bold" data-bn="⬇ .txt ডাউনলোড করুন" data-en="⬇ Download .txt">⬇ Download .txt</button>
       <a id="proofBtn" href="guide.html#proofread" class="bg-emerald-700 text-white rounded-xl px-5 py-3 font-bold inline-block" data-bn="✍️ এখানে প্রুফরিড করুন" data-en="✍️ Proofread here">✍️ Proofread here</a>
     </div>
-
-    <div class="border-t border-neutral-100 mt-6 pt-4">
-      <h3 class="font-extrabold" data-bn="বইয়ের প্রচ্ছদ (ঐচ্ছিক)" data-en="Book cover (optional)">Book cover (optional)</h3>
-      <p class="text-sm text-neutral-500 mt-1" data-bn="প্রুফরিডের পর চূড়ান্ত ইবুক বানাতে প্রচ্ছদ লাগবে। কভার থাকলে আপলোড করুন, না থাকলে নিচের বোতামে অনলাইনে খুঁজুন বা লেখা-প্রচ্ছদ বানান।" data-en="You will need a cover when you make the final EPUB after proofreading. If you already have a cover, upload it. If not, find one online or make a text cover below.">You will need a cover when you make the final EPUB after proofreading. If you already have a cover, upload it. If not, find one online or make a text cover below.</p>
-      <label class="block font-bold mt-4 mb-1" for="coverFile" data-bn="কভার ছবি আপলোড করুন (যদি থাকে)" data-en="Upload a cover image (if you have one)">Upload a cover image (if you have one)</label>
-      <input type="file" id="coverFile" accept="image/*" class="w-full">
-      <div class="flex flex-wrap gap-2 mt-3">
-        <button id="coverOnlineBtn" class="bg-white text-emerald-800 border-2 border-emerald-800 rounded-xl px-4 py-2.5 font-bold disabled:opacity-50" data-bn="অনলাইনে কভার খুঁজুন" data-en="Find a cover online">Find a cover online</button>
-        <button id="coverTextBtn" class="bg-white text-emerald-800 border-2 border-emerald-800 rounded-xl px-4 py-2.5 font-bold" data-bn="লেখা-প্রচ্ছদ বানান" data-en="Make a text cover">Make a text cover</button>
-      </div>
-      <p id="coverStatus" class="text-sm text-neutral-500 mt-2"></p>
-      <img id="coverImg" class="hidden w-40 rounded-xl shadow mt-3" alt="">
-      <div><a id="coverDownloadBtn" class="hidden accent-bg text-white rounded-xl px-4 py-2.5 font-bold inline-block mt-3" download="cover.png" data-bn="⬇ কভার ডাউনলোড করুন" data-en="⬇ Download cover">⬇ Download cover</a></div>
-    </div>
   </section>
 
   <section id="autoProofCard" class="bg-white rounded-2xl shadow p-5 mt-6 hidden">
     <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="৪. স্বয়ংক্রিয় প্রুফরিড (ঐচ্ছিক)" data-en="4. Automatic proofreading (optional)">4. Automatic proofreading (optional)</h2>
-    <p class="text-sm text-neutral-600 mt-1" data-bn="OCR-এর পর হাতে Gemini-তে না গিয়ে এখানেই স্বয়ংক্রিয়ভাবে প্রুফরিড করান। আপনার OpenRouter API key শুধু আপনার ব্রাউজারেই থাকে — আমাদের কোনো সার্ভারে যায় না, আমরাও তা দেখি না। Key সরাসরি OpenRouter-এ পাঠানো হয়।" data-en="After OCR, proofread automatically right here instead of going to Gemini by hand. Your OpenRouter API key stays only in your browser — it goes to no server of ours, and we never see it. It is sent directly to OpenRouter.">After OCR, proofread automatically right here instead of going to Gemini by hand. Your OpenRouter API key stays only in your browser — it goes to no server of ours, and we never see it. It is sent directly to OpenRouter.</p>
-    <label class="block font-bold mt-4 mb-1" for="proofKey" data-bn="আপনার OpenRouter API key" data-en="Your OpenRouter API key">Your OpenRouter API key</label>
-    <input type="password" id="proofKey" autocomplete="off" class="w-full border border-neutral-300 rounded-xl px-3 py-2.5 outline-none focus:border-emerald-600" placeholder="sk-or-…" data-bn-ph="sk-or-…" data-en-ph="sk-or-…">
-    <p class="text-sm text-neutral-500 mt-1" data-bn="Key না থাকলে OpenRouter অ্যাকাউন্ট থেকে একটি বানিয়ে নিন। Key ব্রাউজারে সেভ থাকে, পরের বার আবার লিখতে হবে না।" data-en="If you have no key, create one from your OpenRouter account. The key is saved in your browser, so you won't need to type it again.">If you have no key, create one from your OpenRouter account. The key is saved in your browser, so you won't need to type it again.</p>
-    <label class="block font-bold mt-4 mb-1" for="proofModel" data-bn="মডেল" data-en="Model">Model</label>
-    <input type="text" id="proofModel" value="google/gemini-2.5-flash" class="w-full border border-neutral-300 rounded-xl px-3 py-2.5 outline-none focus:border-emerald-600">
-    <p class="text-sm text-neutral-500 mt-1" data-bn="লেখা টুকরো টুকরো করে একই প্রুফরিডিং প্রম্পট দিয়ে পাঠানো হয়, উত্তরগুলো জোড়া লাগিয়ে প্রুফরিড করা ফাইল বানানো হয়। খরচ আপনার OpenRouter অ্যাকাউন্ট থেকে কাটবে।" data-en="The text is sent in chunks with the same proofreading prompt, and the answers are joined into one proofread file. The cost comes from your OpenRouter account.">The text is sent in chunks with the same proofreading prompt, and the answers are joined into one proofread file. The cost comes from your OpenRouter account.</p>
+    <p class="text-sm text-neutral-600 mt-1" data-bn="OCR-এর পর হাতে প্রুফরিড না করে এখানেই স্বয়ংক্রিয়ভাবে প্রুফরিড করান — আপনার নিজের Google Gemini key বা OpenRouter key দিয়ে। Key শুধু আপনার ব্রাউজারেই থাকে — আমাদের কোনো সার্ভারে যায় না, আমরাও তা দেখি না। Key সরাসরি Google বা OpenRouter-এ পাঠানো হয়।" data-en="After OCR, proofread automatically right here instead of by hand — with your own Google Gemini key or OpenRouter key. The key stays only in your browser — it goes to no server of ours, and we never see it. It is sent directly to Google or OpenRouter.">After OCR, proofread automatically right here instead of by hand — with your own Google Gemini key or OpenRouter key. The key stays only in your browser — it goes to no server of ours, and we never see it. It is sent directly to Google or OpenRouter.</p>
+    <label class="block font-bold mt-4 mb-1" for="proofProvider" data-bn="কোন key ব্যবহার করবেন?" data-en="Which key will you use?">Which key will you use?</label>
+    <select id="proofProvider" class="w-full border border-neutral-300 rounded-xl px-3 py-2.5 outline-none focus:border-emerald-600 bg-white">
+      <option value="gemini" data-bn="Google Gemini API key (ফ্রি, বেশিরভাগের জন্য এটাই সহজ)" data-en="Google Gemini API key (free, easiest for most people)">Google Gemini API key (free, easiest for most people)</option>
+      <option value="openrouter" data-bn="OpenRouter API key" data-en="OpenRouter API key">OpenRouter API key</option>
+    </select>
+    <label class="block font-bold mt-4 mb-1" for="proofKey" data-bn="আপনার API key" data-en="Your API key">Your API key</label>
+    <input type="password" id="proofKey" autocomplete="off" class="w-full border border-neutral-300 rounded-xl px-3 py-2.5 outline-none focus:border-emerald-600" placeholder="AIza…" data-bn-ph="AIza…" data-en-ph="AIza…">
+    <div class="flex flex-wrap gap-2 mt-3">
+      <button id="proofLoadModelsBtn" class="bg-white text-emerald-800 border-2 border-emerald-800 rounded-xl px-4 py-2.5 font-bold" data-bn="Key যাচাই করে ফ্রি মডেল দেখান" data-en="Check key &amp; show free models">Check key &amp; show free models</button>
+      <button id="keyHelpBtn" class="bg-white text-emerald-800 border-2 border-emerald-800 rounded-xl px-4 py-2.5 font-bold" data-bn="❓ আমার key নেই — কীভাবে পাবো?" data-en="❓ No key yet — how do I get one?">❓ No key yet — how do I get one?</button>
+    </div>
+    <p id="proofKeyStats" class="text-sm text-neutral-500 mt-2"></p>
+    <label class="block font-bold mt-4 mb-1" for="proofModelSelect" data-bn="মডেল (ফ্রি মডেলগুলো)" data-en="Model (free models)">Model (free models)</label>
+    <select id="proofModelSelect" class="w-full border border-neutral-300 rounded-xl px-3 py-2.5 outline-none focus:border-emerald-600 bg-white">
+      <option value="gemini-2.5-flash">gemini-2.5-flash — free tier</option>
+      <option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite — free tier</option>
+      <option value="gemini-2.0-flash">gemini-2.0-flash — free tier</option>
+    </select>
+    <input type="text" id="proofModelInput" value="google/gemini-2.5-flash" class="hidden w-full border border-neutral-300 rounded-xl px-3 py-2.5 outline-none focus:border-emerald-600">
+    <p class="text-sm text-neutral-500 mt-1" data-bn="লেখা টুকরো টুকরো করে (প্রায় ৮,০০০ অক্ষর) একই প্রুফরিডিং প্রম্পট দিয়ে পাঠানো হয়, উত্তরগুলো জোড়া লাগিয়ে প্রুফরিড করা ফাইল বানানো হয়। ফ্রি key-র দৈনিক লিমিট থাকলে টুলটি নিজে থেকে অপেক্ষা করে আবার চেষ্টা করে, আর প্রতি অংশের পর অগ্রগতি সেভ হয় — লিমিট শেষ হলেও কাজ হারাবে না, পরে একই জায়গা থেকে চালাতে পারবেন। Gemini-তে খরচ নেই (ফ্রি key); OpenRouter-এ খরচ আপনার অ্যাকাউন্ট থেকে কাটবে।" data-en="The text is sent in chunks (about 8,000 characters) with the same proofreading prompt, and the answers are joined into one proofread file. If a free key hits its daily limit, the tool waits and retries on its own, and progress is saved after every chunk — nothing is lost, and you can continue from the same place later. Gemini is free on a free key; on OpenRouter the cost comes from your account.">The text is sent in chunks (about 8,000 characters) with the same proofreading prompt, and the answers are joined into one proofread file. If a free key hits its daily limit, the tool waits and retries on its own, and progress is saved after every chunk — nothing is lost, and you can continue from the same place later. Gemini is free on a free key; on OpenRouter the cost comes from your account.</p>
+    <p class="text-sm text-neutral-500 mt-1"><a href="guide.html#muse" class="text-emerald-700 font-bold underline" data-bn="কোনো API key নেই? Muse দিয়ে প্রুফরিড করুন →" data-en="No API key? Proofread with Muse instead →">No API key? Proofread with Muse instead →</a></p>
     <div class="flex flex-wrap gap-2 mt-4">
       <button id="autoProofBtn" class="accent-bg text-white rounded-xl px-5 py-3 font-bold disabled:opacity-50" data-bn="স্বয়ংক্রিয়ভাবে প্রুফরিড করুন" data-en="Proofread automatically">Proofread automatically</button>
       <button id="proofCancelBtn" class="bg-red-800 text-white rounded-xl px-5 py-3 font-bold disabled:opacity-50" disabled data-bn="বাতিল" data-en="Cancel">Cancel</button>
     </div>
     <div class="h-4 bg-neutral-100 rounded-full overflow-hidden mt-4"><div id="proofBar" class="h-full bg-emerald-700" style="width:0%"></div></div>
     <p id="proofStatus" class="text-sm text-neutral-500 mt-2"></p>
-    <div><button id="proofDownloadBtn" class="hidden accent-bg text-white rounded-xl px-5 py-3 font-bold mt-3" data-bn="⬇ প্রুফরিড করা ফাইল ডাউনলোড করুন" data-en="⬇ Download proofread file">⬇ Download proofread file</button></div>
+    <p id="proofStats" class="text-sm text-neutral-500 mt-1"></p>
+    <div class="flex flex-wrap gap-2 mt-3">
+      <button id="proofDownloadBtn" class="hidden accent-bg text-white rounded-xl px-5 py-3 font-bold" data-bn="⬇ প্রুফরিড করা ফাইল (.md) ডাউনলোড করুন" data-en="⬇ Download proofread file (.md)">⬇ Download proofread file (.md)</button>
+      <button id="proofDocxBtn" class="hidden bg-white text-emerald-800 border-2 border-emerald-800 rounded-xl px-5 py-3 font-bold" data-bn="⬇ ডকুমেন্ট ফাইল (.docx) ডাউনলোড করুন" data-en="⬇ Download document file (.docx)">⬇ Download document file (.docx)</button>
+      <button id="proofEpubBtn" class="hidden accent-bg text-white rounded-xl px-5 py-3 font-bold" data-bn="📖 স্বয়ংক্রিয়ভাবে EPUB বানান" data-en="📖 Make EPUB automatically">📖 Make EPUB automatically</button>
+    </div>
+    <p class="text-sm text-neutral-500 mt-2" data-bn=".docx নিলে গাইডের মতো হাতে এগোন (docx-to-EPUB converter)। EPUB বোতাম চাপলে এখানেই প্রচ্ছদসহ চূড়ান্ত EPUB তৈরি হয়ে ডাউনলোড হবে — আর হাতে কিছু করতে হবে না।" data-en="With .docx, continue by hand as in the guide (docx-to-EPUB converter). With the EPUB button, the finished EPUB — with your cover, if you made one — is built and downloaded right here, with nothing left to do by hand.">With .docx, continue by hand as in the guide (docx-to-EPUB converter). With the EPUB button, the finished EPUB — with your cover, if you made one — is built and downloaded right here, with nothing left to do by hand.</p>
   </section>
+
+  <div id="keyHelpModal" class="hidden fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-5">
+      <h3 class="serif text-xl font-extrabold" data-bn="ফ্রি API key কীভাবে পাবেন" data-en="How to get a free API key">How to get a free API key</h3>
+      <p id="keyHelpText" class="text-[15px] mt-3"></p>
+      <div class="flex flex-wrap gap-2 mt-4">
+        <a id="keyHelpLink" href="https://aistudio.google.com/apikey" target="_blank" rel="noopener" class="accent-bg text-white rounded-xl px-5 py-3 font-bold inline-block" data-bn="API key পেজ খুলুন" data-en="Open the API key page">Open the API key page</a>
+        <button id="keyHelpClose" class="bg-white text-neutral-700 border border-neutral-300 rounded-xl px-5 py-3 font-bold" data-bn="বন্ধ করুন" data-en="Close">Close</button>
+      </div>
+    </div>
+  </div>
   </main>
 
   <footer class="text-center text-neutral-500 text-sm py-6">

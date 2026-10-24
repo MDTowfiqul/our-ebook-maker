@@ -1,15 +1,20 @@
-/* Our Ebook Maker — scanned PDF to text, fully in the browser.
+/* Our Ebook Maker — PDF to text, fully in the browser.
    Every page is read with OCR (tesseract.js, Bengali + English + Arabic
-   together, so no language has to be picked). The result is raw scanned
-   text for proofreading — there is deliberately no EPUB download here,
-   because a scanned text must be proofread before it becomes an ebook.
-   Progress is saved after every page, so a scan paused by switching apps
-   (or by the phone sleeping) can resume exactly where it stopped.
-   Optional automatic proofreading uses the visitor's own OpenRouter key:
-   the key stays in their browser and is sent only to OpenRouter, never
-   to any server of ours (we have none).
-   Libraries (CDN): pdf.js for page rendering, tesseract.js for OCR.
-   No file is ever uploaded anywhere. */
+   together, so no language has to be picked). The result is raw OCR
+   text for proofreading — there is deliberately no EPUB download of
+   raw OCR text, because OCR text must be proofread before it becomes
+   an ebook. Progress is saved after every page, so a scan paused by
+   switching apps (or by the phone sleeping) can resume exactly where
+   it stopped. Automatic proofreading uses the visitor's own Google
+   Gemini key (default, free) or OpenRouter key: the key stays in
+   their browser and is sent only to Google or OpenRouter, never to
+   any server of ours (we have none). After proofreading, the finished
+   text downloads as .md, as a .docx document, or as a finished EPUB
+   built right here (with the cover, if one was made).
+   Libraries (CDN): pdf.js for page rendering, tesseract.js for OCR,
+   JSZip for the .docx and EPUB builders. No file is ever uploaded
+   anywhere except the text chunks sent to the visitor's own AI provider
+   during automatic proofreading. */
 (function () {
   'use strict';
   if (window.pdfjsLib) {
@@ -23,14 +28,20 @@
   var bar = $('bar'), statusEl = $('status'), previewEl = $('preview'), fileinfoEl = $('fileinfo');
   var resultsEl = $('results'), summaryEl = $('summary');
   var coverFileEl = $('coverFile'), coverOnlineBtn = $('coverOnlineBtn'), coverTextBtn = $('coverTextBtn');
+  var coverAnotherBtn = $('coverAnotherBtn');
   var coverImg = $('coverImg'), coverDownloadBtn = $('coverDownloadBtn'), coverStatusEl = $('coverStatus');
   var langToggle = $('lang-toggle'), langLabel = $('lang-label');
   var resumeBox = $('resumeBox'), resumeInfo = $('resumeInfo'), resumeBtn = $('resumeBtn'), discardBtn = $('discardBtn');
-  var autoProofCard = $('autoProofCard'), proofKeyEl = $('proofKey'), proofModelEl = $('proofModel');
+  var autoProofCard = $('autoProofCard'), proofKeyEl = $('proofKey'), proofProviderEl = $('proofProvider');
+  var proofModelSelect = $('proofModelSelect'), proofModelInput = $('proofModelInput');
+  var proofLoadModelsBtn = $('proofLoadModelsBtn'), proofKeyStatsEl = $('proofKeyStats');
+  var keyHelpBtn = $('keyHelpBtn'), keyHelpModal = $('keyHelpModal'), keyHelpText = $('keyHelpText');
+  var keyHelpLink = $('keyHelpLink'), keyHelpClose = $('keyHelpClose');
   var autoProofBtn = $('autoProofBtn'), proofCancelBtn = $('proofCancelBtn');
-  var proofBar = $('proofBar'), proofStatusEl = $('proofStatus'), proofDownloadBtn = $('proofDownloadBtn');
+  var proofBar = $('proofBar'), proofStatusEl = $('proofStatus'), proofStatsEl = $('proofStats');
+  var proofDownloadBtn = $('proofDownloadBtn'), proofDocxBtn = $('proofDocxBtn'), proofEpubBtn = $('proofEpubBtn');
 
-  var state = { pages: null, fullText: '', proofText: '', cancelled: false, running: false, proofCancelled: false, wakeLock: null };
+  var state = { pages: null, fullText: '', proofText: '', cancelled: false, running: false, proofCancelled: false, wakeLock: null, proofStartedAt: 0 };
 
   var LICENSE_TEXT = '\n\nThis book is licensed under the Creative Commons Attribution-ShareAlike 4.0 International License (CC BY-SA 4.0).\n\nYou are free to:\n- Share - copy and redistribute the material in any medium or format\n- Adapt - remix, transform, and build upon the material for any purpose, even commercially\n\nUnder the following terms:\n- Attribution - You must give appropriate credit, provide a link to the license, and indicate if changes were made.\n- ShareAlike - If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.\n- No additional restrictions - You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.\n';
 
@@ -366,16 +377,26 @@
     coverOnlineBtn.disabled = false;
   });
 
-  coverTextBtn.addEventListener('click', function () {
+  /* Text cover styles: "Generate another style" cycles through these. */
+  var COVER_STYLES = [
+    { bg0: '#33248f', bg1: '#171233', accent: '#ff9e6e', author: '#d9d4ff' },
+    { bg0: '#0b6b4f', bg1: '#083b2c', accent: '#f5c86e', author: '#cdeede' },
+    { bg0: '#7a1f2b', bg1: '#3d0f16', accent: '#f0d9a0', author: '#f3d9d9' },
+    { bg0: '#1e3a5f', bg1: '#0d1b2e', accent: '#7fd1c8', author: '#cfe6f5' },
+    { bg0: '#2b2b2b', bg1: '#111111', accent: '#e8b84b', author: '#e8e0cf' }
+  ];
+  var coverStyleIdx = 0;
+  function drawTextCover() {
     var title = (titleEl.value || 'Untitled').trim();
     var author = (authorEl.value || '').trim();
+    var st = COVER_STYLES[coverStyleIdx % COVER_STYLES.length];
     var cv = document.createElement('canvas');
     cv.width = 600; cv.height = 900;
     var ctx = cv.getContext('2d');
     var grad = ctx.createLinearGradient(0, 0, 0, 900);
-    grad.addColorStop(0, '#33248f'); grad.addColorStop(1, '#171233');
+    grad.addColorStop(0, st.bg0); grad.addColorStop(1, st.bg1);
     ctx.fillStyle = grad; ctx.fillRect(0, 0, 600, 900);
-    ctx.fillStyle = '#ff9e6e'; ctx.fillRect(240, 120, 120, 6);
+    ctx.fillStyle = st.accent; ctx.fillRect(240, 120, 120, 6);
     ctx.fillStyle = '#ffffff'; ctx.textAlign = 'center';
     var size = 54;
     var lines = [];
@@ -396,21 +417,100 @@
     lines.forEach(function (ln) { ctx.fillText(ln, 300, y); y += 68; });
     if (author) {
       ctx.font = '500 30px "Hind Siliguri", sans-serif';
-      ctx.fillStyle = '#d9d4ff';
+      ctx.fillStyle = st.author;
       ctx.fillText(author, 300, 780);
     }
     cv.toBlob(function (blob) {
       showCover(URL.createObjectURL(blob), 'cover.png');
-      coverStatusEl.textContent = L('Text cover ready — download it for your final EPUB.',
-        'লেখা-প্রচ্ছদ তৈরি — চূড়ান্ত ইবুকের জন্য ডাউনলোড করুন।');
+      coverStatusEl.textContent = L('Text cover ready (style ' + (coverStyleIdx + 1) + ' of ' + COVER_STYLES.length + ') — download it for your final EPUB, or tap "Generate another style" for a different look.',
+        'লেখা-প্রচ্ছদ তৈরি (স্টাইল ' + (coverStyleIdx + 1) + ' / ' + COVER_STYLES.length + ') — চূড়ান্ত ইবুকের জন্য ডাউনলোড করুন, অথবা অন্য লুকের জন্য "আরেকটি স্টাইল বানান" চাপুন।');
     }, 'image/png');
+  }
+  if (coverTextBtn) coverTextBtn.addEventListener('click', function () { drawTextCover(); });
+  if (coverAnotherBtn) coverAnotherBtn.addEventListener('click', function () {
+    coverStyleIdx = (coverStyleIdx + 1) % COVER_STYLES.length;
+    drawTextCover();
   });
 
-  /* ---- Automatic proofreading (visitor's own OpenRouter key) ---- */
-  try {
-    var savedKey = localStorage.getItem('oem-proof-key');
-    if (savedKey && proofKeyEl) proofKeyEl.value = savedKey;
-  } catch (e) {}
+  /* ---- Automatic proofreading (visitor's own Gemini or OpenRouter key) ---- */
+  function proofProvider() { return (proofProviderEl && proofProviderEl.value) || 'gemini'; }
+  function keyStoreKey(p) { return p === 'gemini' ? 'oem-gemini-key' : 'oem-proof-key'; }
+  function currentModel() {
+    if (proofProvider() === 'gemini') return (proofModelSelect && proofModelSelect.value) || 'gemini-2.5-flash';
+    return ((proofModelInput && proofModelInput.value) || '').trim() || 'google/gemini-2.5-flash';
+  }
+  function setKeyStats(msg) { if (proofKeyStatsEl) proofKeyStatsEl.textContent = msg; }
+  function applyProviderUI() {
+    var p = proofProvider();
+    var isGemini = p === 'gemini';
+    if (proofModelSelect) proofModelSelect.classList.toggle('hidden', !isGemini);
+    if (proofModelInput) proofModelInput.classList.toggle('hidden', isGemini);
+    if (proofLoadModelsBtn) proofLoadModelsBtn.classList.toggle('hidden', !isGemini);
+    if (proofKeyEl) proofKeyEl.placeholder = isGemini ? 'AIza…' : 'sk-or-…';
+    try {
+      var saved = localStorage.getItem(keyStoreKey(p));
+      if (proofKeyEl) proofKeyEl.value = saved || '';
+    } catch (e) {}
+    if (isGemini && proofKeyEl && proofKeyEl.value) loadGeminiModels(proofKeyEl.value.trim());
+    else if (!isGemini) setKeyStats(L('OpenRouter key: cost comes from your OpenRouter credits. The key is saved in this browser only.',
+      'OpenRouter key: খরচ আপনার OpenRouter অ্যাকাউন্ট থেকে কাটবে। Key শুধু এই ব্রাউজারে সেভ থাকে।'));
+  }
+  if (proofProviderEl) proofProviderEl.addEventListener('change', applyProviderUI);
+  /* "How do I get a key?" popup — different steps per provider. */
+  function openKeyHelp() {
+    var p = proofProvider();
+    if (keyHelpText) keyHelpText.textContent = p === 'gemini'
+      ? L('Free, no card needed: 1) Open the API key page below and sign in with your Google account. 2) Tap "Create API key". 3) Copy the key and paste it above. The key is free — Gemini Flash models have a generous free daily limit, and if it ever runs out, this tool saves your progress so you can continue the next day.',
+        'ফ্রি, কার্ড লাগে না: ১) নিচের API key পেজ খুলে Google অ্যাকাউন্ট দিয়ে সাইন ইন করুন। ২) "Create API key" চাপুন। ৩) Key কপি করে উপরে পেস্ট করুন। Key ফ্রি — Gemini Flash মডেলের ফ্রি দৈনিক লিমিট যথেষ্ট উদার, আর লিমিট শেষ হলেও এই টুল অগ্রগতি সেভ রাখে, পরের দিন একই জায়গা থেকে চালাতে পারবেন।')
+      : L('1) Open openrouter.ai/keys and sign in. 2) Create a key and add credits. 3) Copy the key and paste it above. Cost depends on the model you pick.',
+        '১) openrouter.ai/keys খুলে সাইন ইন করুন। ২) Key বানিয়ে ক্রেডিট যোগ করুন। ৩) Key কপি করে উপরে পেস্ট করুন। খরচ নির্ভর করে কোন মডেল বাছলেন তার উপর।');
+    if (keyHelpLink) keyHelpLink.href = p === 'gemini' ? 'https://aistudio.google.com/apikey' : 'https://openrouter.ai/keys';
+    if (keyHelpModal) keyHelpModal.classList.remove('hidden');
+  }
+  if (keyHelpBtn) keyHelpBtn.addEventListener('click', openKeyHelp);
+  if (keyHelpClose) keyHelpClose.addEventListener('click', function () { if (keyHelpModal) keyHelpModal.classList.add('hidden'); });
+  if (keyHelpModal) keyHelpModal.addEventListener('click', function (ev) {
+    if (ev.target === keyHelpModal) keyHelpModal.classList.add('hidden');
+  });
+  /* Gemini: fetch the real model list for this key and show the free ones. */
+  async function loadGeminiModels(key) {
+    if (!key || !proofModelSelect) return;
+    setKeyStats(L('Checking key…', 'Key যাচাই হচ্ছে…'));
+    try {
+      var res = await fetch('https://generativelanguage.googleapis.com/v1beta/models?key=' + encodeURIComponent(key) + '&pageSize=100');
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      var data = await res.json();
+      var ids = (data.models || [])
+        .filter(function (m) { return (m.supportedGenerationMethods || []).indexOf('generateContent') !== -1; })
+        .map(function (m) { return String(m.name || '').replace(/^models\//, ''); })
+        .filter(function (n) { return n; });
+      if (!ids.length) throw new Error('no models');
+      ids.sort(function (a, b) {
+        var fa = /flash|lite/.test(a) ? 0 : 1, fb = /flash|lite/.test(b) ? 0 : 1;
+        return fa - fb || (a < b ? -1 : 1);
+      });
+      proofModelSelect.innerHTML = '';
+      ids.forEach(function (id) {
+        var opt = document.createElement('option');
+        opt.value = id;
+        opt.textContent = id + (/flash|lite/.test(id) ? ' — free tier' : (/pro/.test(id) ? ' — free tier, low daily limit' : ''));
+        proofModelSelect.appendChild(opt);
+      });
+      setKeyStats(L('Key accepted — ' + ids.length + ' models available. Flash models are the free-tier workhorses; limits change over time, so Google AI Studio shows your current quota.',
+        'Key ঠিক আছে — ' + ids.length + 'টি মডেল পাওয়া গেছে। Flash মডেলগুলোই ফ্রি ব্যবহারের মূল ভরসা; লিমিট সময়ের সাথে বদলায়, বর্তমান কোটা Google AI Studio-তে দেখা যায়।'));
+    } catch (e) {
+      setKeyStats(L('Could not load the model list — check the key and connection. The default Flash models below still work.',
+        'মডেলের তালিকা আনা যায়নি — key ও সংযোগ ঠিক আছে কি না দেখুন। নিচের ডিফল্ট Flash মডেলগুলো তবু কাজ করবে।'));
+    }
+  }
+  if (proofLoadModelsBtn) proofLoadModelsBtn.addEventListener('click', function () {
+    var key = (proofKeyEl.value || '').trim();
+    if (!key) { alert(L('Paste your Gemini API key first.', 'আগে আপনার Gemini API key দিন।')); return; }
+    try { localStorage.setItem(keyStoreKey('gemini'), key); } catch (e) {}
+    loadGeminiModels(key);
+  });
+  applyProviderUI();
+
   function chunkText(text, maxLen) {
     var paras = text.split(/\n\s*\n/);
     var chunks = [], cur = '';
@@ -421,55 +521,150 @@
     if (cur) chunks.push(cur);
     return chunks;
   }
+  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+  function proofFp(text) {
+    var h = 5381, i;
+    for (i = 0; i < text.length; i += 7) { h = ((h * 33) ^ text.charCodeAt(i)) >>> 0; }
+    return ((titleEl.value || 'book').trim()) + '|' + text.length + '|' + h;
+  }
+  function saveProofProgress(fp, done) {
+    try { localStorage.setItem('oem-proof-v1', JSON.stringify({ fp: fp, done: done })); } catch (e) {}
+  }
+  function loadProofProgress() {
+    try { var v = JSON.parse(localStorage.getItem('oem-proof-v1') || 'null'); return v && v.fp && v.done ? v : null; } catch (e) { return null; }
+  }
+  function clearProofProgress() { try { localStorage.removeItem('oem-proof-v1'); } catch (e) {} }
+  async function callWithRetry(fn, onWait) {
+    var waits = [20000, 40000, 60000];
+    for (var a = 0; a <= waits.length; a++) {
+      try { return await fn(); } catch (e) {
+        var isLimit = /429|RESOURCE_EXHAUSTED|quota|rate limit/i.test(e.message || '');
+        if (isLimit && a < waits.length) {
+          if (onWait) onWait(L('Daily/minute limit reached — waiting ' + (waits[a] / 1000) + 's and retrying…',
+            'দৈনিক/মিনিট লিমিট শেষ — ' + (waits[a] / 1000) + ' সেকেন্ড অপেক্ষা করে আবার চেষ্টা করা হচ্ছে…'));
+          await sleep(waits[a]);
+        } else throw e;
+      }
+    }
+    throw new Error('retry failed');
+  }
+  async function callGemini(key, model, chunk) {
+    var res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(model) + ':generateContent?key=' + encodeURIComponent(key), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system_instruction: { parts: [{ text: PROOF_PROMPT }] },
+        contents: [{ parts: [{ text: chunk }] }],
+        generationConfig: { temperature: 0.3, maxOutputTokens: 16384 }
+      })
+    });
+    if (!res.ok) {
+      var errText = '';
+      try { errText = await res.text(); } catch (e) {}
+      throw new Error('HTTP ' + res.status + (errText ? ' — ' + errText.slice(0, 160) : ''));
+    }
+    var data = await res.json();
+    var cand = data && data.candidates && data.candidates[0];
+    if (!cand) {
+      var reason = data && data.promptFeedback ? (data.promptFeedback.blockReason || '') : '';
+      throw new Error('No response from the model' + (reason ? ' (blocked: ' + reason + ')' : ''));
+    }
+    if (cand.finishReason === 'MAX_TOKENS') throw new Error('Output was cut off (chunk too large)');
+    var parts = (cand.content && cand.content.parts) || [];
+    return parts.map(function (p) { return p.text || ''; }).join('');
+  }
+  async function callOpenRouter(key, model, chunk) {
+    var res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key, 'X-Title': 'Our Ebook Maker' },
+      body: JSON.stringify({ model: model, messages: [{ role: 'system', content: PROOF_PROMPT }, { role: 'user', content: chunk }] })
+    });
+    if (!res.ok) {
+      var errText = '';
+      try { errText = await res.text(); } catch (e) {}
+      throw new Error('HTTP ' + res.status + (errText ? ' — ' + errText.slice(0, 120) : ''));
+    }
+    var data = await res.json();
+    return data && data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message.content : '';
+  }
+  function showProofOutputs() {
+    if (proofDownloadBtn) proofDownloadBtn.classList.remove('hidden');
+    if (proofDocxBtn) proofDocxBtn.classList.remove('hidden');
+    if (proofEpubBtn) proofEpubBtn.classList.remove('hidden');
+  }
+  function hideProofOutputs() {
+    if (proofDownloadBtn) proofDownloadBtn.classList.add('hidden');
+    if (proofDocxBtn) proofDocxBtn.classList.add('hidden');
+    if (proofEpubBtn) proofEpubBtn.classList.add('hidden');
+  }
   if (proofCancelBtn) proofCancelBtn.addEventListener('click', function () {
     state.proofCancelled = true;
-    proofStatusEl.textContent = L('Stopping after this chunk…', 'এই অংশের পর থামছে…');
+    proofStatusEl.textContent = L('Stopping after this chunk… progress stays saved, run again to continue.',
+      'এই অংশের পর থামছে… অগ্রগতি সেভ থাকবে, আবার চালালে একই জায়গা থেকে চলবে।');
   });
   if (autoProofBtn) autoProofBtn.addEventListener('click', async function () {
+    var provider = proofProvider();
     var key = (proofKeyEl.value || '').trim();
-    var model = (proofModelEl.value || '').trim() || 'google/gemini-2.5-flash';
-    if (!key) { alert(L('Paste your OpenRouter API key first.', 'আগে আপনার OpenRouter API key দিন।')); return; }
+    var model = currentModel();
+    if (!key) { alert(L('Paste your API key first.', 'আগে আপনার API key দিন।')); return; }
     if (!state.fullText) { alert(L('Run the full book OCR first.', 'আগে পুরো বইয়ের OCR চালান।')); return; }
-    try { localStorage.setItem('oem-proof-key', key); } catch (e) {}
+    try { localStorage.setItem(keyStoreKey(provider), key); } catch (e) {}
     state.proofCancelled = false;
+    state.proofStartedAt = Date.now();
     autoProofBtn.disabled = true;
     proofCancelBtn.disabled = false;
-    proofDownloadBtn.classList.add('hidden');
-    var chunks = chunkText(state.fullText, 6000);
+    hideProofOutputs();
+    var chunks = chunkText(state.fullText, provider === 'gemini' ? 8000 : 6000);
+    var fp = proofFp(state.fullText);
     var out = [];
+    var saved = loadProofProgress();
+    if (saved && saved.fp === fp && saved.done.length > 0 && saved.done.length < chunks.length) {
+      out = saved.done.slice();
+      proofStatusEl.textContent = L('Resuming proofreading from chunk ' + (out.length + 1) + ' of ' + chunks.length + ' (saved progress).',
+        'সেভ করা অগ্রগতি থেকে প্রুফরিড চালু হচ্ছে: অংশ ' + (out.length + 1) + ' / ' + chunks.length + '।');
+    } else if (saved && saved.fp === fp && saved.done.length >= chunks.length) {
+      state.proofText = saved.done.join('\n\n');
+      proofBar.style.width = '100%';
+      proofStatusEl.textContent = L('Proofreading already complete — download below.',
+        'প্রুফরিড আগেই শেষ — নিচে ডাউনলোড করুন।');
+      showProofOutputs();
+      autoProofBtn.disabled = false;
+      proofCancelBtn.disabled = true;
+      return;
+    }
     try {
-      for (var i = 0; i < chunks.length; i++) {
+      for (var i = out.length; i < chunks.length; i++) {
         if (state.proofCancelled) break;
+        if (i > out.length) await sleep(provider === 'gemini' ? 6000 : 1000);
         proofBar.style.width = Math.round((i / chunks.length) * 100) + '%';
         proofStatusEl.textContent = L('Proofreading chunk ' + (i + 1) + ' of ' + chunks.length + '…',
           'প্রুফরিড হচ্ছে: অংশ ' + (i + 1) + ' / ' + chunks.length + '…');
-        var res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key, 'X-Title': 'Our Ebook Maker' },
-          body: JSON.stringify({ model: model, messages: [{ role: 'system', content: PROOF_PROMPT }, { role: 'user', content: chunks[i] }] })
-        });
-        if (!res.ok) {
-          var errText = '';
-          try { errText = await res.text(); } catch (e) {}
-          throw new Error('HTTP ' + res.status + (errText ? ' — ' + errText.slice(0, 120) : ''));
-        }
-        var data = await res.json();
-        var content = data && data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message.content : '';
+        var waitMsg = function (m) { proofStatusEl.textContent = m + ' ' + L('(chunk ' + (i + 1) + ' of ' + chunks.length + ')', '(অংশ ' + (i + 1) + ' / ' + chunks.length + ')'); };
+        var call = provider === 'gemini'
+          ? function () { return callGemini(key, model, chunks[i]); }
+          : function () { return callOpenRouter(key, model, chunks[i]); };
+        var content = await callWithRetry(call, waitMsg);
         out.push(content || '');
+        saveProofProgress(fp, out);
       }
       if (state.proofCancelled) {
-        proofStatusEl.textContent = L('Proofreading stopped. The finished chunks are not saved — run again to restart it.',
-          'প্রুফরিড থেমে গেছে। শেষ হওয়া অংশগুলো সেভ হয়নি — আবার চালালে নতুন করে শুরু হবে।');
+        proofStatusEl.textContent = L('Proofreading stopped. Progress is saved — run again to continue from chunk ' + (out.length + 1) + '.',
+          'প্রুফরিড থেমে গেছে। অগ্রগতি সেভ আছে — আবার চালালে অংশ ' + (out.length + 1) + ' থেকে চলবে।');
       } else {
         state.proofText = out.join('\n\n');
+        clearProofProgress();
         proofBar.style.width = '100%';
-        proofStatusEl.textContent = L('Proofreading done: ' + chunks.length + ' chunks. Download the proofread file below.',
-          'প্রুফরিড শেষ: ' + chunks.length + 'টি অংশ। নিচে প্রুফরিড করা ফাইল ডাউনলোড করুন।');
-        proofDownloadBtn.classList.remove('hidden');
+        var words = state.fullText.split(/\s+/).filter(Boolean).length;
+        var mins = Math.max(0.1, (Date.now() - state.proofStartedAt) / 60000).toFixed(1);
+        proofStatusEl.textContent = L('Proofreading done: ' + chunks.length + ' chunks. Choose a download below — .md, .docx, or a finished EPUB.',
+          'প্রুফরিড শেষ: ' + chunks.length + 'টি অংশ। নিচে ডাউনলোড বাছুন — .md, .docx, অথবা তৈরি EPUB।');
+        if (proofStatsEl) proofStatsEl.textContent = L('Stats: ' + chunks.length + ' chunks • about ' + words.toLocaleString('en-US') + ' words • ' + mins + ' min',
+          'পরিসংখ্যান: ' + chunks.length + 'টি অংশ • প্রায় ' + words.toLocaleString('en-US') + ' শব্দ • ' + mins + ' মিনিট');
+        showProofOutputs();
       }
     } catch (e) {
-      proofStatusEl.textContent = L('Proofreading failed: ' + e.message + ' Check your key and model, then try again.',
-        'প্রুফরিড ব্যর্থ: ' + e.message + ' Key ও মডেল ঠিক আছে কি না দেখে আবার চেষ্টা করুন।');
+      proofStatusEl.textContent = L('Proofreading failed: ' + e.message + ' Progress up to chunk ' + out.length + ' is saved — check your key/model and run again to continue.',
+        'প্রুফরিড ব্যর্থ: ' + e.message + ' ' + out.length + 'টি অংশ পর্যন্ত অগ্রগতি সেভ আছে — key/মডেল ঠিক করে আবার চালালে একই জায়গা থেকে চলবে।');
     }
     autoProofBtn.disabled = false;
     proofCancelBtn.disabled = true;
@@ -478,5 +673,151 @@
     if (!state.proofText) return;
     download(new Blob([state.proofText], { type: 'text/markdown;charset=utf-8' }),
       safeName((titleEl.value || 'book').trim()) + '-proofread.md');
+  });
+
+  /* ---- From proofread Markdown to .docx and EPUB ---- */
+  function escapeXml(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  function escapeHtml(s) {
+    return escapeXml(s).replace(/'/g, '&#39;');
+  }
+  function mdInline(s) {
+    return escapeHtml(s).replace(/\*([^*]+)\*/g, '<em>$1</em>');
+  }
+  function mdPlain(s) {
+    return String(s).replace(/\*([^*]+)\*/g, '$1').trim();
+  }
+  function mdToBlocks(md) {
+    var blocks = [], para = [], ul = [];
+    function flushPara() { if (para.length) { blocks.push({ t: 'p', text: para.join(' ') }); para = []; } }
+    function flushUl() { if (ul.length) { blocks.push({ t: 'ul', items: ul.slice() }); ul = []; } }
+    md.split('\n').forEach(function (raw) {
+      var line = raw.trim();
+      if (!line) { flushPara(); flushUl(); return; }
+      if (/^#{1,3}\s+/.test(line)) {
+        flushPara(); flushUl();
+        var level = line.match(/^#+/)[0].length;
+        blocks.push({ t: 'h' + level, text: line.replace(/^#+\s+/, '') });
+      } else if (line === '***' || line === '---') {
+        flushPara(); flushUl(); blocks.push({ t: 'hr' });
+      } else if (line.indexOf('> ') === 0) {
+        flushUl(); para.push(line.slice(2));
+      } else if (line.indexOf('- ') === 0) {
+        flushPara(); ul.push(line.slice(2));
+      } else {
+        flushUl(); para.push(line);
+      }
+    });
+    flushPara(); flushUl();
+    return blocks;
+  }
+  function detectLang(text) {
+    if (/[\u0980-\u09FF]/.test(text)) return 'bn';
+    if (/[\u0600-\u06FF]/.test(text)) return 'ar';
+    return 'en';
+  }
+  function buildDocx(md, title, author) {
+    if (typeof JSZip === 'undefined') throw new Error('The document library did not load — check connection and try again.');
+    var blocks = mdToBlocks(md);
+    var paras = blocks.map(function (b) {
+      var text = b.t === 'ul' ? b.items.map(mdPlain).join('\n') : (b.t === 'hr' ? '***' : mdPlain(b.text || ''));
+      var style = b.t === 'h1' ? 'Title' : (b.t === 'h2' ? 'Heading1' : (b.t === 'h3' ? 'Heading2' : null));
+      var lines = text.split('\n').map(function (ln) {
+        return '<w:r><w:t xml:space="preserve">' + escapeXml(ln) + '</w:t></w:r>';
+      }).join('<w:r><w:br/></w:r>');
+      return '<w:p>' + (style ? '<w:pPr><w:pStyle w:val="' + style + '"/></w:pPr>' : '') + lines + '</w:p>';
+    }).join('');
+    var now = new Date().toISOString();
+    var zip = new JSZip();
+    zip.file('[Content_Types].xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/><Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/></Types>');
+    zip.file('_rels/.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/></Relationships>');
+    zip.file('word/document.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>' + paras + '</w:body></w:document>');
+    zip.file('word/_rels/document.xml.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>');
+    zip.file('word/styles.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:rPr><w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Calibri"/><w:sz w:val="22"/></w:rPr></w:style><w:style w:type="paragraph" w:styleId="Title"><w:name w:val="Title"/><w:basedOn w:val="Normal"/><w:rPr><w:b/><w:sz w:val="56"/></w:rPr></w:style><w:style w:type="paragraph" w:styleId="Heading1"><w:name w:val="heading 1"/><w:basedOn w:val="Normal"/><w:rPr><w:b/><w:sz w:val="36"/></w:rPr></w:style><w:style w:type="paragraph" w:styleId="Heading2"><w:name w:val="heading 2"/><w:basedOn w:val="Normal"/><w:rPr><w:b/><w:sz w:val="28"/></w:rPr></w:style></w:styles>');
+    zip.file('docProps/core.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/"><dc:title>' + escapeXml(title) + '</dc:title><dc:creator>' + escapeXml(author) + '</dc:creator><dcterms:created xsi:type="dcterms:W3CDTF" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">' + now + '</dcterms:created></cp:coreProperties>');
+    return zip.generateAsync({ type: 'blob', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+  }
+  if (proofDocxBtn) proofDocxBtn.addEventListener('click', async function () {
+    if (!state.proofText) return;
+    proofDocxBtn.disabled = true;
+    proofStatusEl.textContent = L('Building the document file…', 'ডকুমেন্ট ফাইল বানানো হচ্ছে…');
+    try {
+      var blob = await buildDocx(state.proofText, (titleEl.value || 'book').trim(), (authorEl.value || '').trim());
+      download(blob, safeName((titleEl.value || 'book').trim()) + '-proofread.docx');
+      proofStatusEl.textContent = L('Document downloaded. Next, as in the guide: convert the .docx to EPUB with an online docx-to-EPUB converter.',
+        'ডকুমেন্ট ডাউনলোড হয়েছে। এরপর গাইডের মতো: অনলাইন docx-to-EPUB converter দিয়ে EPUB বানান।');
+    } catch (e) {
+      proofStatusEl.textContent = L('Document build failed: ' + e.message, 'ডকুমেন্ট বানানো ব্যর্থ: ' + e.message);
+    }
+    proofDocxBtn.disabled = false;
+  });
+  function blockToXhtml(b) {
+    if (b.t === 'h1') return '<h1>' + mdInline(b.text) + '</h1>';
+    if (b.t === 'h2') return '<h2>' + mdInline(b.text) + '</h2>';
+    if (b.t === 'h3') return '<h3>' + mdInline(b.text) + '</h3>';
+    if (b.t === 'hr') return '<hr/>';
+    if (b.t === 'ul') return '<ul>' + b.items.map(function (it) { return '<li>' + mdInline(it) + '</li>'; }).join('') + '</ul>';
+    return '<p>' + mdInline(b.text) + '</p>';
+  }
+  async function buildEpub(md, title, author) {
+    if (typeof JSZip === 'undefined') throw new Error('The EPUB library did not load — check connection and try again.');
+    var blocks = mdToBlocks(md);
+    var chapters = [{ title: title, blocks: [] }];
+    blocks.forEach(function (b) {
+      if (b.t === 'h2') chapters.push({ title: b.text, blocks: [] });
+      else if (b.t === 'h1' && chapters.length === 1 && !chapters[0].blocks.length) { /* title goes to the title page */ }
+      else chapters[chapters.length - 1].blocks.push(b);
+    });
+    chapters = chapters.filter(function (c, i) { return i === 0 || c.blocks.length; });
+    if (!chapters[0].blocks.length) chapters[0].blocks = [{ t: 'h1', text: title }].concat(author ? [{ t: 'p', text: author }] : []);
+    var lang = detectLang(md);
+    var uid = 'urn:uuid:oem-' + Date.now() + '-' + Math.floor(Math.random() * 1e9);
+    var cover = null;
+    try {
+      if (coverImg && !coverImg.classList.contains('hidden') && coverImg.src) {
+        var cres = await fetch(coverImg.src);
+        if (cres.ok && typeof cres.blob === 'function') {
+          var cblob = await cres.blob();
+          if (cblob && cblob.size) cover = { blob: cblob, ext: (cblob.type || '').indexOf('jpeg') !== -1 ? 'jpg' : 'png', type: (cblob.type || 'image/png') };
+        }
+      }
+    } catch (e) { cover = null; }
+    var zip = new JSZip();
+    zip.file('mimetype', 'application/epub', { compression: 'STORE' });
+    zip.file('META-INF/container.xml', '<?xml version="1.0" encoding="UTF-8"?><container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container"><rootfiles><rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/></rootfiles></container>');
+    var manifest = '<item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml"/>';
+    var spine = '';
+    chapters.forEach(function (ch, i) {
+      var file = 'chap' + (i + 1) + '.xhtml';
+      manifest += '<item id="chap' + (i + 1) + '" href="' + file + '" media-type="application/xhtml+xml"/>';
+      spine += '<itemref idref="chap' + (i + 1) + '"/>';
+      var body = ch.blocks.map(blockToXhtml).join('\n');
+      zip.file('OEBPS/' + file, '<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head><title>' + escapeHtml(ch.title) + '</title><style>body{font-family:serif;line-height:1.6}h1,h2,h3{text-align:center}p{text-align:justify}</style></head><body>' + body + '</body></html>');
+    });
+    if (cover) {
+      manifest += '<item id="cover" href="cover.' + cover.ext + '" media-type="' + cover.type + '"/>';
+      zip.file('OEBPS/cover.' + cover.ext, cover.blob);
+    }
+    zip.file('OEBPS/content.opf', '<?xml version="1.0" encoding="UTF-8"?><package xmlns="http://www.idpf.org/2007/opf" unique-identifier="bookid" version="2.0"><metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf"><dc:title>' + escapeXml(title) + '</dc:title><dc:creator>' + escapeXml(author) + '</dc:creator><dc:language>' + lang + '</dc:language><dc:identifier id="bookid">' + uid + '</dc:identifier>' + (cover ? '<meta name="cover" content="cover"/>' : '') + '</metadata><manifest>' + manifest + '</manifest><spine toc="ncx">' + spine + '</spine></package>');
+    var nav = chapters.map(function (ch, i) {
+      return '<navPoint id="nav' + (i + 1) + '" playOrder="' + (i + 1) + '"><navLabel><text>' + escapeXml(ch.title) + '</text></navLabel><content src="chap' + (i + 1) + '.xhtml"/></navPoint>';
+    }).join('');
+    zip.file('OEBPS/toc.ncx', '<?xml version="1.0" encoding="UTF-8"?><ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1"><head><meta name="dtb:uid" content="' + uid + '"/><meta name="dtb:depth" content="1"/><meta name="dtb:totalPageCount" content="0"/><meta name="dtb:maxPageNumber" content="0"/></head><docTitle><text>' + escapeXml(title) + '</text></docTitle><navMap>' + nav + '</navMap></ncx>');
+    return zip.generateAsync({ type: 'blob', mimeType: 'application/epub+zip' });
+  }
+  if (proofEpubBtn) proofEpubBtn.addEventListener('click', async function () {
+    if (!state.proofText) return;
+    proofEpubBtn.disabled = true;
+    proofStatusEl.textContent = L('Building your EPUB…', 'EPUB বানানো হচ্ছে…');
+    try {
+      var blob = await buildEpub(state.proofText, (titleEl.value || 'book').trim(), (authorEl.value || '').trim());
+      download(blob, safeName((titleEl.value || 'book').trim()) + '.epub');
+      proofStatusEl.textContent = L('EPUB downloaded — finished, with your cover if you made one. No manual steps left.',
+        'EPUB ডাউনলোড হয়েছে — প্রচ্ছদসহ তৈরি। আর হাতে কিছু করতে হবে না।');
+    } catch (e) {
+      proofStatusEl.textContent = L('EPUB build failed: ' + e.message, 'EPUB বানানো ব্যর্থ: ' + e.message);
+    }
+    proofEpubBtn.disabled = false;
   });
 })();
