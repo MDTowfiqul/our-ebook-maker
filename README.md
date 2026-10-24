@@ -10,17 +10,30 @@ Every step is on the page from the start, so anyone can see the full
 process before beginning:
 
 1. **Your book** — pick the PDF, title, author, your name (for the
-   ebook credit page), and a cover.
+   ebook credit page), and a cover. The line under the file picker
+   shows a ✓ with the chosen file's name and size.
 2. **OCR — read the book** — test the first 5 pages, then run the full
    book. While it scans you see each page's time and an estimated time
-   left. A "Keep screen on" button holds a wake lock while the tab is
-   open, so you can leave the phone untouched; switching apps still
-   pauses the tab, and Resume (progress saved after every page) covers
-   that.
-3. **Proofread & finish** — two buttons in one line, each opening a
-   pop-up: Manual proofreading (with the .txt download inside, plus
-   instructions) and Automatic proofreading (Gemini/OpenRouter key,
-   chunked proofreading, then the finished formats).
+   left. A round sun button beside the screen-on description holds a
+   wake lock while the tab is open, so you can leave the phone
+   untouched; switching apps still pauses the tab. The **▶️ Resume**
+   button is always visible in this step and enables whenever saved
+   progress exists (progress saved after every page) — returning to
+   the tab re-shows it. If OCR feels too slow, a vFlat pop-up covers
+   the PDF → .txt route. Already have a .txt? Upload it here and Step
+   2 is skipped entirely.
+3. **Proofread — from .txt to clean text** — inline on the page, no
+   pop-ups: Manual proofreading (download the raw .txt, proofread in
+   AI Studio or Muse, upload the proofread file back) and Automatic
+   proofreading (Gemini/OpenRouter key, chunked proofreading). The
+   main work of this step is turning the raw .txt into a proofread,
+   book-like document.
+4. **Final formats — from document to ebook** — the document (.docx),
+   EPUB and PDF are built automatically in the browser; AZW3 / MOBI
+   go through online-convert (manual, linked in the step), and
+   AZW3 / MOBI / KFX through Calibre. Already have a formatted .docx?
+   Upload it here and Steps 1–3 are skipped: it is parsed (headings
+   kept as chapters) and every format becomes available.
 
 ## Before you make an ebook — read this first
 
@@ -53,7 +66,7 @@ goes into the final ebook.
 
 ## Proofread, four ways
 
-1. **Automatic, in the Maker pop-up** — with your own Google Gemini API
+1. **Automatic, inline in Step 3** — with your own Google Gemini API
    key (free, the default) or an OpenRouter key. The text is sent in
    chunks of about 8,000 characters with the full proofreading prompt.
    After you enter a Gemini key, the tool loads the free models
@@ -66,16 +79,17 @@ goes into the final ebook.
    ours (there is none).
 2. **Manual, with Gemini / Google AI Studio** — the guide page
    reproduces the full workflow step by step, with the full
-   proofreading prompt to copy.
+   proofreading prompt to copy. Upload the finished proofread file
+   back into Step 3 and Step 4 opens at once.
 3. **Manual, with Muse** — download the .txt, upload it to your own
    Muse chat, paste the ready-made instruction from the guide, and
    say "continue" chunk by chunk. No API key needed.
-4. **Manual, with vFlat** — the guide also keeps the vFlat alternative
-   for the first step.
+4. **Manual, with vFlat** — the Step 2 pop-up covers the PDF → .txt
+   route for slow browser OCR, and the guide keeps it too.
 
 ## Finished ebook formats — which format, for which work
 
-The pop-up explains this before you export:
+Step 4 explains this before you export:
 
 - **EPUB** — built right here. Best for phones, tablets and almost
   every reading app.
@@ -84,16 +98,20 @@ The pop-up explains this before you export:
   shaping stays correct. Best when layout must stay fixed, or for
   printing and sharing.
 - **AZW3** — Amazon Kindle devices and apps. **MOBI** — older Kindles.
-  **KFX** — the newest Kindle format. These are Amazon's own formats
-  and cannot be built in a browser: download the EPUB here, then
-  convert it with free Calibre on a computer (KFX needs Calibre's
-  KFX Output plugin). The pop-up carries the full Calibre steps.
-  (Tip: EPUB itself can also be sent to a Kindle with Send to Kindle.)
-- **.docx** is also offered, for continuing by hand (for example with
-  an online docx-to-ebook converter).
+  These are Amazon's own formats and cannot be built in a browser,
+  and this site has no server, so a server-based conversion like
+  online-convert's cannot run automatically here: download the .docx
+  or EPUB here, then convert it manually on
+  [ebook.online-convert.com](https://ebook.online-convert.com)
+  (linked in Step 4), or with free Calibre on a computer.
+- **KFX** — the newest Kindle format. Calibre only, with its
+  KFX Output plugin. (Tip: EPUB itself can also be sent to a Kindle
+  with Send to Kindle.)
+- **.docx** — the book-like document itself, for continuing by hand.
 
 Document and ebook outputs use a real-book layout: a title page,
-chapters starting on new pages, justified text, and an "About this
+chapters starting on new pages, centred headings, justified text
+(Arabic right-aligned), Noto Serif Bengali styling, and an "About this
 ebook" credit page naming the ebook creator, Our Ebook Maker, and
 Our Boighar. For an exactly-like-print layout (drop caps, ornaments,
 special fonts), formatting by hand in Google Docs/Word after download
@@ -103,7 +121,8 @@ is still best — the site says so next to the download buttons.
 
 There is **no ebook download of raw OCR text**. OCR text must be
 proofread first; only then does it become a clean ebook. That is why
-the format buttons appear only after automatic proofreading.
+the format buttons appear only after proofreading — or after a
+formatted .docx is uploaded.
 
 ## Privacy and cost
 
