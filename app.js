@@ -17,7 +17,6 @@
   var langToggle = $('lang-toggle'), langLabel = $('lang-label');
   var docFileEl = $('docFile'), docFileStatusEl = $('docFileStatus'), finalStatusEl = $('finalStatus');
   var proofEpubBtn = $('proofEpubBtn');
-  var proofPdfBtn = $('proofPdfBtn');
   var navHome = $('navHome'), navMuse = $('navMuse'), navEbook = $('navEbook'), navGuide = $('navGuide');
   var state = { proofText: '', coverBlob: null, coverExt: 'png', textCoverBlob: null };
 
@@ -203,6 +202,37 @@
     }
     return md.join('\n\n');
   }
+  /* v16: a phone photo can be 2400x3600 and 2.6 MB — that one file
+     was 80% of a finished EPUB. Covers are downscaled to at most
+     1200 px on the long edge and re-encoded as JPEG (quality 82),
+     which keeps a photo cover near 200-400 KB. Small covers pass
+     through untouched, and any failure keeps the original — the
+     EPUB must never fail because of the cover. */
+  function compressCover(blob) {
+    return new Promise(function (resolve) {
+      try {
+        var url = URL.createObjectURL(blob);
+        var img = new Image();
+        img.onload = function () {
+          try {
+            var w = img.naturalWidth || img.width, h = img.naturalHeight || img.height;
+            if (w <= 1200 && h <= 1200 && blob.size <= 500 * 1024) { URL.revokeObjectURL(url); resolve(blob); return; }
+            var scale = Math.min(1, 1200 / Math.max(w, h));
+            var cv = document.createElement('canvas');
+            cv.width = Math.max(1, Math.round(w * scale)); cv.height = Math.max(1, Math.round(h * scale));
+            var ctx = cv.getContext('2d');
+            ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, cv.width, cv.height);
+            ctx.drawImage(img, 0, 0, cv.width, cv.height);
+            URL.revokeObjectURL(url);
+            if (cv.toBlob) cv.toBlob(function (b) { resolve(b || blob); }, 'image/jpeg', 0.82);
+            else resolve(blob);
+          } catch (e) { resolve(blob); }
+        };
+        img.onerror = function () { resolve(blob); };
+        img.src = url;
+      } catch (e) { resolve(blob); }
+    });
+  }
   /* ---- Cover: upload first, else online, else text cover ---- */
   function showCover(src, filename, blob) {
     coverImg.src = src;
@@ -212,12 +242,16 @@
     state.coverBlob = blob || null;
     state.coverExt = (blob && blob.type && blob.type.indexOf('jpeg') !== -1) ? 'jpg' : 'png';
   }
-  if (coverFileEl) coverFileEl.addEventListener('change', function () {
+  if (coverFileEl) coverFileEl.addEventListener('change', async function () {
     var f = coverFileEl.files[0];
     if (!f) return;
-    showCover(URL.createObjectURL(f), f.name, f);
-    coverStatusEl.textContent = L('Cover uploaded — this is the cover that will go into your final ebook.',
-      'কভার আপলোড হয়েছে — এই কভারটাই চূড়ান্ত ইবুকে যাবে।');
+    var c = await compressCover(f);
+    showCover(URL.createObjectURL(c), f.name, c);
+    coverStatusEl.textContent = (c.size < f.size)
+      ? L('Cover uploaded (compressed to ' + Math.round(c.size / 1024) + ' KB) — this is the cover that will go into your final ebook.',
+        'কভার আপলোড হয়েছে (' + Math.round(c.size / 1024) + ' KB-তে কমানো হয়েছে) — এই কভারটাই চূড়ান্ত ইবুকে যাবে।')
+      : L('Cover uploaded — this is the cover that will go into your final ebook.',
+        'কভার আপলোড হয়েছে — এই কভারটাই চূড়ান্ত ইবুকে যাবে।');
   });
   /* v11: the old code showed only ONE online cover as a preview URL and
      never put it in the ebook (coverBlob stayed null) — that is why
@@ -258,6 +292,7 @@
           var r = await fetch(c.src);
           if (!r.ok) throw new Error('cover fetch failed');
           var blob = await r.blob();
+          blob = await compressCover(blob);
           showCover(URL.createObjectURL(blob), 'cover.jpg', blob);
           coverStatusEl.textContent = L('Cover set — this is the cover that will go into your final ebook.',
             'কভার সেট হয়েছে — এই কভারটাই চূড়ান্ত ইবুকে যাবে।');
@@ -399,9 +434,10 @@
     textCoverMade = true;
     drawTextCover();
   });
-  if (coverUseBtn) coverUseBtn.addEventListener('click', function () {
+  if (coverUseBtn) coverUseBtn.addEventListener('click', async function () {
     if (!state.textCoverBlob) return;
-    showCover(URL.createObjectURL(state.textCoverBlob), 'cover.png', state.textCoverBlob);
+    var c = await compressCover(state.textCoverBlob);
+    showCover(URL.createObjectURL(c), 'cover.png', c);
     coverStatusEl.textContent = L('Cover set — this is the cover that will go into your final ebook.',
       'কভার সেট হয়েছে — এই কভারটাই চূড়ান্ত ইবুকে যাবে।');
   });
@@ -482,12 +518,28 @@
     if (b.t === 'ul') return '<ul>' + b.items.map(function (it) { return '<li>' + mdInline(it) + '</li>'; }).join('') + '</ul>';
     return '<p>' + mdInline(b.text) + '</p>';
   }
-  /* v15: shared chapter split. A Google Doc often styles the book
-     title itself as Heading 1, which mdToBlocks turns into a chapter
-     — and the builders add their own title page on top, so the title
-     appeared twice. If the first headed chapter IS the book title,
-     it is not a chapter: its blocks merge into the front matter. */
+  /* v16: shared chapter split. (1) The book's printed contents
+     section is dropped — the digital linked headings are the
+     navigation, per the standing rule. (2) A book whose sections
+     are all Heading 2 (no Heading 1 chapters at all) gets those
+     sections promoted to chapters, so it no longer lands in one
+     giant chapter file. */
   function splitChapters(blocks, title) {
+    var normHead = function (t) { return (t || '').replace(/\s+/g, ' ').trim().replace(/[:\u0964.]$/, '').toLowerCase(); };
+    var isContents = function (t) {
+      var n = normHead(t);
+      return n === 'সূচিপত্র' || n === 'সূচীপত্র' || n === 'সূচি পত্র' || n === 'contents' || n === 'table of contents';
+    };
+    var cleaned = [];
+    var dropping = false;
+    blocks.forEach(function (b) {
+      if (b.t === 'h1' || b.t === 'h2' || b.t === 'h3') {
+        dropping = isContents(b.text);
+        if (dropping) return;
+      }
+      if (!dropping) cleaned.push(b);
+    });
+    blocks = cleaned;
     var chapters = [{ title: title, blocks: [] }];
     blocks.forEach(function (b) {
       if (b.t === 'h2') chapters.push({ title: b.text, blocks: [], heading: true });
@@ -502,6 +554,16 @@
         chapters.splice(i, 1);
         break;
       }
+    }
+    var hasHeaded = chapters.some(function (c) { return c.heading; });
+    if (!hasHeaded) {
+      var promoted = [{ title: title, blocks: [] }];
+      var cur = promoted[0];
+      chapters[0].blocks.forEach(function (b) {
+        if (b.t === 'h3') { cur = { title: b.text, blocks: [], heading: true }; promoted.push(cur); }
+        else cur.blocks.push(b);
+      });
+      chapters = promoted.filter(function (c, i) { return i === 0 || c.blocks.length; });
     }
     return chapters;
   }
@@ -530,6 +592,16 @@
           }
         }
       } catch (e) { cover = null; }
+    }
+    /* v16: final guard — a huge cover photo must never bloat the
+       EPUB again, whatever path the cover arrived by. */
+    if (cover && cover.blob) {
+      try {
+        var cblob = await compressCover(cover.blob);
+        cover.blob = cblob;
+        cover.type = cblob.type || cover.type;
+        cover.ext = (cblob.type || '').indexOf('jpeg') !== -1 ? 'jpg' : cover.ext;
+      } catch (e) { /* keep the original cover */ }
     }
     /* v10: embed Hind Siliguri (open-licensed, shipped in this repo)
        so Bengali shapes correctly in readers whose default font cannot
@@ -745,10 +817,6 @@
     s1.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
     fdoc.body.appendChild(s1);
   }
-  if (proofPdfBtn) proofPdfBtn.addEventListener('click', function () {
-    if (!state.proofText) return;
-    makePdfDownload(state.proofText, (titleEl.value || 'book').trim(), (authorEl.value || '').trim());
-  });
 
   /* ---- Step 3: Google Doc .docx in, EPUB/PDF out ---- */
   if (docFileEl) docFileEl.addEventListener('change', async function () {
@@ -758,9 +826,8 @@
       state.proofText = await parseDocxToMd(f);
       if (!titleEl.value) titleEl.value = f.name.replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' ');
       docFileStatusEl.textContent = '✓ ' + L('Document loaded: ', 'ডকুমেন্ট লোড হয়েছে: ') + f.name
-        + L(' — EPUB and PDF below are ready.', ' — নিচে EPUB আর PDF তৈরি।');
+        + L(' — EPUB below is ready.', ' — নিচে EPUB তৈরি।');
       if (proofEpubBtn) proofEpubBtn.disabled = false;
-      if (proofPdfBtn) proofPdfBtn.disabled = false;
       finalStatusEl.textContent = L('Document loaded — pick a format below.',
         'ডকুমেন্ট লোড হয়েছে — নিচে ফরম্যাট বাছুন।');
     } catch (e) {
