@@ -492,11 +492,24 @@
   function creditBlockHtml(title) {
     var bn = detectLang(title || '') === 'bn';
     var html = '<h2>' + (bn ? 'এই ইবুক সম্পর্কে' : 'About this ebook') + '</h2>';
-    if (creditName()) html += '<p>' + (bn ? 'ইবুক নির্মাতা: ' : 'Ebook creator: ') + escapeHtml(creditName()) + '</p>';
+    /* v17: image-1 pattern — the creator name is a link too, like the
+       courtesy names below it (it points to Our Boighar, his books site). */
+    if (creditName()) html += '<p>' + (bn ? 'ইবুক নির্মাতা: ' : 'Ebook creator: ')
+      + '<a href="https://mdtowfiqul.github.io/our-boighar/">' + escapeHtml(creditName()) + '</a></p>';
     html += '<p>' + (bn ? 'সৌজন্যে: ' : 'Courtesy: ')
       + '<a href="https://mdtowfiqul.github.io/our-ebook-maker/">Our Ebook Maker</a>'
       + (bn ? ' ও ' : ' and ')
       + '<a href="https://mdtowfiqul.github.io/our-boighar/">Our Boighar</a></p>';
+    /* v17: the creator's message, on the last page of every ebook. */
+    html += '<h2>ই-বুক নির্মাতার বার্তা</h2>'
+      + '<p>এই ই-বুক বইটি শুধুমাত্র পাঠের সুবিধার্থে ডিজিটাল আকারে প্রস্তুত করা হয়েছে।</p>'
+      + '<p>এর মূল লক্ষ্য—জ্ঞান ও সৎ চিন্তার প্রসার।</p>'
+      + '<p>তবে অনুরোধ রইল,</p>'
+      + '<p>আপনি যেন লেখক, অনুবাদক ও প্রকাশকের ন্যায্য অধিকারকে সম্মান করেন।</p>'
+      + '<p>বইটি বিনামূল্যে ছড়িয়ে দেওয়া। বাণিজ্যিক উদ্দেশ্যে ব্যবহার করা, লেখকের অথবা প্রকাশকের ক্ষতি করা একেবারেই কাম্য নয়।</p>'
+      + '<p>যদি এই বইটি আপনার ভালো লাগে —</p>'
+      + '<p>তবে অনুগ্রহ করে মূল মুদ্রিত (hard copy) বইটি সংগ্রহ করুন।</p>'
+      + '<p>[বিঃদ্রঃ - এই ই-বুকটি AI Generate কৃত, তাই বইটিতে ভুল থাকা স্বাভাবিক]</p>';
     return html;
   }
   function docxPara(text, style, jc, pageBreakBefore) {
