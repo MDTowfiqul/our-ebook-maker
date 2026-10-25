@@ -28,7 +28,7 @@
   var screenOnBtn = $('screenOnBtn'), screenOnNote = $('screenOnNote');
   var bar = $('bar'), statusEl = $('status'), previewEl = $('preview'), fileinfoEl = $('fileinfo');
   var resultsEl = $('results'), summaryEl = $('summary');
-  /* v6: proofreading is inline in Step 3 — the old manual/auto pop-ups are gone. */
+  /* v6: proofreading is inline in Step 4 — the old manual/auto pop-ups are gone. */
   var coverFileEl = $('coverFile'), coverOnlineBtn = $('coverOnlineBtn'), coverTextBtn = $('coverTextBtn');
   var coverAnotherBtn = $('coverAnotherBtn');
   var coverImg = $('coverImg'), coverDownloadBtn = $('coverDownloadBtn'), coverStatusEl = $('coverStatus');
@@ -190,7 +190,7 @@
   if (navGuide) navGuide.addEventListener('click', function () { setNavActive(navGuide); openModal($('guideModal')); });
   var drawerKeyhelp = $('drawer-keyhelp');
   if (drawerKeyhelp) drawerKeyhelp.addEventListener('click', function () { closeDrawer(); openModal($('keyHelpModal')); });
-  ['guideModal', 'proofStepsModal', 'museModal', 'privacyModal'].forEach(function (id) {
+  ['guideModal', 'proofStepsModal', 'museModal', 'museDirectModal', 'privacyModal'].forEach(function (id) {
     var m = $(id);
     if (m) m.addEventListener('click', function (ev) { if (ev.target === m) closeModal(m); });
   });
@@ -209,6 +209,20 @@
   if (copyProofBtn) copyProofBtn.addEventListener('click', function () { copyTextarea('proofPromptText', copyProofBtn, 'কপি হয়েছে!', 'Copied!'); });
   var copyMuseBtn = $('copyMusePromptBtn');
   if (copyMuseBtn) copyMuseBtn.addEventListener('click', function () { copyTextarea('musePromptText', copyMuseBtn, 'কপি হয়েছে!', 'Copied!'); });
+  /* v8: Muse direct route — full prompt modal + direct copy buttons. */
+  document.querySelectorAll('.museDirect-open').forEach(function (b) { b.addEventListener('click', function () { openModal($('museDirectModal')); }); });
+  document.querySelectorAll('.museDirect-close').forEach(function (b) { b.addEventListener('click', function () { closeModal($('museDirectModal')); }); });
+  var copyMuseDirectBtn = $('copyMuseDirectBtn');
+  if (copyMuseDirectBtn) copyMuseDirectBtn.addEventListener('click', function () { copyTextarea('museDirectPromptText', copyMuseDirectBtn, 'কপি হয়েছে!', 'Copied!'); });
+  document.querySelectorAll('.copy-direct-prompt').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var ta = $('museDirectPromptText');
+      if (!ta) return;
+      copyTextarea('museDirectPromptText', b, 'কপি হয়েছে!', 'Copied!');
+      var st = $('directCopyStatus');
+      if (st) st.textContent = L('প্রম্পট কপি হয়েছে — Muse চ্যাটে PDF-এর সঙ্গে পেস্ট করুন।', 'Prompt copied — paste it in a Muse chat together with the PDF.');
+    });
+  });
 
   /* ---- Saved progress: IndexedDB when available, else localStorage ---- */
   var PROGRESS_KEY = 'oem-progress-v1';
@@ -402,7 +416,7 @@
         'স্ক্রিন জাগিয়ে রাখা যায়নি (' + e.message + ')।');
     }
   });
-  /* vFlat pop-up only: proofreading itself is inline in Step 3, no pop-ups. */
+  /* vFlat pop-up only: proofreading itself is inline in Step 4, no pop-ups. */
   function openModal(m) { if (m) m.classList.remove('hidden'); }
   function closeModal(m) { if (m) m.classList.add('hidden'); }
   if (vflatBtn) vflatBtn.addEventListener('click', function () { openModal(vflatModal); });
@@ -413,13 +427,13 @@
     if (txtFileEl) txtFileEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
   });
   if (vflatModal) vflatModal.addEventListener('click', function (ev) { if (ev.target === vflatModal) closeModal(vflatModal); });
-  /* v7 split: Step 4 (formatted document) unlocks on proofread text;
-     Step 5 (final ebook) unlocks only when the document exists — made in
-     Step 4, or uploaded as a formatted .docx. */
+  /* v8 split: Step 5 (formatted document) unlocks on proofread text;
+     Step 6 (final ebook) unlocks only when the document exists — made in
+     Step 5, or uploaded as a formatted .docx (including a Google Doc .docx from the Muse route). */
   function unlockStep3() {
     if (txtBtn) txtBtn.disabled = false;
     if (autoProofBtn) autoProofBtn.disabled = false;
-    summaryEl.textContent = L('Text ready — proofread it below (by hand or automatically), then go to Step 4.',
+    summaryEl.textContent = L('Text ready — proofread it below (by hand or automatically), then go to Step 5.',
       'লেখা তৈরি — নিচে হাতে বা স্বয়ংক্রিয়ভাবে প্রুফরিড করুন, তারপর ধাপ ৪-এ যান।');
   }
   function unlockDoc(msg) {
@@ -454,7 +468,7 @@
       pages.length + ' পৃষ্ঠা OCR করা হয়েছে, প্রায় ' + full.length.toLocaleString() + ' অক্ষর।');
     if (resumeBtn) resumeBtn.disabled = true;
     unlockStep3();
-    setStatus(L('Done. Proofread below in Step 3 — by hand or automatically.',
+    setStatus(L('Done. Proofread below in Step 4 — by hand or automatically.',
       'শেষ। নিচে ধাপ ৩-এ হাতে বা স্বয়ংক্রিয়ভাবে প্রুফরিড করুন।'));
     setProgress(100);
   }
@@ -491,7 +505,7 @@
     if (!titleEl.value) titleEl.value = f.name.replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' ');
     state.fullText = ''; state.proofText = ''; state.docBlob = null; state.docIsOriginal = false;
     hideDocOutputs(); hideEbookOutputs();
-    summaryEl.textContent = L('Run the full book first — Step 3 unlocks when the text is ready.',
+    summaryEl.textContent = L('Run the full book first — Step 4 unlocks when the text is ready.',
       'পুরো বই চালানোর পর লেখা তৈরি হলে ধাপ ৩ খুলবে।');
     if (txtBtn) txtBtn.disabled = true;
     if (autoProofBtn) autoProofBtn.disabled = true;
@@ -567,13 +581,13 @@
       safeName((titleEl.value || 'book').trim()) + '.txt');
   });
 
-  /* ---- Skip paths: an existing .txt skips Step 2; a proofread file or a
-     formatted .docx skips straight to Step 4. ---- */
+  /* ---- Skip paths: an existing .txt skips Step 3; a proofread file or a
+     formatted .docx skips straight to Step 5. ---- */
   function setTextFromUpload(text, filename, statusEl) {
     state.fullText = (text || '').trim();
     if (!state.fullText) { statusEl.textContent = L('That file looks empty.', 'ফাইলটি খালি মনে হচ্ছে।'); return; }
     if (!titleEl.value) titleEl.value = filename.replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' ');
-    statusEl.textContent = '✓ ' + L('Loaded: ', 'লোড হয়েছে: ') + filename + ' — ' + state.fullText.length.toLocaleString() + L(' characters. Step 3 is now open.', ' অক্ষর। ধাপ ৩ এখন খোলা।');
+    statusEl.textContent = '✓ ' + L('Loaded: ', 'লোড হয়েছে: ') + filename + ' — ' + state.fullText.length.toLocaleString() + L(' characters. Step 4 is now open.', ' অক্ষর। ধাপ ৪ এখন খোলা।');
     unlockStep3();
     document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
@@ -613,15 +627,15 @@
       proofFileStatusEl.textContent = '✓ ' + L('Proofread file loaded: ', 'প্রুফরিড ফাইল লোড হয়েছে: ') + f.name;
       if (isDocx) {
         /* A .docx uploaded here is already a formatted document, so it
-           unlocks both Step 4 (hand it back) and Step 5 (make ebooks). */
+           unlocks both Step 5 (hand it back) and Step 6 (make ebooks). */
         state.docBlob = f; state.docIsOriginal = true;
-        unlockDoc(L('Formatted document loaded — Step 4 is open, and Step 5 (final ebook) is open too.',
+        unlockDoc(L('Formatted document loaded — Step 5 is open, and Step 6 (final ebook) is open too.',
           'ফরম্যাট করা ডকুমেন্ট লোড হয়েছে — ধাপ ৪ খোলা, আর ধাপ ৫ (ফাইনাল ইবুক) ও খোলা।'));
         unlockEbook(L('Formatted document loaded — pick an ebook format below.',
           'ফরম্যাট করা ডকুমেন্ট লোড হয়েছে — নিচে ইবুক ফরম্যাট বাছুন।'));
       } else {
         state.docBlob = null; state.docIsOriginal = false;
-        unlockDoc(L('Proofread file loaded — Step 4 (formatted document) is now open.',
+        unlockDoc(L('Proofread file loaded — Step 5 (formatted document) is now open.',
           'প্রুফরিড ফাইল লোড হয়েছে — ধাপ ৪ (ফরম্যাট করা ডকুমেন্ট) এখন খোলা।'));
       }
       document.getElementById('docStep').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -636,7 +650,7 @@
       state.proofText = await parseDocxToMd(f);
       state.docBlob = f; state.docIsOriginal = true;
       if (!titleEl.value) titleEl.value = f.name.replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' ');
-      docFileStatusEl.textContent = '✓ ' + L('Formatted document loaded: ', 'ফরম্যাট করা ডকুমেন্ট লোড হয়েছে: ') + f.name + L(' — Steps 1–4 skipped, you are in the final step.', ' — ধাপ ১–৪ বাদ গেল, আপনি এখন ফাইনাল ধাপে।');
+      docFileStatusEl.textContent = '✓ ' + L('Formatted document loaded: ', 'ফরম্যাট করা ডকুমেন্ট লোড হয়েছে: ') + f.name + L(' — Steps 1–5 skipped, you are in the final step.', ' — ধাপ ১–৫ বাদ গেল, আপনি এখন ফাইনাল ধাপে।');
       showDocOutputs();
       unlockEbook(L('Formatted document loaded — pick an ebook format below.',
         'ফরম্যাট করা ডকুমেন্ট লোড হয়েছে — নিচে ইবুক ফরম্যাট বাছুন।'));
@@ -976,7 +990,7 @@
     } else if (saved && saved.fp === fp && saved.done.length >= chunks.length) {
       state.proofText = saved.done.join('\n\n');
       proofBar.style.width = '100%';
-      proofStatusEl.textContent = L('Proofreading already complete — your document is ready in Step 4 below.',
+      proofStatusEl.textContent = L('Proofreading already complete — your document is ready in Step 5 below.',
         'প্রুফরিড আগেই শেষ — আপনার ডকুমেন্ট নিচে ধাপ ৪-এ তৈরি।');
       unlockDoc();
       autoProofBtn.disabled = false;
@@ -1007,7 +1021,7 @@
         proofBar.style.width = '100%';
         var words = state.fullText.split(/\s+/).filter(Boolean).length;
         var mins = Math.max(0.1, (Date.now() - state.proofStartedAt) / 60000).toFixed(1);
-        proofStatusEl.textContent = L('Proofreading done: ' + chunks.length + ' chunks. Your formatted document is ready in Step 4 below — .md or .docx.',
+        proofStatusEl.textContent = L('Proofreading done: ' + chunks.length + ' chunks. Your formatted document is ready in Step 5 below — .md or .docx.',
           'প্রুফরিড শেষ: ' + chunks.length + 'টি অংশ। আপনার ফরম্যাট করা ডকুমেন্ট নিচে ধাপ ৪-এ তৈরি — .md বা .docx।');
         if (proofStatsEl) proofStatsEl.textContent = L('Stats: ' + chunks.length + ' chunks • about ' + words.toLocaleString('en-US') + ' words • ' + mins + ' min',
           'পরিসংখ্যান: ' + chunks.length + 'টি অংশ • প্রায় ' + words.toLocaleString('en-US') + ' শব্দ • ' + mins + ' মিনিট');
@@ -1130,10 +1144,10 @@
         var blob = await buildDocx(state.proofText, (titleEl.value || 'book').trim(), (authorEl.value || '').trim());
         download(blob, safeName((titleEl.value || 'book').trim()) + '-proofread.docx');
       }
-      /* Making the document is what unlocks Step 5 (final ebook). */
-      unlockEbook(L('Document ready — Step 5 (final ebook) is now open below: EPUB, PDF, or online-convert for AZW3/MOBI.',
+      /* Making the document is what unlocks Step 6 (final ebook). */
+      unlockEbook(L('Document ready — Step 6 (final ebook) is now open below: EPUB, PDF, or online-convert for AZW3/MOBI.',
         'ডকুমেন্ট তৈরি — নিচে ধাপ ৫ (ফাইনাল ইবুক) খুলে গেছে: EPUB, PDF, অথবা AZW3/MOBI-র জন্য online-convert।'));
-      if (docStatusEl) docStatusEl.textContent = L('Document downloaded — Step 5 below is now open.',
+      if (docStatusEl) docStatusEl.textContent = L('Document downloaded — Step 6 below is now open.',
         'ডকুমেন্ট ডাউনলোড হয়েছে — নিচে ধাপ ৫ এখন খোলা।');
     } catch (e) {
       if (docStatusEl) docStatusEl.textContent = L('Document build failed: ' + e.message, 'ডকুমেন্ট বানানো ব্যর্থ: ' + e.message);

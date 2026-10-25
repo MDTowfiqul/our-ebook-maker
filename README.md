@@ -1,6 +1,10 @@
 # Our Ebook Maker
 
-Turn a PDF into text, entirely in your browser — the first step to making a clean ebook.
+Turn a scanned PDF into a clean ebook. The main route runs through a
+Muse chat (Muse reads the PDF, proofreads it, and hands back a
+formatted Google Doc); this site then turns that Doc into EPUB, PDF
+and Kindle formats. Browser OCR stays as a fallback for when Muse is
+not used.
 
 **Live site:** https://mdtowfiqul.github.io/our-ebook-maker/
 
@@ -9,46 +13,61 @@ Turn a PDF into text, entirely in your browser — the first step to making a cl
 Every step is on the page from the start, so anyone can see the full
 process before beginning:
 
-1. **Your book** — pick the PDF, title, author, your name (for the
-   ebook credit page), and a cover. The line under the file picker
-   shows a ✓ with the chosen file's name and size.
-2. **OCR — read the book** — test the first 5 pages, then run the full
-   book. While it scans you see each page's time and an estimated time
-   left. A round sun button beside the screen-on description holds a
-   wake lock while the tab is open, so you can leave the phone
-   untouched; switching apps still pauses the tab. The **▶️ Resume**
-   button is always visible in this step and enables whenever saved
-   progress exists (progress saved after every page) — returning to
-   the tab re-shows it. If OCR feels too slow, a collapsible vFlat
-   box (title only, tap to expand) covers the PDF → .txt route.
-   Buttons are Boighar-style: a primary accent button and secondary
-   white buttons — Test + Read full book on one row, Resume +
-   Cancel on the next.
-3. **Proofread — from .txt to clean text** — a collapsible
+1. **Your book** — title, author, your name (for the ebook credit
+   page), and a cover. The line under the file picker shows a ✓
+   with the chosen file's name and size.
+2. **Muse route — scanned PDF to Google Doc (recommended)** — open a
+   Muse chat, attach the scanned PDF, and paste the full prompt
+   (Copy button on the page, or the pop-up with the whole text).
+   Muse extracts the text — converting legacy Bijoy/SutonnyMJ
+   fonts to Unicode Bangla — proofreads it in chunks (DONE, then
+   you write "continue"), and sends a formatted Google Doc link.
+   The Doc begins directly with the book title, with no cover-page
+   or artwork notes. This site itself cannot call Muse or your
+   Drive; that part happens in the Muse chat. Then download the
+   .docx from the Doc (File → Download → Microsoft Word) and
+   upload it in Step 6. Steps 3–5 are skipped on this route.
+3. **Browser OCR — read the book (fallback)** — only if the Muse
+   route is not used. Test the first 5 pages, then run the full
+   book. While it scans you see each page's time and an estimated
+   time left. A round sun button beside the screen-on description
+   holds a wake lock while the tab is open, so you can leave the
+   phone untouched; switching apps still pauses the tab. The
+   **▶️ Resume** button is always visible in this step and enables
+   whenever saved progress exists (progress saved after every
+   page) — returning to the tab re-shows it. If OCR feels too
+   slow, a collapsible vFlat box (title only, tap to expand)
+   covers the PDF → .txt route. Buttons are Boighar-style: a
+   primary accent button and secondary white buttons — Test + Read
+   full book on one row, Resume + Cancel on the next.
+4. **Proofread — from .txt to clean text** — a collapsible
    "Already have an OCR .txt file?" box sits right after the warning
-   box: upload a .txt there and Step 2 is skipped entirely. Below it
-   are two buttons in one line, Manual and Automatic: tapping one
-   opens that panel below, tapping again closes it. Manual: download
-   the raw .txt, proofread in AI Studio (steps in a pop-up) or Muse
-   (instruction in a pop-up), upload the proofread file back.
-   Automatic: Gemini/OpenRouter key, chunked proofreading. The main
-   work of this step is turning the raw .txt into proofread text.
-4. **Formatted document — proofread text to a book-like document** —
-   the .docx (and the proofread .md) are built here: title page,
-   chapters on new pages, centred headings, justified text (Arabic
-   right-aligned), credit page. Making the document unlocks Step 5.
-5. **Final ebook — from document to ebook** — EPUB and PDF are built
+   box: upload a .txt there and Step 3 is skipped entirely. Below
+   it are two buttons in one line, Manual and Automatic: tapping
+   one opens that panel below, tapping again closes it. Manual:
+   download the raw .txt, proofread in AI Studio (steps in a
+   pop-up) or Muse (instruction in a pop-up), upload the proofread
+   file back. Automatic: Gemini/OpenRouter key, chunked
+   proofreading. The main work of this step is turning the raw
+   .txt into proofread text. Muse-route users skip this step.
+5. **Formatted document — proofread text to a book-like document**
+   — the .docx (and the proofread .md) are built here: title
+   page, chapters on new pages, centred headings, justified text
+   (Arabic right-aligned), credit page. Making the document
+   unlocks Step 6.
+6. **Final ebook — from document to ebook** — EPUB and PDF are built
    automatically in the browser; AZW3 / MOBI go through
    online-convert (manual, linked in the step), and AZW3 / MOBI / KFX
-   through Calibre. Already have a formatted .docx? Upload it in the
-   collapsible box here and Steps 1–4 are skipped: it is parsed
+   through Calibre. Already have a formatted .docx — from Step 5,
+   or a Google Doc .docx from the Muse route? Upload it in the
+   collapsible box here and Steps 1–5 are skipped: it is parsed
    (headings kept as chapters) and every format becomes available.
 
 The header, menu and bottom bar follow Our Boighar: a hamburger opens
 a slide-in drawer (steps, language, 5 theme colours, Day/Night, Help
 & Policies chips, GitHub), a moon/sun button at the top right
 switches Day/Night, and a floating pill bottom bar has Home,
-Proofread (jumps to Step 3), Ebook (jumps to Step 5) and Guide
+Proofread (jumps to Step 4), Ebook (jumps to Step 6) and Guide
 (opens the guide pop-up). Guide links on the Maker open pop-ups with
 the necessary information instead of navigating to the guide page;
 the full guide page is still linked from the guide pop-up and drawer.
@@ -84,7 +103,7 @@ goes into the final ebook.
 
 ## Proofread, four ways
 
-1. **Automatic, inline in Step 3** — with your own Google Gemini API
+1. **Automatic, inline in Step 4** — with your own Google Gemini API
    key (free, the default) or an OpenRouter key. The text is sent in
    chunks of about 8,000 characters with the full proofreading prompt.
    After you enter a Gemini key, the tool loads the free models
@@ -98,17 +117,17 @@ goes into the final ebook.
 2. **Manual, with Gemini / Google AI Studio** — the pop-up on the
    Maker reproduces the workflow step by step, with the full
    proofreading prompt to copy (the guide page has the same detail).
-   Upload the finished proofread file back into Step 3 and Step 4
+   Upload the finished proofread file back into Step 4 and Step 5
    opens at once.
 3. **Manual, with Muse** — download the .txt, upload it to your own
    Muse chat, paste the ready-made instruction from the Maker's
    pop-up, and say "continue" chunk by chunk. No API key needed.
-4. **Manual, with vFlat** — the Step 2 pop-up covers the PDF → .txt
+4. **Manual, with vFlat** — the Step 3 pop-up covers the PDF → .txt
    route for slow browser OCR, and the guide keeps it too.
 
 ## Finished ebook formats — which format, for which work
 
-Step 5 explains this before you export:
+Step 6 explains this before you export:
 
 - **EPUB** — built right here. Best for phones, tablets and almost
   every reading app.
@@ -122,7 +141,7 @@ Step 5 explains this before you export:
   online-convert's cannot run automatically here: download the .docx
   or EPUB here, then convert it manually on
   [ebook.online-convert.com](https://ebook.online-convert.com)
-  (linked in Step 5), or with free Calibre on a computer.
+  (linked in Step 6), or with free Calibre on a computer.
 - **KFX** — the newest Kindle format. Calibre only, with its
   KFX Output plugin. (Tip: EPUB itself can also be sent to a Kindle
   with Send to Kindle.)

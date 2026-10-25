@@ -76,10 +76,11 @@
   <div class="px-5 py-4">
     <button class="drawer-link accent-soft-bg accent-text rounded-xl px-4 py-3 mb-1 w-full text-left font-bold" data-scroll="top" data-bn="হোম" data-en="Home">Home</button>
     <button class="drawer-link rounded-xl px-4 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-800 w-full text-left font-bold" data-scroll="step1" data-bn="১. আপনার বই" data-en="1. Your book">1. Your book</button>
-    <button class="drawer-link rounded-xl px-4 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-800 w-full text-left font-bold" data-scroll="step2" data-bn="২. OCR — বই পড়া" data-en="2. OCR — read the book">2. OCR — read the book</button>
-    <button class="drawer-link rounded-xl px-4 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-800 w-full text-left font-bold" data-scroll="results" data-bn="৩. প্রুফরিড" data-en="3. Proofread">3. Proofread</button>
-    <button class="drawer-link rounded-xl px-4 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-800 w-full text-left font-bold" data-scroll="docStep" data-bn="৪. ফরম্যাট করা ডকুমেন্ট" data-en="4. Formatted document">4. Formatted document</button>
-    <button class="drawer-link rounded-xl px-4 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-800 w-full text-left font-bold" data-scroll="finalFormats" data-bn="৫. ফাইনাল ইবুক" data-en="5. Final ebook">5. Final ebook</button>
+    <button class="drawer-link rounded-xl px-4 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-800 w-full text-left font-bold" data-scroll="museRoute" data-bn="২. Muse দিয়ে PDF থেকে Google Doc" data-en="2. Muse route — PDF to Google Doc">2. Muse route — PDF to Google Doc</button>
+    <button class="drawer-link rounded-xl px-4 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-800 w-full text-left font-bold" data-scroll="step2" data-bn="৩. ব্রাউজার OCR (বিকল্প)" data-en="3. Browser OCR (fallback)">3. Browser OCR (fallback)</button>
+    <button class="drawer-link rounded-xl px-4 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-800 w-full text-left font-bold" data-scroll="results" data-bn="৪. প্রুফরিড" data-en="4. Proofread">4. Proofread</button>
+    <button class="drawer-link rounded-xl px-4 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-800 w-full text-left font-bold" data-scroll="docStep" data-bn="৫. ফরম্যাট করা ডকুমেন্ট" data-en="5. Formatted document">5. Formatted document</button>
+    <button class="drawer-link rounded-xl px-4 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-800 w-full text-left font-bold" data-scroll="finalFormats" data-bn="৬. ফাইনাল ইবুক" data-en="6. Final ebook">6. Final ebook</button>
     <button class="drawer-link rounded-xl px-4 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-800 w-full text-left font-bold" data-scroll="coverSection" data-bn="বইয়ের প্রচ্ছদ" data-en="Book cover">Book cover</button>
     <button id="drawer-lang" class="mt-3 w-full flex items-center gap-3 bg-[#fdf8f1] dark:bg-neutral-800 border border-orange-100/70 dark:border-neutral-700 rounded-2xl px-4 py-3.5 font-bold">
       <span>🌐</span><span data-bn="ভাষা" data-en="Language">Language</span><span class="flex-1"></span><span id="drawer-lang-label" class="text-neutral-500 dark:text-neutral-300">English</span>
@@ -120,10 +121,10 @@
       <span data-bn="১০০% ফ্রি • সাইন-আপ নেই • কিছু আপলোড হয় না" data-en="100% free • No sign-up • Nothing is uploaded">100% free • No sign-up • Nothing is uploaded</span>
     </span>
     <h1 class="serif text-[30px] sm:text-5xl font-extrabold leading-tight mt-4">
-      <span class="hero-accent" data-bn="PDF" data-en="PDF">PDF</span>
-      <span data-bn="থেকে লেখা, আপনার ব্রাউজারেই" data-en="to text, in your browser">to text, in your browser</span>
+      <span class="hero-accent" data-bn="স্ক্যান করা PDF দিন" data-en="Scanned PDF in">Scanned PDF in</span>
+      <span data-bn=", পরিষ্কার ইবুক নিন" data-en=", clean ebook out">, clean ebook out</span>
     </h1>
-    <p class="text-white/75 mt-2 text-sm sm:text-base" data-bn="বইয়ের PDF দিন, OCR করা লেখা নিন। তারপর প্রুফরিড করে পরিষ্কার ইবুক বানান।" data-en="Give a book PDF, get back OCR text. Then proofread it and make a clean ebook.">Give a book PDF, get back OCR text. Then proofread it and make a clean ebook.</p>
+    <p class="text-white/75 mt-2 text-sm sm:text-base" data-bn="Muse আপনার PDF পড়ে (Bijoy-সহ), প্রুফরিড করে ফরম্যাট করা Google Doc দেবে — তারপর এই সাইট সেই Doc থেকে EPUB, PDF ও Kindle ফরম্যাট বানাবে।" data-en="Muse reads your PDF (Bijoy included), proofreads it, and hands you a formatted Google Doc — then this site turns that Doc into EPUB, PDF and Kindle formats.">Muse reads your PDF (Bijoy included), proofreads it, and hands you a formatted Google Doc — then this site turns that Doc into EPUB, PDF and Kindle formats.</p>
   </section>
 
   <main class="pb-10">
@@ -176,8 +177,27 @@
     <p class="text-sm text-neutral-500 mt-3" data-bn="ভাষা আলাদা করে বাছতে হবে না — বাংলা, ইংরেজি ও আরবি একসাথে চেনা হয়।" data-en="No need to pick a language — Bengali, English and Arabic are recognised together.">No need to pick a language — Bengali, English and Arabic are recognised together.</p>
   </section>
 
+  <section id="museRoute" class="bg-white dark:bg-neutral-800 rounded-2xl shadow p-5 mt-6">
+    <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="২. Muse রুট — স্ক্যান করা PDF থেকে Google Doc (সহজ উপায়)" data-en="2. Muse route — scanned PDF to Google Doc (the easy way)">2. Muse route — scanned PDF to Google Doc (the easy way)</h2>
+    <p class="text-sm text-neutral-600 mt-2" data-bn="এই সাইট নিজে Muse-কে ডাকতে পারে না — কাজটি Muse চ্যাটেই হয়, আর এই সাইট তারপরের ধাপগুলো করে। তাই এই রুটে কোনো ব্রাউজার OCR, Resume বা key লাগে না।" data-en="This site itself cannot call Muse — that part happens in a Muse chat, and this site does the steps after it. So this route needs no browser OCR, no Resume, and no API key.">This site itself cannot call Muse — that part happens in a Muse chat, and this site does the steps after it. So this route needs no browser OCR, no Resume, and no API key.</p>
+    <ol class="list-decimal pl-5 mt-3 space-y-2 text-[15px]">
+      <li><b data-bn="Muse চ্যাট খুলে স্ক্যান করা PDF attach করুন" data-en="Open a Muse chat and attach your scanned PDF">Open a Muse chat and attach your scanned PDF</b> — <span data-bn="পুরোনো, কপিরাইট-মুক্ত বইয়ের PDF। Bijoy/SutonnyMJ-এর মতো পুরোনো ফন্ট থাকলেও চলবে — Muse সেটিকে Unicode বাংলায় বদলে নেবে।" data-en="a scanned PDF of an old, copyright-free book. Even legacy Bijoy/SutonnyMJ fonts are fine — Muse converts them to Unicode Bangla.">a scanned PDF of an old, copyright-free book. Even legacy Bijoy/SutonnyMJ fonts are fine — Muse converts them to Unicode Bangla.</span></li>
+      <li><b data-bn="পুরো প্রম্পটটি পেস্ট করুন" data-en="Paste the full prompt">Paste the full prompt</b> — <span data-bn="নিচের বোতামে প্রম্পটটি কপি করুন, একই মেসেজে পেস্ট করুন।" data-en="copy it with the button below and paste it in the same message.">copy it with the button below and paste it in the same message.</span></li>
+      <li><b data-bn="Muse টুকরো টুকরো করে প্রুফরিড করবে" data-en="Muse proofreads it in chunks">Muse proofreads it in chunks</b> — <span data-bn="প্রতি অংশের পর Muse “DONE” লিখে থামবে — আপনি “continue” লিখলেই পরের অংশ শুরু হবে। পুরো বই শেষ না হওয়া পর্যন্ত এভাবে চালান।" data-en="after each chunk Muse stops and says DONE — you write “continue” and the next chunk starts. Keep going until the whole book is done.">after each chunk Muse stops and says DONE — you write “continue” and the next chunk starts. Keep going until the whole book is done.</span></li>
+      <li><b data-bn="Google Doc লিঙ্কটি নিন" data-en="Take the Google Doc link">Take the Google Doc link</b> — <span data-bn="শেষে Muse ফরম্যাট করা Google Doc বানিয়ে লিঙ্ক দেবে। Doc-টি সরাসরি বইয়ের নাম দিয়ে শুরু হবে — কোনো কভার-পেজ বা ছবির বর্ণনা থাকবে না।" data-en="at the end Muse builds a formatted Google Doc and sends you the link. The Doc begins directly with the book title — no cover-page or artwork notes.">at the end Muse builds a formatted Google Doc and sends you the link. The Doc begins directly with the book title — no cover-page or artwork notes.</span></li>
+      <li><b data-bn="Doc থেকে .docx ডাউনলোড করে ধাপ ৬-এ আপলোড করুন" data-en="Download the .docx from the Doc and upload it in Step 6">Download the .docx from the Doc and upload it in Step 6</b> — <span data-bn="Google Doc খুলে File → Download → Microsoft Word (.docx) করুন, তারপর সেই ফাইল ধাপ ৬-এর বক্সে দিন — EPUB, PDF আর Kindle-এর পথ সেখান থেকে খুলবে।" data-en="open the Google Doc, go to File → Download → Microsoft Word (.docx), then put that file in Step 6's box — EPUB, PDF and the Kindle path open from there.">open the Google Doc, go to File → Download → Microsoft Word (.docx), then put that file in Step 6's box — EPUB, PDF and the Kindle path open from there.</span></li>
+    </ol>
+    <div class="flex flex-wrap gap-2 mt-4">
+      <button class="copy-direct-prompt accent-bg text-white rounded-xl px-5 py-3 font-bold" data-bn="📋 পুরো প্রম্পট কপি করুন" data-en="📋 Copy the full prompt">📋 Copy the full prompt</button>
+      <button class="museDirect-open bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-5 py-3 font-bold" data-bn="📖 প্রম্পটটি পড়ুন (পপ-আপ)" data-en="📖 Read the prompt (pop-up)">📖 Read the prompt (pop-up)</button>
+    </div>
+    <p id="directCopyStatus" class="text-sm text-neutral-500 mt-2"></p>
+    <p class="text-sm text-neutral-500 mt-3" data-bn="Muse চ্যাট নেই? নিচের ধাপ ৩-এর ব্রাউজার OCR ব্যবহার করুন — ধীর, কিন্তু সবকিছু আপনার ব্রাউজারেই থাকবে। শেয়ারের নিয়ম (উপরে ⚠️ বক্স) এই রুটেও একই।" data-en="No Muse chat? Use Step 3's browser OCR below instead — slower, but everything stays in your browser. The sharing rules (⚠️ box above) apply to this route too.">No Muse chat? Use Step 3's browser OCR below instead — slower, but everything stays in your browser. The sharing rules (⚠️ box above) apply to this route too.</p>
+  </section>
+
   <section id="step2" class="bg-white dark:bg-neutral-800 rounded-2xl shadow p-5 mt-6">
-    <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="২. OCR — বই পড়া" data-en="2. OCR — read the book">2. OCR — read the book</h2>
+    <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="৩. ব্রাউজার OCR — বই পড়া (বিকল্প উপায়)" data-en="3. Browser OCR — read the book (fallback)">3. Browser OCR — read the book (fallback)</h2>
+    <p class="text-sm text-neutral-500 mt-1" data-bn="শুধু তখনই এই ধাপ ব্যবহার করুন, যখন Muse রুট ব্যবহার করছেন না। Muse রুট ব্যবহার করলে এই ধাপ, ধাপ ৪ ও ধাপ ৫ বাদ দিয়ে সরাসরি ধাপ ৬-এ যান।" data-en="Use this step only if you are not using the Muse route. On the Muse route, skip this step and Steps 4–5 and go straight to Step 6.">Use this step only if you are not using the Muse route. On the Muse route, skip this step and Steps 4–5 and go straight to Step 6.</p>
     <p class="text-sm text-neutral-500 mt-1" data-bn="এই ধাপে পুরো বই OCR করা হয়। বই সময় নেয়, আর OCR কখনো নিখুঁত নয় — তাই পুরো বই চালানোর আগে প্রথম ৫ পৃষ্ঠা পরীক্ষা করে দেখুন লেখা পরিষ্কার আসছে কি না।" data-en="This step reads the whole book with OCR. Books take time and OCR is never perfect — so test the first 5 pages first to see if the text comes out clean, then run the full book.">This step reads the whole book with OCR. Books take time and OCR is never perfect — so test the first 5 pages first to see if the text comes out clean, then run the full book.</p>
     <div class="grid grid-cols-2 gap-2 mt-4">
       <button id="testBtn" class="bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-4 py-3 font-bold disabled:opacity-50" data-bn="প্রথম ৫ পৃষ্ঠা পরীক্ষা করুন" data-en="Test first 5 pages">Test first 5 pages</button>
@@ -200,7 +220,7 @@
         <span class="collapse-chev shrink-0">▼</span>
       </button>
       <div id="collapse-vflat" class="hidden">
-        <p class="text-sm text-neutral-600 mt-2" data-bn="এই ধাপটি vFlat অ্যাপ দিয়ে করেও এগোতে পারেন — PDF থেকে .txt বানিয়ে ধাপ ৩-এ আপলোড করুন, ধাপ ২ বাদ যাবে।" data-en="You can also do this step with the vFlat app — make a .txt from the PDF there and upload it in Step 3, skipping Step 2.">You can also do this step with the vFlat app — make a .txt from the PDF there and upload it in Step 3, skipping Step 2.</p>
+        <p class="text-sm text-neutral-600 mt-2" data-bn="এই ধাপটি vFlat অ্যাপ দিয়ে করেও এগোতে পারেন — PDF থেকে .txt বানিয়ে ধাপ ৪-এ আপলোড করুন, ধাপ ৩ বাদ যাবে।" data-en="You can also do this step with the vFlat app — make a .txt from the PDF there and upload it in Step 4, skipping Step 3.">You can also do this step with the vFlat app — make a .txt from the PDF there and upload it in Step 4, skipping Step 3.</p>
         <button id="vflatBtn" class="bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-4 py-2.5 font-bold mt-3" data-bn="vFlat দিয়ে PDF → .txt (পপ-আপ)" data-en="PDF → .txt with vFlat (pop-up)">PDF → .txt with vFlat (pop-up)</button>
       </div>
     </div>
@@ -214,8 +234,8 @@
   </section>
 
   <section id="results" class="bg-white dark:bg-neutral-800 rounded-2xl shadow p-5 mt-6">
-    <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="৩. প্রুফরিড — .txt থেকে পরিষ্কার লেখা" data-en="3. Proofread — from .txt to clean text">3. Proofread — from .txt to clean text</h2>
-    <p id="summary" class="text-sm text-neutral-500 mt-1" data-bn="ধাপ ২-এ পুরো বইয়ের OCR শেষ হলে, অথবা .txt আপলোড করলে, এই ধাপ খুলে যাবে।" data-en="This step unlocks when the full OCR finishes in Step 2, or when you upload a .txt below.">This step unlocks when the full OCR finishes in Step 2, or when you upload a .txt below.</p>
+    <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="৪. প্রুফরিড — .txt থেকে পরিষ্কার লেখা" data-en="4. Proofread — from .txt to clean text">4. Proofread — from .txt to clean text</h2>
+    <p id="summary" class="text-sm text-neutral-500 mt-1" data-bn="ধাপ ৩-এর (ব্রাউজার OCR) পুরো বইয়ের OCR শেষ হলে, অথবা .txt আপলোড করলে, এই ধাপ খুলে যাবে। Muse রুট ব্যবহার করলে এই ধাপ বাদ দিয়ে ধাপ ৬-এ যান।" data-en="This step unlocks when the full OCR finishes in Step 3 (browser OCR), or when you upload a .txt below. Muse-route users skip this step — go to Step 6.">This step unlocks when the full OCR finishes in Step 3 (browser OCR), or when you upload a .txt below. Muse-route users skip this step — go to Step 6.</p>
     <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mt-4">
       <p class="font-bold" data-bn="⚠️ OCR লেখা কাঁচা থাকে — এই ধাপের কাজই হলো সেই কাঁচা .txt-কে প্রুফরিড করে বইয়ের মতো পরিষ্কার ডকুমেন্ট বানানো।" data-en="⚠️ OCR text is raw — this step's whole job is to turn that raw .txt into a proofread, book-like document.">⚠️ OCR text is raw — this step's whole job is to turn that raw .txt into a proofread, book-like document.</p>
       <p class="text-sm text-neutral-600 mt-1" data-bn="নিচে দুটি বোতাম আছে — যেটা চান সেটা চাপলে সেই অংশ নিচে খুলবে, আবার চাপলে বন্ধ হয়ে যাবে।" data-en="Two buttons are below — tap the one you want and that section opens underneath; tap again and it closes.">Two buttons are below — tap the one you want and that section opens underneath; tap again and it closes.</p>
@@ -227,7 +247,7 @@
         <span class="collapse-chev shrink-0">▼</span>
       </button>
       <div id="collapse-txt" class="hidden">
-        <p class="text-sm text-neutral-600 mt-2" data-bn="তাহলে ধাপ ২ বাদ দিন — .txt আপলোড করলেই সরাসরি এই ধাপে প্রুফরিড শুরু হবে।" data-en="Then skip Step 2 — upload the .txt and proofreading starts right here in this step.">Then skip Step 2 — upload the .txt and proofreading starts right here in this step.</p>
+        <p class="text-sm text-neutral-600 mt-2" data-bn="তাহলে ধাপ ৩ বাদ দিন — .txt আপলোড করলেই সরাসরি এই ধাপে প্রুফরিড শুরু হবে।" data-en="Then skip Step 3 — upload the .txt and proofreading starts right here in this step.">Then skip Step 3 — upload the .txt and proofreading starts right here in this step.</p>
         <label class="block font-bold mt-3 mb-1" for="txtFile" data-bn=".txt ফাইল আপলোড করুন" data-en="Upload a .txt file">Upload a .txt file</label>
         <input type="file" id="txtFile" accept=".txt,.md,text/plain" class="w-full">
         <p id="txtFileStatus" class="text-sm text-neutral-500 mt-1"></p>
@@ -249,7 +269,7 @@
         <li><b>Gemini / Google AI Studio</b> — <button class="proofsteps-open text-emerald-700 dark:text-emerald-400 font-bold underline" data-bn="গাইডের ধাপগুলো" data-en="Guide steps">Guide steps</button> <span data-bn="দেখুন (পপ-আপে) — ফাইল attach → প্রম্পট → continue → Markdown কপি।" data-en="in a pop-up — attach the file → prompt → continue → copy as Markdown.">in a pop-up — attach the file → prompt → continue → copy as Markdown.</span></li>
         <li><b>Muse</b> — <span data-bn=".txt ফাইলটি আপনার Muse চ্যাটে আপলোড করে" data-en="Upload the .txt in your Muse chat and paste the">Upload the .txt in your Muse chat and paste the</span> <button class="muse-open text-emerald-700 dark:text-emerald-400 font-bold underline" data-bn="গাইডের নির্দেশনা" data-en="guide instruction">guide instruction</button> <span data-bn=", তারপর “continue” লিখে এগোন। কোনো API key লাগে না।" data-en=", then write “continue” to go on. No API key needed.">, then write “continue” to go on. No API key needed.</span></li>
       </ol>
-      <p class="font-bold mt-4" data-bn="প্রুফরিড করা ফাইলটি এখানে আপলোড করুন — তাহলেই ধাপ ৪ (ফরম্যাট করা ডকুমেন্ট) খুলে যাবে:" data-en="Upload your proofread file here — Step 4 (formatted document) will unlock right away:">Upload your proofread file here — Step 4 (formatted document) will unlock right away:</p>
+      <p class="font-bold mt-4" data-bn="প্রুফরিড করা ফাইলটি এখানে আপলোড করুন — তাহলেই ধাপ ৫ (ফরম্যাট করা ডকুমেন্ট) খুলে যাবে:" data-en="Upload your proofread file here — Step 5 (formatted document) will unlock right away:">Upload your proofread file here — Step 5 (formatted document) will unlock right away:</p>
       <label class="block font-bold mt-2 mb-1" for="proofFile" data-bn="প্রুফরিড করা .txt / .md / .docx" data-en="Proofread .txt / .md / .docx">Proofread .txt / .md / .docx</label>
       <input type="file" id="proofFile" accept=".txt,.md,.docx,text/plain,text/markdown" class="w-full">
       <p id="proofFileStatus" class="text-sm text-neutral-500 mt-1"></p>
@@ -290,9 +310,9 @@
   </section>
 
   <section id="docStep" class="bg-white dark:bg-neutral-800 rounded-2xl shadow p-5 mt-6">
-    <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="৪. ফরম্যাট করা ডকুমেন্ট — প্রুফরিড লেখা থেকে বইয়ের মতো ডকুমেন্ট" data-en="4. Formatted document — proofread text to a book-like document">4. Formatted document — proofread text to a book-like document</h2>
-    <p id="docStatus" class="text-sm text-neutral-500 mt-1" data-bn="ধাপ ৩-এ প্রুফরিড শেষ হলে এখানকার বোতাম চালু হবে।" data-en="These buttons unlock when proofreading finishes in Step 3.">These buttons unlock when proofreading finishes in Step 3.</p>
-    <p class="text-sm text-neutral-600 mt-3" data-bn="এই ধাপের কাজ: প্রুফরিড করা লেখাকে বইয়ের মতো ডকুমেন্ট বানানো — টাইটেল পেজ, নতুন পেজে অধ্যায়, মাঝখানে শিরোনাম, জাস্টিফাইড লেখা (আরবি লেখা ডানদিকে সাজানো), শেষে “About this ebook” ক্রেডিট পেজ। প্রিন্টের মতো হুবহু সাজসজ্জা (ড্রপ ক্যাপ, অলংকরণ, বিশেষ ফন্ট) চাইলে ডাউনলোডের পর Google Docs/Word-এ হাতে সাজিয়ে ধাপ ৫-এ আবার আপলোড করুন।" data-en="This step's job: turn proofread text into a book-like document — a title page, chapters starting on new pages, centred headings, justified text (Arabic text right-aligned), and an “About this ebook” credit page at the end. For an exactly-like-print layout (drop caps, ornaments, special fonts), format by hand in Google Docs/Word after download, then upload the revised file again in Step 5.">This step's job: turn proofread text into a book-like document — a title page, chapters starting on new pages, centred headings, justified text (Arabic text right-aligned), and an “About this ebook” credit page at the end. For an exactly-like-print layout (drop caps, ornaments, special fonts), format by hand in Google Docs/Word after download, then upload the revised file again in Step 5.</p>
+    <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="৫. ফরম্যাট করা ডকুমেন্ট — প্রুফরিড লেখা থেকে বইয়ের মতো ডকুমেন্ট" data-en="5. Formatted document — proofread text to a book-like document">5. Formatted document — proofread text to a book-like document</h2>
+    <p id="docStatus" class="text-sm text-neutral-500 mt-1" data-bn="ধাপ ৪-এ প্রুফরিড শেষ হলে এখানকার বোতাম চালু হবে।" data-en="These buttons unlock when proofreading finishes in Step 4.">These buttons unlock when proofreading finishes in Step 4.</p>
+    <p class="text-sm text-neutral-600 mt-3" data-bn="এই ধাপের কাজ: প্রুফরিড করা লেখাকে বইয়ের মতো ডকুমেন্ট বানানো — টাইটেল পেজ, নতুন পেজে অধ্যায়, মাঝখানে শিরোনাম, জাস্টিফাইড লেখা (আরবি লেখা ডানদিকে সাজানো), শেষে “About this ebook” ক্রেডিট পেজ। প্রিন্টের মতো হুবহু সাজসজ্জা (ড্রপ ক্যাপ, অলংকরণ, বিশেষ ফন্ট) চাইলে ডাউনলোডের পর Google Docs/Word-এ হাতে সাজিয়ে ধাপ ৬-এ আবার আপলোড করুন।" data-en="This step's job: turn proofread text into a book-like document — a title page, chapters starting on new pages, centred headings, justified text (Arabic text right-aligned), and an “About this ebook” credit page at the end. For an exactly-like-print layout (drop caps, ornaments, special fonts), format by hand in Google Docs/Word after download, then upload the revised file again in Step 6.">This step's job: turn proofread text into a book-like document — a title page, chapters starting on new pages, centred headings, justified text (Arabic text right-aligned), and an “About this ebook” credit page at the end. For an exactly-like-print layout (drop caps, ornaments, special fonts), format by hand in Google Docs/Word after download, then upload the revised file again in Step 6.</p>
     <div class="grid grid-cols-2 gap-2 mt-4">
       <button id="proofDocxBtn" class="hidden accent-bg text-white rounded-xl px-5 py-3 font-bold" data-bn="⬇ ডকুমেন্ট (.docx)" data-en="⬇ Document (.docx)">⬇ Document (.docx)</button>
       <button id="proofDownloadBtn" class="hidden bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-5 py-3 font-bold" data-bn="⬇ প্রুফরিড করা ফাইল (.md)" data-en="⬇ Proofread file (.md)">⬇ Proofread file (.md)</button>
@@ -300,15 +320,15 @@
   </section>
 
   <section id="finalFormats" class="bg-white dark:bg-neutral-800 rounded-2xl shadow p-5 mt-6">
-    <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="৫. ফাইনাল ইবুক — ডকুমেন্ট থেকে ইবুক" data-en="5. Final ebook — from document to ebook">5. Final ebook — from document to ebook</h2>
-    <p id="finalStatus" class="text-sm text-neutral-500 mt-1" data-bn="ধাপ ৪-এ ডকুমেন্ট তৈরি হলে, অথবা নিচে তৈরি ডকুমেন্ট আপলোড করলে, এখানকার বোতাম চালু হবে।" data-en="These buttons unlock when the document is made in Step 4, or when you upload a finished document below.">These buttons unlock when the document is made in Step 4, or when you upload a finished document below.</p>
+    <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="৬. ফাইনাল ইবুক — ডকুমেন্ট থেকে ইবুক" data-en="6. Final ebook — from document to ebook">6. Final ebook — from document to ebook</h2>
+    <p id="finalStatus" class="text-sm text-neutral-500 mt-1" data-bn="ধাপ ৫-এ ডকুমেন্ট তৈরি হলে, অথবা নিচে তৈরি ডকুমেন্ট আপলোড করলে, এখানকার বোতাম চালু হবে।" data-en="These buttons unlock when the document is made in Step 5, or when you upload a finished document below.">These buttons unlock when the document is made in Step 5, or when you upload a finished document below.</p>
     <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4 mt-4">
       <button class="collapse-toggle w-full flex items-center justify-between gap-2 text-left font-extrabold" data-target="collapse-docx">
         <span data-bn="📄 ইতিমধ্যে ফরম্যাট করা ডকুমেন্ট (.docx) আছে?" data-en="📄 Already have a formatted document (.docx)?">📄 Already have a formatted document (.docx)?</span>
         <span class="collapse-chev shrink-0">▼</span>
       </button>
       <div id="collapse-docx" class="hidden">
-        <p class="text-sm text-neutral-600 mt-2" data-bn="তাহলে উপরের সব ধাপ বাদ দিন — ডকুমেন্টটি এখানে আপলোড করলেই সরাসরি এই ফাইনাল ধাপে চলে আসবেন।" data-en="Then skip every step above — upload the document here and you go straight to this final step.">Then skip every step above — upload the document here and you go straight to this final step.</p>
+        <p class="text-sm text-neutral-600 mt-2" data-bn="তাহলে উপরের সব ধাপ বাদ দিন — ডকুমেন্টটি এখানে আপলোড করলেই সরাসরি এই ফাইনাল ধাপে চলে আসবেন। Muse রুট থেকে এলে: Google Doc খুলে File → Download → Microsoft Word (.docx) করুন, তারপর সেই ফাইল এখানে দিন।" data-en="Then skip every step above — upload the document here and you go straight to this final step. From the Muse route: open your Google Doc, go to File → Download → Microsoft Word (.docx), and upload that file here.">Then skip every step above — upload the document here and you go straight to this final step. From the Muse route: open your Google Doc, go to File → Download → Microsoft Word (.docx), and upload that file here.</p>
         <label class="block font-bold mt-3 mb-1" for="docFile" data-bn="ফরম্যাট করা .docx আপলোড করুন" data-en="Upload a formatted .docx">Upload a formatted .docx</label>
         <input type="file" id="docFile" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" class="w-full">
         <p id="docFileStatus" class="text-sm text-neutral-500 mt-1"></p>
@@ -331,7 +351,7 @@
     <h3 class="font-extrabold mt-5" data-bn="২) হাতে — online-convert ওয়েবসাইট দিয়ে (Kindle ফরম্যাটের জন্য)" data-en="2) Manual — with the online-convert website (for Kindle formats)">2) Manual — with the online-convert website (for Kindle formats)</h3>
     <p class="text-sm text-neutral-600 mt-1" data-bn="AZW3 / MOBI এই ব্রাউজারে সরাসরি বানানো যায় না (Amazon-এর নিজস্ব ফরম্যাট) — এগুলোর জন্য online-convert ব্যবহার করুন। এই সাইটের কোনো সার্ভার নেই, তাই online-convert-এর মতো সার্ভার-ভিত্তিক কনভার্ট এখানে স্বয়ংক্রিয়ভাবে চালানো যায় না; এটাই হাতের উপায়।" data-en="AZW3 / MOBI cannot be built directly in a browser (they are Amazon's own formats) — use online-convert for those. This site has no server, so a server-based conversion like online-convert's cannot run automatically here; this is the manual way.">AZW3 / MOBI cannot be built directly in a browser (they are Amazon's own formats) — use online-convert for those. This site has no server, so a server-based conversion like online-convert's cannot run automatically here; this is the manual way.</p>
     <ol class="list-decimal pl-5 mt-2 space-y-1 text-[15px]">
-      <li><span data-bn="উপরে স্বয়ংক্রিয়ভাবে EPUB ডাউনলোড করুন (অথবা ধাপ ৪ থেকে .docx নিন)।" data-en="Download the EPUB automatically above (or take the .docx from Step 4).">Download the EPUB automatically above (or take the .docx from Step 4).</span></li>
+      <li><span data-bn="উপরে স্বয়ংক্রিয়ভাবে EPUB ডাউনলোড করুন (অথবা ধাপ ৫ থেকে .docx নিন)।" data-en="Download the EPUB automatically above (or take the .docx from Step 5).">Download the EPUB automatically above (or take the .docx from Step 5).</span></li>
       <li><a href="https://ebook.online-convert.com" target="_blank" rel="noopener" class="text-emerald-700 font-bold underline">ebook.online-convert.com</a> <span data-bn="খুলুন, ফাইলটি আপলোড করুন, আউটপুটে AZW3 (Kindle) বা MOBI (পুরোনো Kindle) বাছুন।" data-en="— open it, upload the file, and pick AZW3 (Kindle) or MOBI (older Kindle) as the output.">— open it, upload the file, and pick AZW3 (Kindle) or MOBI (older Kindle) as the output.</span></li>
       <li><span data-bn="Convert চাপুন, তারপর তৈরি ফাইল ডাউনলোড করুন।" data-en="Press Convert, then download the finished file.">Press Convert, then download the finished file.</span></li>
     </ol>
@@ -354,13 +374,13 @@
   <div id="vflatModal" class="hidden fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
     <div class="bg-white dark:bg-neutral-800 rounded-2xl shadow-xl max-w-lg w-full p-5 max-h-[85vh] overflow-y-auto">
       <h3 class="serif text-xl font-extrabold" data-bn="🐢 OCR ধীর? vFlat দিয়ে PDF → .txt" data-en="🐢 OCR too slow? PDF → .txt with vFlat">🐢 OCR too slow? PDF → .txt with vFlat</h3>
-      <p class="text-[15px] mt-2" data-bn="ফোনে ব্রাউজার OCR ধীর হলে vFlat অ্যাপে PDF থেকে .txt বানিয়ে এখানে ফিরে আসুন — ধাপ ২ বাদ যাবে, সরাসরি ধাপ ৩-এ প্রুফরিড শুরু হবে।" data-en="If browser OCR is slow on your phone, make the .txt in the vFlat app and come back here — Step 2 is skipped and proofreading starts straight in Step 3.">If browser OCR is slow on your phone, make the .txt in the vFlat app and come back here — Step 2 is skipped and proofreading starts straight in Step 3.</p>
+      <p class="text-[15px] mt-2" data-bn="ফোনে ব্রাউজার OCR ধীর হলে vFlat অ্যাপে PDF থেকে .txt বানিয়ে এখানে ফিরে আসুন — ধাপ ৩ বাদ যাবে, সরাসরি ধাপ ৪-এ প্রুফরিড শুরু হবে।" data-en="If browser OCR is slow on your phone, make the .txt in the vFlat app and come back here — Step 3 is skipped and proofreading starts straight in Step 4.">If browser OCR is slow on your phone, make the .txt in the vFlat app and come back here — Step 3 is skipped and proofreading starts straight in Step 4.</p>
       <ol class="list-decimal pl-5 mt-4 space-y-2 text-[15px]">
         <li><a href="https://t.me/sharingmyprivacy/3" target="_blank" rel="noopener" class="text-emerald-700 font-bold underline">এই লিঙ্ক থেকে</a> vFlat অ্যাপ ডাউনলোড করে ইন্সটল করুন।</li>
         <li><span data-bn="vFlat-এ PDF লোড করুন।" data-en="Load the PDF in vFlat.">Load the PDF in vFlat.</span></li>
         <li><span data-bn="OCR করুন।" data-en="Run OCR.">Run OCR.</span></li>
         <li><span data-bn=".txt হিসেবে এক্সপোর্ট করুন।" data-en="Export as .txt.">Export as .txt.</span></li>
-        <li><span data-bn="এখানে ফিরে এসে ধাপ ৩-এর “.txt ফাইল আপলোড করুন” বক্সে সেই .txt দিন।" data-en="Come back here and put that .txt in Step 3's “Upload a .txt file” box.">Come back here and put that .txt in Step 3's “Upload a .txt file” box.</span></li>
+        <li><span data-bn="এখানে ফিরে এসে ধাপ ৪-এর “.txt ফাইল আপলোড করুন” বক্সে সেই .txt দিন।" data-en="Come back here and put that .txt in Step 4's “Upload a .txt file” box.">Come back here and put that .txt in Step 4's “Upload a .txt file” box.</span></li>
       </ol>
       <div class="flex flex-wrap gap-2 mt-4">
         <button id="vflatClose" class="bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-5 py-3 font-bold" data-bn="বন্ধ করুন" data-en="Close">Close</button>
@@ -409,7 +429,7 @@
         <li>Tap <b>+</b> and add the text file.</li>
         <li>Tap the system-instruction spot and paste the prompt below (use the Copy button).</li>
         <li>Write <b>continue</b>, then Run (Ctrl + Enter). Repeat until the whole book is done.</li>
-        <li>On any response, tap the three dots and choose <b>Copy as Markdown</b>. Join the parts into one file and upload it in Step 3.</li>
+        <li>On any response, tap the three dots and choose <b>Copy as Markdown</b>. Join the parts into one file and upload it in Step 4.</li>
         <li>On a phone: press and hold where you paste, then tap Paste — do not paste from the keyboard popup, or formatting is lost.</li>
       </ol>
       <label class="block font-bold mt-4 mb-1" for="proofPromptText" data-bn="প্রুফরিডিং প্রম্পট" data-en="Proofreading prompt">Proofreading prompt</label>
@@ -485,6 +505,80 @@ Rules:
       <div class="flex flex-wrap gap-2 mt-3">
         <button id="copyMusePromptBtn" class="accent-bg text-white rounded-xl px-4 py-2.5 font-bold" data-bn="নির্দেশনা কপি করুন" data-en="Copy instruction">Copy instruction</button>
         <button class="muse-close bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-4 py-2.5 font-bold" data-bn="বন্ধ করুন" data-en="Close">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="museDirectModal" class="hidden fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-neutral-800 rounded-2xl shadow-xl max-w-lg w-full p-5 max-h-[85vh] overflow-y-auto">
+      <h3 class="serif text-xl font-extrabold" data-bn="Muse দিয়ে PDF থেকে Google Doc — পুরো প্রম্পট" data-en="PDF to Google Doc with Muse — the full prompt">PDF to Google Doc with Muse — the full prompt</h3>
+      <p class="text-[15px] mt-2" data-bn="Muse চ্যাটে PDF attach করে নিচের পুরো লেখাটি একই মেসেজে পেস্ট করুন। তারপর প্রতি অংশের পর Muse “DONE” লিখলে “continue” লিখুন।" data-en="In a Muse chat, attach the PDF and paste the whole text below in the same message. Then, after each chunk, when Muse writes “DONE”, write “continue”.">In a Muse chat, attach the PDF and paste the whole text below in the same message. Then, after each chunk, when Muse writes “DONE”, write “continue”.</p>
+      <textarea id="museDirectPromptText" readonly rows="12" class="w-full border border-neutral-300 rounded-xl p-3 text-sm mt-3">I am attaching a PDF of an old, copyright-free (public domain) book. Extract all of its text (if the PDF is in legacy Bijoy/SutonnyMJ encoding, convert it to Unicode Bangla), then digitize and proofread it following the strict guidelines below, and finally create a formatted Google Doc from the finished Markdown and send me the link. No cover-page or artwork description notes — the document must begin directly with the book title.
+
+Act as an expert Digital Archivist, Master Typographer, and EPUB Formatter. Your task is to digitize raw, unformatted text (often containing OCR errors) from old, copyright-free (public domain) books and convert it into pristine, beautifully structured Markdown optimized for professional EPUB conversion.
+
+I will provide the text to you chapter-by-chapter (or section-by-section).
+
+Please apply the following strict guidelines to every submission:
+
+1. STRUCTURAL HIERARCHY (Semantic Markdown):
+- Use `#` for the Book Title (only on the title page/first prompt).
+- Use `##` for Chapter Titles or Major Sections (e.g., `## Chapter I`).
+- Use `###` for Sub-chapters or Section Breaks.
+- Separate scenes or thematic breaks using a standard horizontal rule: `***`.
+- Give page break at the end of the chapter or where necessary.
+
+2. OCR ERROR CORRECTION & CLEANUP:
+- Remove all original page numbers, running headers, and running footers.
+- Fix broken line breaks (hard returns in the middle of sentences). Join fragmented sentences into cohesive paragraphs.
+- Correct common OCR errors ("scannos") without altering the original meaning (e.g., fix "rn" misread as "m", "l" misread as "1", "thc" to "the").
+- DO NOT modernize the author's vocabulary or intentional archaic spellings (e.g., keep "to-morrow", "shew", "colour" if they appear in the original text).
+
+3. PROFESSIONAL TYPOGRAPHY:
+- Replace double hyphens (`--`) with proper em-dashes (`—`) without spaces on either side.
+- Replace spaced hyphens with en-dashes (`–`) where appropriate (e.g., date ranges).
+- Standardize quotation marks. Use proper Markdown italicization `*like this*` for emphasis, book titles, and foreign words.
+- Ensure proper spacing after punctuation.
+
+4. SPECIAL FORMATTING:
+- Blockquotes: Prefix multi-line quotes or letters with `> `.
+- Poetry/Song Lyrics: Use double spaces at the end of a line to create a soft line break, preserving the stanza structure.
+- Footnotes: Footnote Entry should be added next to the footnote number and footnote entry should be within Third bracket within the text, not separately. Footnote number should be in superscript. Endnote & Citation too.
+
+5. NAVIGATION & DIGITAL LINKED INDEX:
+- Table of Contents (TOC): If processing a TOC, remove all original page numbers. Convert the entries into a digital linked list targeting chapter anchors. Format: `- [Chapter Name](#chapter-name)`.
+- Back-of-Book Index: Original printed page numbers are useless in reflowable EPUBs. When processing an Index, REMOVE all page numbers. Convert the index into a hierarchical, digital linked index. Format each main entry as a Markdown hyperlink pointing to an anchor of the term itself.
+  Example: Convert "Astrophysics ........... 45, 67" to `- [Astrophysics](#astrophysics)`.
+  Retain original sub-entries as indented sub-bullets under the main term.
+
+6. CLEAN CODE:
+- Output ONLY the formatted Markdown.
+- Do not include conversational filler (e.g., "Here is your text," "Let me know if you need changes").
+
+7. For Bangla & Arabic Language:
+- Correct Bangla OCR spelling error, য় can be mistaken as য
+- Title and Heading should be center aligned.
+- All the text should be in Justified Alignment except Arabic which must be right aligned.
+- For Arabic text: correct the Arabic sentence if there is error and add Harkat to it. Don't use any bracket in Arabic text.
+In case of Quranic ayah follow this format,
+آيه ۝١٩١ (the number is for example)
+
+Please proofread this book for me, in chunks, so I can make a clean EPUB from it.
+
+Rules:
+- This file is OCR text from a book. Fix OCR errors, broken line breaks, stray characters in footnotes, and repeated page headers that split paragraphs in half.
+- Do NOT change the author's wording, meaning, or theological terms. Do NOT modernize old spellings.
+- For Bangla: correct OCR spelling mistakes (for example য় misread as য). Centre titles and headings.
+- For Arabic text: correct errors, add harkat, do not use brackets. Never alter Quranic verses or Hadith texts — only fix clear OCR mistakes in them.
+- Format the output as clean Markdown: # for the book title, ## for chapter titles, ### for sub-sections, *** for scene breaks. Remove page numbers, running headers and footers. Join fragmented sentences into proper paragraphs.
+- Footnotes: keep the footnote entry next to its number, in superscript, within third brackets.
+- Work through the file in chunks of about 8,000 characters. After each chunk, stop and say DONE, and wait for me to say "continue" before doing the next chunk.
+- Output ONLY the proofread Markdown for each chunk — no explanations, no "here is your text".
+
+When the whole book is finished, convert the completed Markdown into a formatted Google Doc (headings, tables, and lists preserved; Bangla text justified, titles and headings centred, Arabic right-aligned), name the Doc with the book's title, and send me the Google Docs link.</textarea>
+      <div class="flex flex-wrap gap-2 mt-3">
+        <button id="copyMuseDirectBtn" class="accent-bg text-white rounded-xl px-4 py-2.5 font-bold" data-bn="পুরো প্রম্পট কপি করুন" data-en="Copy the full prompt">Copy the full prompt</button>
+        <button class="museDirect-close bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-4 py-2.5 font-bold" data-bn="বন্ধ করুন" data-en="Close">Close</button>
       </div>
     </div>
   </div>
