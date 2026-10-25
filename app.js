@@ -171,6 +171,16 @@
 
   function openModal(m) { if (m) m.classList.remove('hidden'); }
   function closeModal(m) { if (m) m.classList.add('hidden'); }
+  /* v10: a .docx paragraph is XML — its properties (<w:pPr>, <w:rPr>,
+     fonts, spacing, justification) are NOT text. The old code only
+     unwrapped <w:t> elements and left every other tag in place, so a
+     Google Doc .docx came out as raw XML in the EPUB. Now only the
+     <w:t> run texts are collected, in order, and joined exactly as
+     written (spaces live inside the runs, so no separator is added).
+     Tabs and line breaks become spaces; XML entities are decoded. */
+  function decodeXmlEntities(t) {
+    return String(t).replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, '&');
+  }
   async function parseDocxToMd(file) {
     if (typeof JSZip === 'undefined') throw new Error('The document library did not load — check connection and try again.');
     var zip = await JSZip.loadAsync(await file.arrayBuffer());
@@ -182,11 +192,15 @@
     while ((m = paraRe.exec(xml)) !== null) {
       var p = m[0];
       var style = (p.match(/<w:pStyle w:val="([^"]+)"/) || [])[1] || '';
-      var text = p.replace(/<w:tab[^/]*\/>/g, ' ').replace(/<w:t[^>]*>([^<]*)<\/w:t>/g, '$1').trim();
+      var body = p.replace(/<w:tab[^>]*\/>/g, ' ').replace(/<w:br[^>]*\/>/g, ' ');
+      var parts = [], tm;
+      var tRe = /<w:t[^>]*>([^<]*)<\/w:t>/g;
+      while ((tm = tRe.exec(body)) !== null) parts.push(tm[1]);
+      var text = decodeXmlEntities(parts.join('')).trim();
       if (!text) continue;
       if (/^Title/i.test(style)) md.push('# ' + text);
-      else if (/^Heading1/i.test(style)) md.push('## ' + text);
-      else if (/^Heading2/i.test(style)) md.push('### ' + text);
+      else if (/^Heading\s*1/i.test(style)) md.push('## ' + text);
+      else if (/^Heading\s*2/i.test(style)) md.push('### ' + text);
       else md.push(text);
     }
     return md.join('\n\n');
@@ -421,6 +435,20 @@
         }
       } catch (e) { cover = null; }
     }
+    /* v10: embed Hind Siliguri (open-licensed, shipped in this repo)
+       so Bengali shapes correctly in readers whose default font cannot
+       shape it (Google Play Books' default font is the reported case).
+       Same-origin first, CDN fallback; without it the EPUB still builds
+       and falls back to the reader's font. */
+    var fontBuf = null;
+    var fontUrls = ['HindSiliguri-Regular.ttf', 'fonts/HindSiliguri-Regular.ttf',
+      'https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/hindsiliguri/HindSiliguri-Regular.ttf'];
+    for (var fi = 0; fi < fontUrls.length && !fontBuf; fi++) {
+      try {
+        var fres = await fetch(fontUrls[fi]);
+        if (fres && fres.ok) fontBuf = await fres.arrayBuffer();
+      } catch (e) { fontBuf = null; }
+    }
     var zip = new JSZip();
     zip.file('mimetype', 'application/epub', { compression: 'STORE' });
     zip.file('META-INF/container.xml', '<?xml version="1.0" encoding="UTF-8"?><container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container"><rootfiles><rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/></rootfiles></container>');
@@ -431,13 +459,19 @@
       manifest += '<item id="chap' + (i + 1) + '" href="' + file + '" media-type="application/xhtml+xml"/>';
       spine += '<itemref idref="chap' + (i + 1) + '"/>';
       var body = ch.html ? ch.html : (ch.heading ? '<h2>' + escapeHtml(ch.title) + '</h2>\n' : '') + ch.blocks.map(blockToXhtml).join('\n');
-      zip.file('OEBPS/' + file, '<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head><title>' + escapeHtml(ch.title) + '</title><style>body{font-family:serif;line-height:1.7}h1,h2,h3{text-align:center}p{text-align:justify;margin:0 0 1em 0}</style></head><body>' + body + '</body></html>');
+      var epubCss = (fontBuf ? "@font-face{font-family:'Hind Siliguri';src:url('fonts/HindSiliguri-Regular.ttf');}" : '')
+        + "body{font-family:'Hind Siliguri',serif;line-height:1.7}h1,h2,h3{text-align:center}p{text-align:justify;margin:0 0 1em 0}";
+      zip.file('OEBPS/' + file, '<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head><title>' + escapeHtml(ch.title) + '</title><style>' + epubCss + '</style></head><body>' + body + '</body></html>');
     });
     if (cover) {
       manifest += '<item id="cover" href="cover.' + cover.ext + '" media-type="' + cover.type + '"/>';
       zip.file('OEBPS/cover.' + cover.ext, cover.blob);
     }
-    zip.file('OEBPS/content.opf', '<?xml version="1.0" encoding="UTF-8"?><package xmlns="http://www.idpf.org/2007/opf" unique-identifier="bookid" version="2.0"><metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf"><dc:title>' + escapeXml(title) + '</dc:title><dc:creator>' + escapeXml(author) + '</dc:creator><dc:language>' + lang + '</dc:language><dc:identifier id="bookid">' + uid + '</dc:identifier>' + (cover ? '<meta name="cover" content="cover"/>' : '') + '</metadata><manifest>' + manifest + '</manifest><spine toc="ncx">' + spine + '</spine></package>');
+    if (fontBuf) {
+      manifest += '<item id="font-bn" href="fonts/HindSiliguri-Regular.ttf" media-type="application/x-font-ttf"/>';
+      zip.file('OEBPS/fonts/HindSiliguri-Regular.ttf', fontBuf);
+    }
+    zip.file('OEBPS/content.opf', '<?xml version="1.0" encoding="UTF-8"?><package xmlns="http://www.idpf.org/2007/opf" unique-identifier="bookid" version="2.0"><metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf"><dc:title>' + escapeXml(title) + '</dc:title><dc:creator>' + escapeXml(author || creditName()) + '</dc:creator><dc:language>' + lang + '</dc:language><dc:identifier id="bookid">' + uid + '</dc:identifier>' + (cover ? '<meta name="cover" content="cover"/>' : '') + '</metadata><manifest>' + manifest + '</manifest><spine toc="ncx">' + spine + '</spine></package>');
     var nav = chapters.map(function (ch, i) {
       return '<navPoint id="nav' + (i + 1) + '" playOrder="' + (i + 1) + '"><navLabel><text>' + escapeXml(ch.title) + '</text></navLabel><content src="chap' + (i + 1) + '.xhtml"/></navPoint>';
     }).join('');
@@ -478,8 +512,8 @@
     sections.push('<section class="chapter"><h2>About this ebook</h2>' + creditLines().map(function (ln) { return '<p>' + escapeHtml(ln) + '</p>'; }).join('')
       + '<p>Made with <a href="https://mdtowfiqul.github.io/our-ebook-maker/">Our Ebook Maker</a></p>'
       + '<p>Shared on <a href="https://mdtowfiqul.github.io/our-boighar/">Our Boighar</a></p></section>');
-    return '<!DOCTYPE html><html><head><meta charset="utf-8"><title>' + escapeHtml(title) + '</title><style>'
-      + 'body{font-family:"Noto Serif Bengali",serif;line-height:1.7;max-width:700px;margin:0 auto;padding:24px}'
+    return '<!DOCTYPE html><html><head><meta charset="utf-8"><title>' + escapeHtml(title) + '</title><link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;700&family=Noto+Serif+Bengali:wght@500;700&display=swap" rel="stylesheet"><style>'
+      + 'body{font-family:"Hind Siliguri","Noto Serif Bengali",serif;line-height:1.7;max-width:700px;margin:0 auto;padding:24px}'
       + 'h1,h2,h3{text-align:center}p{text-align:justify;margin:0 0 1em 0}'
       + '.titlepage{text-align:center;margin-top:30%}.chapter{page-break-before:always}.titlepage{page-break-before:auto}'
       + '@media print{.noprint{display:none}}'

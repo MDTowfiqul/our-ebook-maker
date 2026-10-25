@@ -8,8 +8,8 @@ site then turns that document into EPUB, PDF and Kindle formats.
 
 ## How it works — 3 steps, all visible
 
-1. **Your book** — title, author, your name (for the ebook credit
-   page), and a cover. Upload a cover if you have one, find one
+1. **Your book** — title, author, ebook creator name (right below
+   the author, shown on the credit page), and a cover. Upload a cover if you have one, find one
    online, or make a text cover (tap "Generate another style" as
    many times as you like — the algorithm never repeats a fixed
    cycle). The scanned PDF itself does not go here.
@@ -26,7 +26,9 @@ site then turns that document into EPUB, PDF and Kindle formats.
    in Step 3.
 3. **Final ebook — from document to ebook** — upload the Google Doc
    .docx and the EPUB, PDF and .docx-download buttons unlock at
-   once. EPUB and PDF are built automatically in the browser (title
+   once. EPUB and PDF are built automatically in the browser (the
+   EPUB embeds the Hind Siliguri font so Bengali renders correctly
+   in Play Books' default font; title
    page, chapters on new pages, centred headings, justified text
    with Arabic right-aligned, your cover, credit page); AZW3 / MOBI
    go through online-convert (manual, linked in the step), and

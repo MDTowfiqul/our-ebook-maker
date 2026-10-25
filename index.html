@@ -142,9 +142,13 @@
         <input type="text" id="title" class="w-full border border-neutral-300 rounded-xl px-3 py-2.5 outline-none focus:border-emerald-600" placeholder="Book title" data-bn-ph="বইয়ের নাম" data-en-ph="Book title">
       </div>
       <div>
-        <label class="block font-bold mb-1" for="author" data-bn="লেখক (ঐচ্ছিক)" data-en="Author (optional)">Author (optional)</label>
+        <label class="block font-bold mb-1" for="author" data-bn="লেখক" data-en="Author">Author</label>
         <input type="text" id="author" class="w-full border border-neutral-300 rounded-xl px-3 py-2.5 outline-none focus:border-emerald-600" placeholder="Author name" data-bn-ph="লেখকের নাম" data-en-ph="Author name">
       </div>
+    </div>
+    <div class="mt-3">
+      <label class="block font-bold mb-1" for="creator" data-bn="ইবুক নির্মাতার নাম (ক্রেডিট পেজে দেখাবে)" data-en="Ebook creator name (shown on the credit page)">Ebook creator name (shown on the credit page)</label>
+      <input type="text" id="creator" class="w-full border border-neutral-300 rounded-xl px-3 py-2.5 outline-none focus:border-emerald-600" placeholder="Ebook creator name" data-bn-ph="ইবুক নির্মাতার নাম" data-en-ph="Ebook creator name">
     </div>
     <div id="coverSection" class="border-t border-neutral-100 mt-5 pt-4">
       <h3 class="font-extrabold" data-bn="বইয়ের প্রচ্ছদ (ঐচ্ছিক)" data-en="Book cover (optional)">Book cover (optional)</h3>
@@ -161,10 +165,7 @@
       <img id="coverImg" class="hidden w-40 rounded-xl shadow mt-3" alt="">
       <div><a id="coverDownloadBtn" class="hidden accent-bg text-white rounded-xl px-4 py-2.5 font-bold inline-block mt-3" download="cover.png" data-bn="⬇ কভার ডাউনলোড করুন" data-en="⬇ Download cover">⬇ Download cover</a></div>
     </div>
-    <div class="mt-3">
-      <label class="block font-bold mb-1" for="creator" data-bn="আপনার নাম (ঐচ্ছিক — ইবুকের ক্রেডিট পেজে দেখাবে)" data-en="Your name (optional — shown as ebook creator on the credit page)">Your name (optional — shown as ebook creator on the credit page)</label>
-      <input type="text" id="creator" class="w-full border border-neutral-300 rounded-xl px-3 py-2.5 outline-none focus:border-emerald-600" placeholder="Your name" data-bn-ph="আপনার নাম" data-en-ph="Your name">
-    </div>
+
   </section>
 
   <section id="museRoute" class="bg-white dark:bg-neutral-800 rounded-2xl shadow p-5 mt-6">
