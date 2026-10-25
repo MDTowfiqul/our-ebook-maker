@@ -11,7 +11,7 @@
 (function () {
   'use strict';
   var $ = function (id) { return document.getElementById(id); };
-  var titleEl = $('title'), authorEl = $('author'), creatorEl = $('creator');
+  var titleEl = $('title'), authorEl = $('author'), creatorEl = $('creator'), creatorLinkEl = $('creatorLink');
   var coverFileEl = $('coverFile'), coverOnlineBtn = $('coverOnlineBtn'), coverTextBtn = $('coverTextBtn'), coverUseBtn = $('coverUseBtn');
   var coverImg = $('coverImg'), coverStatusEl = $('coverStatus'), coverCarouselWrap = $('coverCarouselWrap'), coverCarousel = $('coverCarousel'), coverPrevBtn = $('coverPrevBtn'), coverNextBtn = $('coverNextBtn');
   var langToggle = $('lang-toggle'), langLabel = $('lang-label');
@@ -486,16 +486,28 @@
     return 'en';
   }
   function creditName() { return (creatorEl && creatorEl.value ? creatorEl.value : '').trim(); }
+  /* v20: optional creator link from Step 1 (social media / contact).
+     A bare handle or domain gets https:// prepended; empty means
+     the creator name stays plain text — no invented link. */
+  function creditLink() {
+    var v = (creatorLinkEl && creatorLinkEl.value ? creatorLinkEl.value : '').trim();
+    if (!v) return '';
+    if (!/^(https?:|mailto:)/i.test(v)) v = 'https://' + v;
+    return v;
+  }
   /* v11: credit page like his own books — "ইবুক নির্মাতা: <name>" then
      "সৌজন্যে: Our Ebook Maker ও Our Boighar" (labels follow the book's
      language: Bengali for Bengali books, English otherwise). */
   function creditBlockHtml(title) {
     var bn = detectLang(title || '') === 'bn';
     var html = '<h2>' + (bn ? 'এই ইবুক সম্পর্কে' : 'About this ebook') + '</h2>';
-    /* v17: image-1 pattern — the creator name is a link too, like the
-       courtesy names below it (it points to Our Boighar, his books site). */
-    if (creditName()) html += '<p>' + (bn ? 'ইবুক নির্মাতা: ' : 'Ebook creator: ')
-      + '<a href="https://mdtowfiqul.github.io/our-boighar/">' + escapeHtml(creditName()) + '</a></p>';
+    /* v20: image-1 pattern — the creator name is a link when the
+       optional Step 1 link box is filled, plain text otherwise. */
+    if (creditName()) {
+      var cl = creditLink();
+      html += '<p>' + (bn ? 'ইবুক নির্মাতা: ' : 'Ebook creator: ')
+        + (cl ? '<a href="' + escapeHtml(cl) + '">' + escapeHtml(creditName()) + '</a>' : escapeHtml(creditName())) + '</p>';
+    }
     html += '<p>' + (bn ? 'সৌজন্যে: ' : 'Courtesy: ')
       + '<a href="https://mdtowfiqul.github.io/our-ebook-maker/">Our Ebook Maker</a>'
       + (bn ? ' ও ' : ' and ')
@@ -506,7 +518,7 @@
       + '<p>এর মূল লক্ষ্য—জ্ঞান ও সৎ চিন্তার প্রসার।</p>'
       + '<p>তবে অনুরোধ রইল,</p>'
       + '<p>আপনি যেন লেখক, অনুবাদক ও প্রকাশকের ন্যায্য অধিকারকে সম্মান করেন।</p>'
-      + '<p>বইটি বিনামূল্যে ছড়িয়ে দেওয়া। বাণিজ্যিক উদ্দেশ্যে ব্যবহার করা, লেখকের অথবা প্রকাশকের ক্ষতি করা একেবারেই কাম্য নয়।</p>'
+      + '<p>বইটি বিনামূল্যে ছড়িয়ে দেওয়া, বাণিজ্যিক উদ্দেশ্যে ব্যবহার করা, লেখকের অথবা প্রকাশকের ক্ষতি করা একেবারেই কাম্য নয়।</p>'
       + '<p>যদি এই বইটি আপনার ভালো লাগে —</p>'
       + '<p>তবে অনুগ্রহ করে মূল মুদ্রিত (hard copy) বইটি সংগ্রহ করুন।</p>'
       + '<p>[বিঃদ্রঃ - এই ই-বুকটি AI Generate কৃত, তাই বইটিতে ভুল থাকা স্বাভাবিক]</p>';
