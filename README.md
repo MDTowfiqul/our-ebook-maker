@@ -10,7 +10,7 @@ site then turns that document into EPUB, PDF and Kindle formats.
 
 1. **Your book** — title, author, ebook creator name (right below
    the author, shown on the credit page), and a cover. Upload a cover if you have one, find one
-   online, or make a text cover (tap "Generate another style" as
+   online, or make a text cover (tap the same button again for
    many times as you like — the algorithm never repeats a fixed
    cycle). The scanned PDF itself does not go here.
 2. **Muse route — scanned PDF to Google Doc** — open a Muse chat,
@@ -19,14 +19,15 @@ site then turns that document into EPUB, PDF and Kindle formats.
    the text — converting legacy Bijoy/SutonnyMJ fonts to Unicode
    Bangla — proofreads the whole book automatically (no
    DONE/continue round trip) and sends a formatted Google Doc
-   link that reads like a main published book. The Doc
+   link that reads like a main published book, plus the
+   finished document as a downloadable .docx file. The Doc
    begins directly with the book title, with no cover-page or
    artwork notes. This site itself cannot call Muse or your Drive;
    that part happens in the Muse chat. Then download the .docx
    from the Doc (File → Download → Microsoft Word) and upload it
    in Step 3.
 3. **Final ebook — from document to ebook** — upload the Google Doc
-   .docx and the EPUB, Download PDF and .docx-download buttons
+   .docx and the EPUB and Download PDF buttons
    unlock at once (Download PDF opens the print dialog
    automatically — choose Save as PDF). EPUB and PDF are built
    automatically in the browser (the EPUB embeds the Hind

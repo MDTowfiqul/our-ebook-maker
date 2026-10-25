@@ -12,16 +12,14 @@
   'use strict';
   var $ = function (id) { return document.getElementById(id); };
   var titleEl = $('title'), authorEl = $('author'), creatorEl = $('creator');
-  var coverFileEl = $('coverFile'), coverOnlineBtn = $('coverOnlineBtn'), coverTextBtn = $('coverTextBtn');
-  var coverAnotherBtn = $('coverAnotherBtn');
+  var coverFileEl = $('coverFile'), coverOnlineBtn = $('coverOnlineBtn'), coverTextBtn = $('coverTextBtn'), coverUseBtn = $('coverUseBtn');
   var coverImg = $('coverImg'), coverStatusEl = $('coverStatus'), coverCarouselWrap = $('coverCarouselWrap'), coverCarousel = $('coverCarousel'), coverPrevBtn = $('coverPrevBtn'), coverNextBtn = $('coverNextBtn');
   var langToggle = $('lang-toggle'), langLabel = $('lang-label');
   var docFileEl = $('docFile'), docFileStatusEl = $('docFileStatus'), finalStatusEl = $('finalStatus');
   var proofEpubBtn = $('proofEpubBtn');
   var proofPdfBtn = $('proofPdfBtn');
-  var docxBackBtn = $('docxBackBtn');
   var navHome = $('navHome'), navMuse = $('navMuse'), navEbook = $('navEbook'), navGuide = $('navGuide');
-  var state = { proofText: '', coverBlob: null, coverExt: 'png', docBlob: null };
+  var state = { proofText: '', coverBlob: null, coverExt: 'png', textCoverBlob: null };
 
   /* ---- Language (EN/BN toggle, like Our Boighar) ---- */
   var LANG = localStorage.getItem('oem-lang') || 'en';
@@ -209,6 +207,7 @@
   function showCover(src, filename, blob) {
     coverImg.src = src;
     coverImg.classList.remove('hidden');
+    if (coverUseBtn) coverUseBtn.classList.add('hidden');
     /* The uploaded/generated file itself is what the ebook builder embeds. */
     state.coverBlob = blob || null;
     state.coverExt = (blob && blob.type && blob.type.indexOf('jpeg') !== -1) ? 'jpg' : 'png';
@@ -273,6 +272,21 @@
     });
     if (coverCarouselWrap) coverCarouselWrap.classList.remove('hidden');
   }
+  /* v12: Open Library has nothing for many Bengali titles (0 results
+     for "হিমু"), so Google Books is the second source before giving up. */
+  async function searchGoogleBooks(query) {
+    var url = 'https://www.googleapis.com/books/v1/volumes?q=' + encodeURIComponent(query) + '&maxResults=10';
+    var res = await fetch(url);
+    if (!res.ok) return [];
+    var data = await res.json();
+    var out = [];
+    (data.items || []).forEach(function (it) {
+      var links = (it.volumeInfo || {}).imageLinks || {};
+      var thumb = links.thumbnail || links.smallThumbnail;
+      if (thumb) out.push({ src: thumb.replace(/^http:/, 'https:'), title: (it.volumeInfo.title || ''), author: ((it.volumeInfo.authors || [])[0] || '') });
+    });
+    return out;
+  }
   if (coverPrevBtn) coverPrevBtn.addEventListener('click', function () { if (coverCarousel) coverCarousel.scrollBy({ left: -160, behavior: 'smooth' }); });
   if (coverNextBtn) coverNextBtn.addEventListener('click', function () { if (coverCarousel) coverCarousel.scrollBy({ left: 160, behavior: 'smooth' }); });
   coverOnlineBtn.addEventListener('click', async function () {
@@ -284,6 +298,9 @@
     try {
       var covers = await searchCovers('title=' + encodeURIComponent(title) + (author ? '&author=' + encodeURIComponent(author) : ''));
       if (!covers.length) covers = await searchCovers('title=' + encodeURIComponent(title));
+      if (!covers.length) covers = await searchCovers('q=' + encodeURIComponent(title));
+      if (!covers.length) covers = await searchGoogleBooks('intitle:' + title + (author ? ' inauthor:' + author : ''));
+      if (!covers.length) covers = await searchGoogleBooks(title);
       if (covers.length) {
         renderCoverCarousel(covers);
         coverStatusEl.textContent = L(covers.length + ' covers found — swipe left/right and tap "Use as cover" on the one you like.',
@@ -364,15 +381,29 @@
       ctx.fillText(author, 300, 780);
     }
     cv.toBlob(function (blob) {
-      showCover(URL.createObjectURL(blob), 'cover.png', blob);
-      coverStatusEl.textContent = L('Text cover ready (design #' + (coverStyleIdx + 1) + ', unlimited styles) — this cover is already set for your final ebook. Tap "Generate another style" for a brand-new design.',
-        'লেখা-প্রচ্ছদ তৈরি (ডিজাইন #' + (coverStyleIdx + 1) + ', স্টাইলের শেষ নেই) — এই কভারটাই চূড়ান্ত ইবুকের জন্য সেট হয়েছে। নতুন ডিজাইনের জন্য "আরেকটি স্টাইল বানান" চাপুন।');
+      /* v12: preview only — the cover is set when "Use as cover" is
+         tapped, so the button the user asked for always exists. */
+      state.textCoverBlob = blob;
+      coverImg.src = URL.createObjectURL(blob);
+      coverImg.classList.remove('hidden');
+      if (coverUseBtn) coverUseBtn.classList.remove('hidden');
+      coverStatusEl.textContent = L('Text cover ready (design #' + (coverStyleIdx + 1) + ', unlimited styles) — tap "Use as cover" below it to set it for your final ebook. Tap "Make a text cover" again for a brand-new design.',
+        'লেখা-প্রচ্ছদ তৈরি (ডিজাইন #' + (coverStyleIdx + 1) + ', স্টাইলের শেষ নেই) — চূড়ান্ত ইবুকের জন্য সেট করতে নিচের "Use as cover" চাপুন। নতুন ডিজাইনের জন্য "Make a text cover" আবার চাপুন।');
     }, 'image/png');
   }
-  if (coverTextBtn) coverTextBtn.addEventListener('click', function () { drawTextCover(); });
-  if (coverAnotherBtn) coverAnotherBtn.addEventListener('click', function () {
-    coverStyleIdx += 1;
+  /* v12: one button — first tap makes the cover, every later tap
+     advances the style, so there is no second button to maintain. */
+  var textCoverMade = false;
+  if (coverTextBtn) coverTextBtn.addEventListener('click', function () {
+    if (textCoverMade) coverStyleIdx += 1;
+    textCoverMade = true;
     drawTextCover();
+  });
+  if (coverUseBtn) coverUseBtn.addEventListener('click', function () {
+    if (!state.textCoverBlob) return;
+    showCover(URL.createObjectURL(state.textCoverBlob), 'cover.png', state.textCoverBlob);
+    coverStatusEl.textContent = L('Cover set — this is the cover that will go into your final ebook.',
+      'কভার সেট হয়েছে — এই কভারটাই চূড়ান্ত ইবুকে যাবে।');
   });
 
   /* ---- Automatic proofreading (visitor's own Gemini or OpenRouter key) ---- */
@@ -596,21 +627,15 @@
     if (!f) return;
     try {
       state.proofText = await parseDocxToMd(f);
-      state.docBlob = f;
       if (!titleEl.value) titleEl.value = f.name.replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' ');
       docFileStatusEl.textContent = '✓ ' + L('Document loaded: ', 'ডকুমেন্ট লোড হয়েছে: ') + f.name
-        + L(' — EPUB, PDF and the .docx download below are ready.', ' — নিচে EPUB, PDF আর .docx ডাউনলোড তৈরি।');
+        + L(' — EPUB and PDF below are ready.', ' — নিচে EPUB আর PDF তৈরি।');
       if (proofEpubBtn) proofEpubBtn.disabled = false;
       if (proofPdfBtn) proofPdfBtn.disabled = false;
-      if (docxBackBtn) docxBackBtn.disabled = false;
       finalStatusEl.textContent = L('Document loaded — pick a format below.',
         'ডকুমেন্ট লোড হয়েছে — নিচে ফরম্যাট বাছুন।');
     } catch (e) {
       docFileStatusEl.textContent = L('Could not read that .docx: ', 'এই .docx পড়া যায়নি: ') + e.message;
     }
-  });
-  if (docxBackBtn) docxBackBtn.addEventListener('click', function () {
-    if (!state.docBlob) return;
-    download(state.docBlob, state.docBlob.name);
   });
 })(); 
