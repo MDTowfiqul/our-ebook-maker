@@ -9,135 +9,177 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = { darkMode: 'class' };
+  /* Same preferences as the Maker, so the guide opens in the same language, theme and colour. */
+  try {
+    if (localStorage.getItem('oem-theme') === 'dark') document.documentElement.classList.add('dark');
+    document.documentElement.setAttribute('data-color', localStorage.getItem('oem-color') || 'purple');
+  } catch (e) {}
+</script>
 <style>
   body{font-family:'Hind Siliguri',system-ui,sans-serif}
   .serif{font-family:'Noto Serif Bengali',serif}
-  .hero-bg{background:linear-gradient(150deg,#33248f,#171233)}
-  .accent-bg{background-color:#e0521f}
-  .accent-bg:hover{filter:brightness(1.08)}
-  .hero-accent{color:#ff9e6e}
+  :root, [data-color="purple"]{--hero1:#33248f;--hero2:#171233;--accent:#e0521f;--accent-bright:#ff9e6e}
+  [data-color="emerald"]{--hero1:#065f46;--hero2:#022c22;--accent:#c8501b;--accent-bright:#ffb37a}
+  [data-color="ocean"]{--hero1:#0c4a6e;--hero2:#082f49;--accent:#0284c7;--accent-bright:#7dd3fc}
+  [data-color="crimson"]{--hero1:#881337;--hero2:#1f0a12;--accent:#e11d48;--accent-bright:#fda4af}
+  [data-color="amber"]{--hero1:#713f12;--hero2:#1c1005;--accent:#d97706;--accent-bright:#fcd34d}
+  .hero-bg{background:linear-gradient(150deg,var(--hero1),var(--hero2))}
+  .hero-accent{color:var(--accent-bright)}
 </style>
 </head>
-<body class="bg-[#f8f9fa] text-[#212529] min-h-screen">
-<header class="sticky top-0 z-30 bg-white/95 backdrop-blur shadow-sm border-b border-neutral-200">
+<body class="bg-[#f8f9fa] dark:bg-neutral-900 text-[#212529] dark:text-neutral-100 min-h-screen">
+<header class="sticky top-0 z-30 bg-white/95 dark:bg-neutral-900/95 backdrop-blur shadow-sm border-b border-neutral-200 dark:border-neutral-700">
   <div class="max-w-3xl mx-auto px-3 sm:px-4 py-2.5 flex items-center gap-2">
-    <a href="index.html" class="font-extrabold text-lg sm:text-2xl text-emerald-800 flex items-center gap-2">
-      <span>📖</span><span>Our Ebook Maker</span>
+    <a href="index.html" class="font-bold text-sm sm:text-base text-emerald-700 dark:text-emerald-400 whitespace-nowrap">← <span data-bn="মেকার" data-en="Maker">Maker</span></a>
+    <a href="index.html" class="font-extrabold text-lg sm:text-2xl text-emerald-800 dark:text-emerald-400 flex items-center gap-2">
+      <span>📖</span><span data-bn="আমাদের ইবুক মেকার" data-en="Our Ebook Maker">Our Ebook Maker</span>
     </a>
     <span class="flex-1"></span>
-    <a href="index.html" class="hidden sm:block font-bold text-sm text-neutral-600 hover:text-emerald-700">Maker</a>
+    <button id="theme-toggle" class="w-9 h-9 rounded-full border border-neutral-300 dark:border-neutral-600 font-bold" aria-label="Toggle dark mode">🌙</button>
+    <button id="lang-toggle" class="rounded-full border border-neutral-300 dark:border-neutral-600 px-3 py-1.5 font-bold text-sm">🌐 <span id="lang-label">EN</span></button>
   </div>
 </header>
 
 <div class="max-w-3xl mx-auto px-3 sm:px-4">
   <section class="hero-bg text-white rounded-[1.8rem] mt-4 px-5 py-8 sm:p-10 shadow-xl">
     <h1 class="serif text-[30px] sm:text-5xl font-extrabold leading-tight">
-      <span class="hero-accent">How to make an ebook — the full guide</span>
+      <span class="hero-accent" data-bn="ইবুক বানানোর সম্পূর্ণ গাইড" data-en="How to make an ebook — the full guide">How to make an ebook — the full guide</span>
     </h1>
-    <p class="text-white/75 mt-2 text-sm sm:text-base">From a scanned PDF book to a clean ebook — the full method in 5 parts. On the Maker the steps are numbered 1–3; Part 5 below is the Maker's final step (Step 3).</p>
+    <p class="text-white/75 mt-2 text-sm sm:text-base" data-bn="স্ক্যান করা PDF বই থেকে পরিষ্কার ইবুক — সম্পূর্ণ পদ্ধতি ৫টি অংশে। মেকারে ধাপ নম্বর ১–৩; নিচের ৫ম অংশই মেকারের শেষ ধাপ (ধাপ ৩)।" data-en="From a scanned PDF book to a clean ebook — the full method in 5 parts. On the Maker the steps are numbered 1–3; Part 5 below is the Maker's final step (Step 3).">From a scanned PDF book to a clean ebook — the full method in 5 parts. On the Maker the steps are numbered 1–3; Part 5 below is the Maker's final step (Step 3).</p>
     <ol class="mt-4 space-y-1 text-sm text-white/85">
-      <li>1 — Before you start: check Our Boighar, and the two purposes</li>
-      <li>2 — The Muse route: PDF to Google Doc (the only route)</li>
-      <li>3 — Cover and credit</li>
-      <li>4 — Review in Google Docs (optional, for an exactly-like-print look)</li>
-      <li>5 — Final formats: EPUB, AZW3, MOBI, KFX</li>
+      <li data-bn="১ — শুরু করার আগে: Our Boighar দেখুন, আর দুটি উদ্দেশ্য" data-en="1 — Before you start: check Our Boighar, and the two purposes">1 — Before you start: check Our Boighar, and the two purposes</li>
+      <li data-bn="২ — Muse রুট: PDF থেকে Google Doc (একমাত্র রুট)" data-en="2 — The Muse route: PDF to Google Doc (the only route)">2 — The Muse route: PDF to Google Doc (the only route)</li>
+      <li data-bn="৩ — প্রচ্ছদ ও ক্রেডিট" data-en="3 — Cover and credit">3 — Cover and credit</li>
+      <li data-bn="৪ — Google Docs-এ রিভিউ (ঐচ্ছিক, হুবহু ছাপার মতো লুকের জন্য)" data-en="4 — Review in Google Docs (optional, for an exactly-like-print look)">4 — Review in Google Docs (optional, for an exactly-like-print look)</li>
+      <li data-bn="৫ — ফাইনাল ফরম্যাট: EPUB, AZW3, MOBI, KFX" data-en="5 — Final formats: EPUB, AZW3, MOBI, KFX">5 — Final formats: EPUB, AZW3, MOBI, KFX</li>
     </ol>
   </section>
 
   <main class="pb-10">
-  <section class="bg-white rounded-2xl shadow p-5 mt-6">
-    <h2 class="serif text-xl sm:text-2xl font-extrabold">Part 1 — Before you start</h2>
-    <p class="mt-2 text-[15px]">First, check whether the book is already on <a href="https://mdtowfiqul.github.io/our-boighar/" class="text-emerald-700 font-bold underline">Our Boighar</a> — if it is, there is no need to make it again. (If you still want your own copy, you can make it anyway.)</p>
-    <p class="font-bold mt-4">An ebook is made for 2 purposes:</p>
+  <section class="bg-white dark:bg-neutral-800 rounded-2xl shadow p-5 mt-6">
+    <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="অংশ ১ — শুরু করার আগে" data-en="Part 1 — Before you start">Part 1 — Before you start</h2>
+    <p class="mt-2 text-[15px]"><span data-bn="প্রথমে দেখুন বইটি " data-en="First, check whether the book is already on ">First, check whether the book is already on </span><a href="https://mdtowfiqul.github.io/our-boighar/" class="text-emerald-700 dark:text-emerald-400 font-bold underline">Our Boighar</a><span data-bn=" -এ আছে কি না — থাকলে আবার বানানোর দরকার নেই। (তবু নিজের কপি চাইলে বানাতে পারেন।)" data-en=" — if it is, there is no need to make it again. (If you still want your own copy, you can make it anyway.)"> — if it is, there is no need to make it again. (If you still want your own copy, you can make it anyway.)</span></p>
+    <p class="font-bold mt-4" data-bn="একটি ইবুক ২টি উদ্দেশ্যে বানানো হয়:" data-en="An ebook is made for 2 purposes:">An ebook is made for 2 purposes:</p>
     <ol class="list-decimal pl-5 mt-1 space-y-2 text-[15px]">
-      <li><b>For yourself only</b> — you may convert any PDF book, old or new, no problem. Just do not share the finished ebook online if the book is less than 10 years old.</li>
-      <li><b>For everyone, to share with everyone</b> — you may share it only when the book is 10+ years old, OR the writer or publisher has published the PDF publicly themselves or has no problem with it being shared online.</li>
+      <li><b data-bn="শুধু নিজের জন্য" data-en="For yourself only">For yourself only</b><span data-bn=" — পুরোনো বা নতুন যেকোনো PDF বই কনভার্ট করতে পারেন, কোনো সমস্যা নেই। শুধু নতুন বইয়ের (১০ বছরের কম পুরোনো) তৈরি ইবুক অনলাইনে শেয়ার করবেন না।" data-en=" — you may convert any PDF book, old or new, no problem. Just do not share the finished ebook online if the book is less than 10 years old."> — you may convert any PDF book, old or new, no problem. Just do not share the finished ebook online if the book is less than 10 years old.</span></li>
+      <li><b data-bn="সবার জন্য, সবার সাথে শেয়ার করতে" data-en="For everyone, to share with everyone">For everyone, to share with everyone</b><span data-bn=" — শেয়ার করা যাবে শুধু তখনই, যখন বইটি ১০+ বছরের পুরোনো, অথবা লেখক/প্রকাশক নিজে PDF প্রকাশ করেছেন বা অনলাইনে শেয়ার করতে আপত্তি নেই বলে জানিয়েছেন।" data-en=" — you may share it only when the book is 10+ years old, OR the writer or publisher has published the PDF publicly themselves or has no problem with it being shared online."> — you may share it only when the book is 10+ years old, OR the writer or publisher has published the PDF publicly themselves or has no problem with it being shared online.</span></li>
     </ol>
-    <p class="mt-3 text-[15px]">When you have an ebook that may be shared, send it to the Our Boighar community (Facebook group / Telegram linked on the site's About page) so it can be checked and added to the library.</p>
+    <p class="mt-3 text-[15px]" data-bn="শেয়ার করার মতো ইবুক হলে Our Boighar কমিউনিটিতে পাঠান (সাইটের About পেজে লিংক দেওয়া Facebook গ্রুপ / Telegram) যাতে যাচাই করে লাইব্রেরিতে যোগ করা যায়।" data-en="When you have an ebook that may be shared, send it to the Our Boighar community (Facebook group / Telegram linked on the site's About page) so it can be checked and added to the library.">When you have an ebook that may be shared, send it to the Our Boighar community (Facebook group / Telegram linked on the site's About page) so it can be checked and added to the library.</p>
   </section>
 
-  <section class="bg-white rounded-2xl shadow p-5 mt-6">
-    <h2 class="serif text-xl sm:text-2xl font-extrabold">Part 2 — The Muse route: PDF to Google Doc (the only route)</h2>
-    <p class="mt-2 text-[15px]">There is no browser OCR, no API key and no proofreading panel on this site anymore — everything up to the finished document happens in a Muse chat, with one prompt. The Maker's Step 2 has the full prompt behind its Copy button and pop-up.</p>
+  <section class="bg-white dark:bg-neutral-800 rounded-2xl shadow p-5 mt-6">
+    <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="অংশ ২ — Muse রুট: PDF থেকে Google Doc (একমাত্র রুট)" data-en="Part 2 — The Muse route: PDF to Google Doc (the only route)">Part 2 — The Muse route: PDF to Google Doc (the only route)</h2>
+    <p class="mt-2 text-[15px]" data-bn="এই সাইটে এখন আর ব্রাউজার OCR, API key বা প্রুফরিড প্যানেল নেই — শেষ ডকুমেন্ট পর্যন্ত সবকিছু Muse চ্যাটে হয়, একটি প্রম্পট দিয়ে। মেকারের ধাপ ২-এর Copy বোতাম ও পপ-আপের পেছনে পুরো প্রম্পট আছে।" data-en="There is no browser OCR, no API key and no proofreading panel on this site anymore — everything up to the finished document happens in a Muse chat, with one prompt. The Maker's Step 2 has the full prompt behind its Copy button and pop-up.">There is no browser OCR, no API key and no proofreading panel on this site anymore — everything up to the finished document happens in a Muse chat, with one prompt. The Maker's Step 2 has the full prompt behind its Copy button and pop-up.</p>
     <ol class="list-decimal pl-5 mt-2 space-y-2 text-[15px]">
-      <li>Open a Muse chat and attach your scanned PDF of an old, copyright-free book.</li>
-      <li>Paste the full prompt from the Maker's Step 2 (the “Copy the full prompt” button) in the same message. It tells Muse to extract the text — converting legacy Bijoy/SutonnyMJ fonts to Unicode Bangla — proofread it in chunks, and build a formatted Google Doc.</li>
-      <li>Muse works through the whole book automatically — it does not stop for permission between parts, so there is no DONE/continue round trip anymore. When the whole book is finished, Muse sends the Google Doc link and also gives you the finished document as a downloadable file (.docx) — not only the link.</li>
-      <li>The finished document reads like a main published book: it begins directly with the book title, followed by the author, translator and publication information as printed in the original, then the table of contents (if the original has one), then the chapters in order.</li>
-      <li>The Doc begins directly with the book title — no cover-page or artwork notes. Its formatting rules are inside the prompt: centred titles and headings, justified Bangla text, Arabic right-aligned with harkat, footnotes next to their numbers in superscript third brackets, and the author's wording left untouched.</li>
-      <li>If Muse makes a mistake in a chunk, correct it in that same chat before moving on — the Doc is only as clean as the last chunk you accepted.</li>
+      <li data-bn="Muse চ্যাট খুলে পুরোনো, কপিরাইট-মুক্ত বইয়ের স্ক্যান করা PDF attach করুন।" data-en="Open a Muse chat and attach your scanned PDF of an old, copyright-free book.">Open a Muse chat and attach your scanned PDF of an old, copyright-free book.</li>
+      <li data-bn="একই মেসেজে মেকারের ধাপ ২ থেকে পুরো প্রম্পট পেস্ট করুন (“Copy the full prompt” বোতাম)। এটি Muse-কে বলে টেক্সট বের করতে — পুরোনো Bijoy/SutonnyMJ ফন্ট Unicode বাংলায় বদলে — অংশে অংশে প্রুফরিড করতে, আর ফরম্যাট করা Google Doc বানাতে।" data-en="Paste the full prompt from the Maker's Step 2 (the “Copy the full prompt” button) in the same message. It tells Muse to extract the text — converting legacy Bijoy/SutonnyMJ fonts to Unicode Bangla — proofread it in chunks, and build a formatted Google Doc.">Paste the full prompt from the Maker's Step 2 (the “Copy the full prompt” button) in the same message. It tells Muse to extract the text — converting legacy Bijoy/SutonnyMJ fonts to Unicode Bangla — proofread it in chunks, and build a formatted Google Doc.</li>
+      <li data-bn="Muse পুরো বই স্বয়ংক্রিয়ভাবে শেষ করে — অংশের মাঝে অনুমতির জন্য থামে না, তাই DONE/continue-এর ঝামেলা আর নেই। পুরো বই শেষ হলে Muse Google Doc লিঙ্ক দেয়, সাথে শেষ ডকুমেন্টটি ডাউনলোডযোগ্য ফাইল (.docx) হিসেবেও দেয় — শুধু লিঙ্ক নয়।" data-en="Muse works through the whole book automatically — it does not stop for permission between parts, so there is no DONE/continue round trip anymore. When the whole book is finished, Muse sends the Google Doc link and also gives you the finished document as a downloadable file (.docx) — not only the link.">Muse works through the whole book automatically — it does not stop for permission between parts, so there is no DONE/continue round trip anymore. When the whole book is finished, Muse sends the Google Doc link and also gives you the finished document as a downloadable file (.docx) — not only the link.</li>
+      <li data-bn="শেষ ডকুমেন্টটি মূল প্রকাশিত বইয়ের মতো পড়ায়: সরাসরি বইয়ের নাম দিয়ে শুরু, তারপর মূল ছাপা অনুযায়ী লেখক, অনুবাদক ও প্রকাশনা তথ্য, তারপর সূচিপত্র (মূলে থাকলে), তারপর ক্রমানুসারে অধ্যায়।" data-en="The finished document reads like a main published book: it begins directly with the book title, followed by the author, translator and publication information as printed in the original, then the table of contents (if the original has one), then the chapters in order.">The finished document reads like a main published book: it begins directly with the book title, followed by the author, translator and publication information as printed in the original, then the table of contents (if the original has one), then the chapters in order.</li>
+      <li data-bn="Doc সরাসরি বইয়ের নাম দিয়ে শুরু হয় — কোনো কভার-পেজ বা ছবির বর্ণনা নেই। এর ফরম্যাটিং নিয়ম প্রম্পটের ভেতরে আছে: মাঝখানে শিরোনাম ও হেডিং, জাস্টিফায়েড বাংলা টেক্সট, হরকতসহ ডান-সারিবদ্ধ আরবি, সংখ্যার পাশে সুপারস্ক্রিপ্ট তৃতীয় ব্র্যাকেটে ফুটনোট, আর লেখকের ভাষা অপরিবর্তিত।" data-en="The Doc begins directly with the book title — no cover-page or artwork notes. Its formatting rules are inside the prompt: centred titles and headings, justified Bangla text, Arabic right-aligned with harkat, footnotes next to their numbers in superscript third brackets, and the author's wording left untouched.">The Doc begins directly with the book title — no cover-page or artwork notes. Its formatting rules are inside the prompt: centred titles and headings, justified Bangla text, Arabic right-aligned with harkat, footnotes next to their numbers in superscript third brackets, and the author's wording left untouched.</li>
+      <li data-bn="কোনো অংশে Muse ভুল করলে এগোনোর আগে সেই চ্যাটেই শুধরে নিন — Doc ততটাই পরিষ্কার হবে যতটা শেষ স্বীকৃত অংশ।" data-en="If Muse makes a mistake in a chunk, correct it in that same chat before moving on — the Doc is only as clean as the last chunk you accepted.">If Muse makes a mistake in a chunk, correct it in that same chat before moving on — the Doc is only as clean as the last chunk you accepted.</li>
     </ol>
-    <div class="bg-neutral-50 border border-neutral-200 rounded-xl p-4 mt-4 text-[15px]">
-      <p class="font-bold">🇧🇩 No Muse account yet? (Bangladesh users)</p>
-      <p class="mt-1">Muse is not directly available in Bangladesh — you open an account with a USA VPN.</p>
+    <div class="bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-xl p-4 mt-4 text-[15px]">
+      <p class="font-bold" data-bn="🇧🇩 বাংলাদেশ থেকে Muse অ্যাকাউন্ট খুলতে পারছেন না?" data-en="🇧🇩 No Muse account yet? (Bangladesh users)">🇧🇩 No Muse account yet? (Bangladesh users)</p>
+      <p class="mt-1" data-bn="বাংলাদেশে Muse সরাসরি পাওয়া যায় না — USA VPN দিয়ে অ্যাকাউন্ট খুলতে হয়।" data-en="Muse is not directly available in Bangladesh — you open an account with a USA VPN.">Muse is not directly available in Bangladesh — you open an account with a USA VPN.</p>
       <ol class="list-decimal pl-5 mt-2 space-y-1">
-        <li>Install a USA VPN — I use Green VPN: <a href="https://play.google.com/store/apps/details?id=oscar.greenvpn.app" target="_blank" rel="noopener" class="text-emerald-700 font-bold underline">Green VPN on Google Play</a> — connect to a USA server.</li>
-        <li>Follow the steps in this video to create your Muse account: <a href="https://youtu.be/1WX31a0XgXY" target="_blank" rel="noopener" class="text-emerald-700 font-bold underline">Video tutorial</a>.</li>
-        <li>Then come back here and follow the Muse route above.</li>
+        <li><span data-bn="USA VPN ইন্সটল করুন — আমি Green VPN ব্যবহার করি: " data-en="Install a USA VPN — I use Green VPN: ">Install a USA VPN — I use Green VPN: </span><a href="https://play.google.com/store/apps/details?id=oscar.greenvpn.app" target="_blank" rel="noopener" class="text-emerald-700 dark:text-emerald-400 font-bold underline">Green VPN on Google Play</a><span data-bn=" — USA সার্ভারে কানেক্ট করুন।" data-en=" — connect to a USA server."> — connect to a USA server.</span></li>
+        <li><span data-bn="এই ভিডিওর ধাপগুলো অনুসরণ করে Muse অ্যাকাউন্ট খুলুন: " data-en="Follow the steps in this video to create your Muse account: ">Follow the steps in this video to create your Muse account: </span><a href="https://youtu.be/1WX31a0XgXY" target="_blank" rel="noopener" class="text-emerald-700 dark:text-emerald-400 font-bold underline">Video tutorial</a><span data-bn="।" data-en=".">.</span></li>
+        <li data-bn="তারপর এখানে ফিরে এসে উপরের Muse রুট অনুসরণ করুন।" data-en="Then come back here and follow the Muse route above.">Then come back here and follow the Muse route above.</li>
       </ol>
     </div>
-    <p class="mt-3 text-[15px]">This site itself cannot call Muse or your Drive — that part happens in your Muse chat. The site's job starts in Part 5, with the .docx you download from the Doc.</p>
+    <p class="mt-3 text-[15px]" data-bn="এই সাইট নিজে Muse-কে বা আপনার Drive-কে ডাকতে পারে না — সেই অংশ আপনার Muse চ্যাটে হয়। সাইটের কাজ শুরু হয় ৫ম অংশে, Doc থেকে ডাউনলোড করা .docx দিয়ে।" data-en="This site itself cannot call Muse or your Drive — that part happens in your Muse chat. The site's job starts in Part 5, with the .docx you download from the Doc.">This site itself cannot call Muse or your Drive — that part happens in your Muse chat. The site's job starts in Part 5, with the .docx you download from the Doc.</p>
   </section>
 
-  <section class="bg-white rounded-2xl shadow p-5 mt-6">
-    <h2 class="serif text-xl sm:text-2xl font-extrabold">Part 3 — Cover and credit</h2>
-    <p class="mt-2 text-[15px]">Set these in the Maker's Step 1 before you build the final ebook:</p>
+  <section class="bg-white dark:bg-neutral-800 rounded-2xl shadow p-5 mt-6">
+    <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="অংশ ৩ — প্রচ্ছদ ও ক্রেডিট" data-en="Part 3 — Cover and credit">Part 3 — Cover and credit</h2>
+    <p class="mt-2 text-[15px]" data-bn="ফাইনাল ইবুক বানানোর আগে মেকারের ধাপ ১-এ এগুলো ঠিক করুন:" data-en="Set these in the Maker's Step 1 before you build the final ebook:">Set these in the Maker's Step 1 before you build the final ebook:</p>
     <ol class="list-decimal pl-5 mt-2 space-y-2 text-[15px]">
-      <li>Put the book title and author in Step 1's title and author fields — if you leave the title empty, it is taken from the .docx filename when you upload it in Step 3.</li>
-      <li>Upload a cover image if you have one — the uploaded cover is the one that goes into the final ebook, as the first page inside the book as well as the shelf thumbnail. A very large cover is compressed automatically (long edge 1200 px) so the EPUB stays small; small covers are left untouched. No cover? Find one online with the search button, or make a text cover — tap the same button again for a new design, every tap makes a new one. When a cover you like appears, tap “Use as cover” under it to set it for your final ebook.</li>
-      <li>Put the ebook creator's name in Step 1's “Ebook creator name” field, right below Author — the credit page then reads “ইবুক নির্মাতা: &lt;name&gt;” followed by “সৌজন্যে: Our Ebook Maker ও Our Boighar”. The optional “Ebook creator link” box right below it (social media or contact) becomes the embedded link on the creator's name; leave it empty and the name stays plain text.</li>
-      <li>The finished EPUB ends with an “About this ebook” credit page naming the ebook creator (your name, if given), Our Ebook Maker and Our Boighar — and the creator's message (“ই-বুক নির্মাতার বার্তা”): the ebook is for reading only, respect the writer, translator and publisher's rights, buy the hard copy if you like the book, and a note that the ebook is AI-generated so mistakes are natural.</li>
+      <li data-bn="ধাপ ১-এর title ও author ঘরে বইয়ের নাম ও লেখক দিন — নাম খালি রাখলে ধাপ ৩-এ আপলোডের সময় .docx ফাইলের নাম থেকে নেওয়া হবে।" data-en="Put the book title and author in Step 1's title and author fields — if you leave the title empty, it is taken from the .docx filename when you upload it in Step 3.">Put the book title and author in Step 1's title and author fields — if you leave the title empty, it is taken from the .docx filename when you upload it in Step 3.</li>
+      <li data-bn="প্রচ্ছদ ছবি থাকলে আপলোড করুন — আপলোড করা প্রচ্ছদই ফাইনাল ইবুকে যাবে, বইয়ের ভেতরে প্রথম পেজ হিসেবে এবং শেলফ থাম্বনেইল হিসেবেও। খুব বড় প্রচ্ছদ স্বয়ংক্রিয়ভাবে কমপ্রেস হয় (লম্বা দিক ১২০০ px) যাতে EPUB ছোট থাকে; ছোট প্রচ্ছদ অপরিবর্তিত থাকে। প্রচ্ছদ নেই? সার্চ বোতাম দিয়ে অনলাইনে খুঁজুন, বা টেক্সট প্রচ্ছদ বানান — একই বোতাম আবার চাপলে নতুন ডিজাইন আসে, প্রত্যেক চাপে নতুন একটি। পছন্দের প্রচ্ছদ এলে তার নিচে “Use as cover” চাপুন।" data-en="Upload a cover image if you have one — the uploaded cover is the one that goes into the final ebook, as the first page inside the book as well as the shelf thumbnail. A very large cover is compressed automatically (long edge 1200 px) so the EPUB stays small; small covers are left untouched. No cover? Find one online with the search button, or make a text cover — tap the same button again for a new design, every tap makes a new one. When a cover you like appears, tap “Use as cover” under it to set it for your final ebook.">Upload a cover image if you have one — the uploaded cover is the one that goes into the final ebook, as the first page inside the book as well as the shelf thumbnail. A very large cover is compressed automatically (long edge 1200 px) so the EPUB stays small; small covers are left untouched. No cover? Find one online with the search button, or make a text cover — tap the same button again for a new design, every tap makes a new one. When a cover you like appears, tap “Use as cover” under it to set it for your final ebook.</li>
+      <li data-bn="Author-এর ঠিক নিচে ধাপ ১-এর “ইবুক নির্মাতার নাম” ঘরে ইবুক নির্মাতার নাম দিন — ক্রেডিট পেজে তখন “ইবুক নির্মাতা: &lt;নাম&gt;” লেখা আসে, তারপর “সৌজন্যে: Our Ebook Maker ও Our Boighar”। ঠিক নিচের ঐচ্ছিক “ইবুক নির্মাতার লিংক” বাক্স (সোশ্যাল মিডিয়া বা যোগাযোগ) নির্মাতার নামের এমবেডেড লিংক হয়; খালি রাখলে নাম সাধারণ লেখা থাকে।" data-en="Put the ebook creator's name in Step 1's “Ebook creator name” field, right below Author — the credit page then reads “ইবুক নির্মাতা: &lt;name&gt;” followed by “সৌজন্যে: Our Ebook Maker ও Our Boighar”. The optional “Ebook creator link” box right below it (social media or contact) becomes the embedded link on the creator's name; leave it empty and the name stays plain text.">Put the ebook creator's name in Step 1's “Ebook creator name” field, right below Author — the credit page then reads “ইবুক নির্মাতা: &lt;name&gt;” followed by “সৌজন্যে: Our Ebook Maker ও Our Boighar”. The optional “Ebook creator link” box right below it (social media or contact) becomes the embedded link on the creator's name; leave it empty and the name stays plain text.</li>
+      <li data-bn="শেষ EPUB-এর শেষে “About this ebook” ক্রেডিট পেজ থাকে — ইবুক নির্মাতার নাম (দিলে আপনার নাম), Our Ebook Maker ও Our Boighar — সাথে নির্মাতার বার্তা (“ই-বুক নির্মাতার বার্তা”): ইবুক শুধু পড়ার জন্য, লেখক, অনুবাদক ও প্রকাশকের অধিকারকে সম্মান করুন, বই ভালো লাগলে হার্ড কপি কিনুন, আর একটি নোট যে ইবুকটি AI-জেনারেটেড তাই ভুল থাকা স্বাভাবিক।" data-en="The finished EPUB ends with an “About this ebook” credit page naming the ebook creator (your name, if given), Our Ebook Maker and Our Boighar — and the creator's message (“ই-বুক নির্মাতার বার্তা”): the ebook is for reading only, respect the writer, translator and publisher's rights, buy the hard copy if you like the book, and a note that the ebook is AI-generated so mistakes are natural.">The finished EPUB ends with an “About this ebook” credit page naming the ebook creator (your name, if given), Our Ebook Maker and Our Boighar — and the creator's message (“ই-বুক নির্মাতার বার্তা”): the ebook is for reading only, respect the writer, translator and publisher's rights, buy the hard copy if you like the book, and a note that the ebook is AI-generated so mistakes are natural.</li>
     </ol>
   </section>
 
-  <section class="bg-white rounded-2xl shadow p-5 mt-6">
-    <h2 class="serif text-xl sm:text-2xl font-extrabold">Part 4 — Review in Google Docs (optional)</h2>
-    <p class="mt-2 text-[15px]">Before you download the .docx, you can check the Google Doc itself:</p>
+  <section class="bg-white dark:bg-neutral-800 rounded-2xl shadow p-5 mt-6">
+    <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="অংশ ৪ — Google Docs-এ রিভিউ (ঐচ্ছিক)" data-en="Part 4 — Review in Google Docs (optional)">Part 4 — Review in Google Docs (optional)</h2>
+    <p class="mt-2 text-[15px]" data-bn=".docx ডাউনলোডের আগে Google Doc নিজেই দেখে নিতে পারেন:" data-en="Before you download the .docx, you can check the Google Doc itself:">Before you download the .docx, you can check the Google Doc itself:</p>
     <ol class="list-decimal pl-5 mt-2 space-y-2 text-[15px]">
-      <li>Open the Doc Muse sent you and skim the chapter headings, the first pages of a few chapters, and any Arabic passages.</li>
-      <li>Make any final hand formatting here (drop caps, ornaments, special fonts) — this is the only place an exactly-like-print layout can be made, because no automatic tool can do that decoration.</li>
-      <li>Then download it: File → Download → Microsoft Word (.docx), and upload that file in the Maker's Step 3.</li>
+      <li data-bn="Muse-এর পাঠানো Doc খুলে অধ্যায়ের হেডিং, কয়েকটি অধ্যায়ের প্রথম পেজ, আর আরবি অংশগুলো চোখ বুলিয়ে দেখুন।" data-en="Open the Doc Muse sent you and skim the chapter headings, the first pages of a few chapters, and any Arabic passages.">Open the Doc Muse sent you and skim the chapter headings, the first pages of a few chapters, and any Arabic passages.</li>
+      <li data-bn="এখানেই শেষ হাতের ফরম্যাটিং করুন (ড্রপ ক্যাপ, অলংকরণ, বিশেষ ফন্ট) — হুবহু ছাপার মতো লেআউট শুধু এখানেই করা যায়, কারণ কোনো স্বয়ংক্রিয় টুল এই সাজসজ্জা করতে পারে না।" data-en="Make any final hand formatting here (drop caps, ornaments, special fonts) — this is the only place an exactly-like-print layout can be made, because no automatic tool can do that decoration.">Make any final hand formatting here (drop caps, ornaments, special fonts) — this is the only place an exactly-like-print layout can be made, because no automatic tool can do that decoration.</li>
+      <li data-bn="তারপর ডাউনলোড করুন: File → Download → Microsoft Word (.docx), আর সেই ফাইল মেকারের ধাপ ৩-এ আপলোড করুন।" data-en="Then download it: File → Download → Microsoft Word (.docx), and upload that file in the Maker's Step 3.">Then download it: File → Download → Microsoft Word (.docx), and upload that file in the Maker's Step 3.</li>
     </ol>
   </section>
 
-  <section class="bg-white rounded-2xl shadow p-5 mt-6">
-    <h2 class="serif text-xl sm:text-2xl font-extrabold">Part 5 — Final formats</h2>
-    <p class="mt-2 text-[15px]"><b>The Maker's Step 3:</b> upload the .docx from your Google Doc. The EPUB-download button unlocks at once.</p>
-    <p class="mt-2 text-[15px]">Tap “Which format, for which work?” in Step 3 to expand or collapse the format list.</p>
-    <p class="mt-2 text-[15px]">The document is read (headings kept as chapters) and all formats below become available. Nothing is uploaded to any site — the .docx is read and the EPUB is built right here in your browser.</p>
-    <h3 class="font-extrabold mt-4">Which format, for which work?</h3>
+  <section class="bg-white dark:bg-neutral-800 rounded-2xl shadow p-5 mt-6">
+    <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="অংশ ৫ — ফাইনাল ফরম্যাট" data-en="Part 5 — Final formats">Part 5 — Final formats</h2>
+    <p class="mt-2 text-[15px]" data-bn="মেকারের ধাপ ৩: Google Doc থেকে .docx আপলোড করুন। সাথে সাথে EPUB ডাউনলোড বোতাম চালু হবে।" data-en="The Maker's Step 3: upload the .docx from your Google Doc. The EPUB-download button unlocks at once.">The Maker's Step 3: upload the .docx from your Google Doc. The EPUB-download button unlocks at once.</p>
+    <p class="mt-2 text-[15px]" data-bn="ধাপ ৩-এ “Which format, for which work?” চাপলে ফরম্যাটের তালিকা খুলবে বা বন্ধ হবে।" data-en="Tap “Which format, for which work?” in Step 3 to expand or collapse the format list.">Tap “Which format, for which work?” in Step 3 to expand or collapse the format list.</p>
+    <p class="mt-2 text-[15px]" data-bn="ডকুমেন্টটি পড়া হয় (হেডিংগুলো অধ্যায় হিসেবে থাকে) আর নিচের সব ফরম্যাট পাওয়া যায়। কোনো সাইটে কিছু আপলোড হয় না — .docx পড়া আর EPUB বানানো সব এই ব্রাউজারেই হয়।" data-en="The document is read (headings kept as chapters) and all formats below become available. Nothing is uploaded to any site — the .docx is read and the EPUB is built right here in your browser.">The document is read (headings kept as chapters) and all formats below become available. Nothing is uploaded to any site — the .docx is read and the EPUB is built right here in your browser.</p>
+    <h3 class="font-extrabold mt-4" data-bn="কোন ফরম্যাট, কোন কাজে?" data-en="Which format, for which work?">Which format, for which work?</h3>
     <ul class="list-disc pl-5 mt-2 space-y-1 text-[15px]">
-      <li><b>EPUB</b> — best for phones, tablets and almost every reading app (Apple Books, Google Play Books, Moon+ Reader, the Our Boighar reader).</li>
-      <li><b>AZW3</b> — for Amazon Kindle devices and apps.</li>
-      <li><b>MOBI</b> — for older Kindles.</li>
-      <li><b>KFX</b> — the newest Kindle format, with enhanced typesetting.</li>
+      <li><b>EPUB</b><span data-bn=" — ফোন, ট্যাবলেট ও প্রায় সব রিডিং অ্যাপের জন্য সেরা (Apple Books, Google Play Books, Moon+ Reader, Our Boighar রিডার)।" data-en=" — best for phones, tablets and almost every reading app (Apple Books, Google Play Books, Moon+ Reader, the Our Boighar reader)."> — best for phones, tablets and almost every reading app (Apple Books, Google Play Books, Moon+ Reader, the Our Boighar reader).</span></li>
+      <li><b>AZW3</b><span data-bn=" — Amazon Kindle ডিভাইস ও অ্যাপের জন্য।" data-en=" — for Amazon Kindle devices and apps."> — for Amazon Kindle devices and apps.</span></li>
+      <li><b>MOBI</b><span data-bn=" — পুরোনো Kindle-এর জন্য।" data-en=" — for older Kindles."> — for older Kindles.</span></li>
+      <li><b>KFX</b><span data-bn=" — নতুন Kindle ফরম্যাট, উন্নত টাইপসেটিংসহ।" data-en=" — the newest Kindle format, with enhanced typesetting."> — the newest Kindle format, with enhanced typesetting.</span></li>
     </ul>
-    <h3 class="font-extrabold mt-4">EPUB — right here on this site</h3>
-    <p class="mt-2 text-[15px]">EPUB is built in your browser from the uploaded .docx, with your cover as the first page, then the title page, chapters on new pages, centred headings, justified text (Arabic right-aligned), and the credit page at the end.</p>
-    <p class="mt-2 text-[15px]">How the document is read: the book title appears once — even if it is styled as a Heading 1 in the Doc, it will not repeat as a chapter. A printed contents section (সূচিপত্র) is left out, because readers build their own contents from the chapters. And if the Doc has no Heading-1 chapters, its Heading-2 sections become the chapters, so a Doc written with Heading 2 throughout still splits properly.</p>
-    <p class="mt-2 text-[15px]">The EPUB embeds the Hind Siliguri font, so Bengali text shapes correctly even in a reader whose default font cannot shape it (Google Play Books' default font is the known case) — you do not need to change the reader's font for the Bengali to read correctly.</p>
-    <h3 class="font-extrabold mt-4">Kindle formats (AZW3 / MOBI) — with the online-convert website</h3>
-    <p class="mt-2 text-[15px]">AZW3 / MOBI cannot be built directly in a browser (they are Amazon's own formats) — use online-convert for those. This site has no server, so a server-based conversion like online-convert's cannot run here.</p>
+    <h3 class="font-extrabold mt-4" data-bn="EPUB — এই সাইটেই" data-en="EPUB — right here on this site">EPUB — right here on this site</h3>
+    <p class="mt-2 text-[15px]" data-bn="আপলোড করা .docx থেকে EPUB এই ব্রাউজারেই বানানো হয় — প্রথমে আপনার প্রচ্ছদ, তারপর টাইটেল পেজ, নতুন পেজে অধ্যায়, মাঝখানে হেডিং, জাস্টিফায়েড টেক্সট (আরবি ডান-সারিবদ্ধ), আর শেষে ক্রেডিট পেজ।" data-en="EPUB is built in your browser from the uploaded .docx, with your cover as the first page, then the title page, chapters on new pages, centred headings, justified text (Arabic right-aligned), and the credit page at the end.">EPUB is built in your browser from the uploaded .docx, with your cover as the first page, then the title page, chapters on new pages, centred headings, justified text (Arabic right-aligned), and the credit page at the end.</p>
+    <p class="mt-2 text-[15px]" data-bn="EPUB-এ Hind Siliguri ফন্ট এমবেড করা থাকে, তাই যে রিডারের ডিফল্ট ফন্ট বাংলা ঠিকমতো দেখাতে পারে না (Google Play Books-এর ডিফল্ট ফন্টই জানা উদাহরণ) সেখানেও বাংলা ঠিক থাকে — বাংলার জন্য রিডারের ফন্ট বদলাতে হয় না।" data-en="The EPUB embeds the Hind Siliguri font, so Bengali text shapes correctly even in a reader whose default font cannot shape it (Google Play Books' default font is the known case) — you do not need to change the reader's font for the Bengali to read correctly.">The EPUB embeds the Hind Siliguri font, so Bengali text shapes correctly even in a reader whose default font cannot shape it (Google Play Books' default font is the known case) — you do not need to change the reader's font for the Bengali to read correctly.</p>
+    <p class="mt-2 text-[15px]" data-bn="ডকুমেন্ট যেভাবে পড়া হয়: বইয়ের নাম একবারই আসে — Doc-এ Heading 1 স্টাইলে থাকলেও অধ্যায় হিসেবে আবার আসবে না। ছাপা সূচিপত্র অংশ বাদ দেওয়া হয়, কারণ রিডার নিজেই অধ্যায় থেকে সূচিপত্র বানায়। আর Doc-এ Heading-1 অধ্যায় না থাকলে Heading-2 সেকশনগুলোই অধ্যায় হয়, তাই পুরো Heading 2-এ লেখা Doc-ও ঠিকমতো ভাগ হয়।" data-en="How the document is read: the book title appears once — even if it is styled as a Heading 1 in the Doc, it will not repeat as a chapter. A printed contents section (সূচিপত্র) is left out, because readers build their own contents from the chapters. And if the Doc has no Heading-1 chapters, its Heading-2 sections become the chapters, so a Doc written with Heading 2 throughout still splits properly.">How the document is read: the book title appears once — even if it is styled as a Heading 1 in the Doc, it will not repeat as a chapter. A printed contents section (সূচিপত্র) is left out, because readers build their own contents from the chapters. And if the Doc has no Heading-1 chapters, its Heading-2 sections become the chapters, so a Doc written with Heading 2 throughout still splits properly.</p>
+    <h3 class="font-extrabold mt-4" data-bn="Kindle ফরম্যাট (AZW3 / MOBI) — online-convert ওয়েবসাইট দিয়ে" data-en="Kindle formats (AZW3 / MOBI) — with the online-convert website">Kindle formats (AZW3 / MOBI) — with the online-convert website</h3>
+    <p class="mt-2 text-[15px]" data-bn="AZW3 / MOBI এই ব্রাউজারে সরাসরি বানানো যায় না (Amazon-এর নিজস্ব ফরম্যাট) — এগুলোর জন্য online-convert ব্যবহার করুন। এই সাইটের কোনো সার্ভার নেই, তাই online-convert-এর মতো সার্ভার-ভিত্তিক কনভার্ট এখানে চালানো যায় না।" data-en="AZW3 / MOBI cannot be built directly in a browser (they are Amazon's own formats) — use online-convert for those. This site has no server, so a server-based conversion like online-convert's cannot run here.">AZW3 / MOBI cannot be built directly in a browser (they are Amazon's own formats) — use online-convert for those. This site has no server, so a server-based conversion like online-convert's cannot run here.</p>
     <ol class="list-decimal pl-5 mt-2 space-y-1 text-[15px]">
-      <li><b>Make the EPUB first, then convert it:</b> use the EPUB built above (option 1) — not the .docx. The cover photo and credit page are added when the EPUB is built, so a Kindle file converted straight from the .docx will have neither. The same applies to KFX via Calibre: convert from the EPUB.</li>
-      <li><a href="https://ebook.online-convert.com" target="_blank" rel="noopener" class="text-emerald-700 font-bold underline">ebook.online-convert.com</a> — open it, upload the file, and pick AZW3 (Kindle) or MOBI (older Kindle) as the output.</li>
-      <li>Press Convert, then download the finished file.</li>
+      <li><b data-bn="প্রথমে EPUB বানান, তারপর কনভার্ট করুন:" data-en="Make the EPUB first, then convert it:">Make the EPUB first, then convert it:</b><span data-bn=" উপরে বানানো EPUB ব্যবহার করুন (অপশন ১) — .docx নয়। প্রচ্ছদ ছবি ও ক্রেডিট পেজ EPUB বানানোর সময় যোগ হয়, তাই .docx থেকে সরাসরি কনভার্ট করা Kindle ফাইলে এগুলো থাকবে না। Calibre-এ KFX-এর ক্ষেত্রেও একই নিয়ম: EPUB থেকে কনভার্ট করুন।" data-en=" use the EPUB built above (option 1) — not the .docx. The cover photo and credit page are added when the EPUB is built, so a Kindle file converted straight from the .docx will have neither. The same applies to KFX via Calibre: convert from the EPUB."> use the EPUB built above (option 1) — not the .docx. The cover photo and credit page are added when the EPUB is built, so a Kindle file converted straight from the .docx will have neither. The same applies to KFX via Calibre: convert from the EPUB.</span></li>
+      <li><a href="https://ebook.online-convert.com" target="_blank" rel="noopener" class="text-emerald-700 dark:text-emerald-400 font-bold underline">ebook.online-convert.com</a><span data-bn=" — খুলুন, ফাইলটি আপলোড করুন, আউটপুটে AZW3 (Kindle) বা MOBI (পুরোনো Kindle) বাছুন।" data-en=" — open it, upload the file, and pick AZW3 (Kindle) or MOBI (older Kindle) as the output."> — open it, upload the file, and pick AZW3 (Kindle) or MOBI (older Kindle) as the output.</span></li>
+      <li data-bn="Convert চাপুন, তারপর তৈরি ফাইল ডাউনলোড করুন।" data-en="Press Convert, then download the finished file.">Press Convert, then download the finished file.</li>
     </ol>
-    <h3 class="font-extrabold mt-4">With Calibre (AZW3 / MOBI / KFX)</h3>
+    <h3 class="font-extrabold mt-4" data-bn="Calibre দিয়ে (AZW3 / MOBI / KFX)" data-en="With Calibre (AZW3 / MOBI / KFX)">With Calibre (AZW3 / MOBI / KFX)</h3>
     <ol class="list-decimal pl-5 mt-2 space-y-1 text-[15px]">
-      <li>Download the EPUB with the EPUB button in Step 3.</li>
-      <li><a href="https://calibre-ebook.com/download" class="text-emerald-700 font-bold underline">Calibre</a> — install this free software on a computer.</li>
-      <li>Add the EPUB to Calibre → select the book → “Convert books” → pick AZW3 (Kindle) or MOBI (older Kindle) as output format → OK.</li>
-      <li>For KFX, add the “KFX Output” plugin to Calibre (Preferences → Plugins).</li>
+      <li data-bn="ধাপ ৩-এর EPUB বোতাম দিয়ে EPUB ডাউনলোড করুন।" data-en="Download the EPUB with the EPUB button in Step 3.">Download the EPUB with the EPUB button in Step 3.</li>
+      <li><a href="https://calibre-ebook.com/download" class="text-emerald-700 dark:text-emerald-400 font-bold underline">Calibre</a><span data-bn=" — কম্পিউটারে এই ফ্রি সফটওয়্যারটি ইন্সটল করুন।" data-en=" — install this free software on a computer."> — install this free software on a computer.</span></li>
+      <li data-bn="EPUB Calibre-এ যোগ করুন → বইটি সিলেক্ট করুন → “Convert books” → আউটপুট ফরম্যাটে AZW3 (Kindle) বা MOBI (পুরোনো Kindle) বাছুন → OK।" data-en="Add the EPUB to Calibre → select the book → “Convert books” → pick AZW3 (Kindle) or MOBI (older Kindle) as output format → OK.">Add the EPUB to Calibre → select the book → “Convert books” → pick AZW3 (Kindle) or MOBI (older Kindle) as output format → OK.</li>
+      <li data-bn="KFX-এর জন্য Calibre-এ “KFX Output” প্লাগইন যোগ করুন (Preferences → Plugins)।" data-en="For KFX, add the “KFX Output” plugin to Calibre (Preferences → Plugins).">For KFX, add the “KFX Output” plugin to Calibre (Preferences → Plugins).</li>
     </ol>
-    <p class="text-sm text-neutral-500 mt-2">Tip: to send straight to a Kindle, EPUB itself can be sent with Send to Kindle — no conversion needed.</p>
+    <p class="text-sm text-neutral-500 dark:text-neutral-400 mt-2" data-bn="টিপস: Kindle-এ সরাসরি পাঠাতে চাইলে EPUB-ই Send to Kindle দিয়ে পাঠানো যায় — কনভার্টের দরকার নেই।" data-en="Tip: to send straight to a Kindle, EPUB itself can be sent with Send to Kindle — no conversion needed.">Tip: to send straight to a Kindle, EPUB itself can be sent with Send to Kindle — no conversion needed.</p>
   </section>
   </main>
 
-  <footer class="text-center text-neutral-500 text-sm py-6">
-    <p>Ebooks made with <a href="index.html" class="text-emerald-700 font-bold underline">Our Ebook Maker</a> • shared on <a href="https://mdtowfiqul.github.io/our-boighar/" class="text-emerald-700 font-bold underline">Our Boighar</a></p>
-    <p class="mt-1">Part of the Our family: Our Days, Our Boighar, Our Islamic Archive</p>
+  <footer class="text-center text-neutral-500 dark:text-neutral-400 text-sm py-6">
+    <p><span data-bn="ইবুক বানানো হয়েছে " data-en="Ebooks made with ">Ebooks made with </span><a href="index.html" class="text-emerald-700 dark:text-emerald-400 font-bold underline">Our Ebook Maker</a><span data-bn=" • শেয়ার করা হয়েছে " data-en=" • shared on "> • shared on </span><a href="https://mdtowfiqul.github.io/our-boighar/" class="text-emerald-700 dark:text-emerald-400 font-bold underline">Our Boighar</a></p>
+    <p class="mt-1" data-bn="Our পরিবারের অংশ: Our Days, Our Boighar, Our Islamic Archive" data-en="Part of the Our family: Our Days, Our Boighar, Our Islamic Archive">Part of the Our family: Our Days, Our Boighar, Our Islamic Archive</p>
   </footer>
 </div>
+<script>
+  /* Guide-page language + theme, using the Maker's own saved preferences. */
+  var LANG = 'en';
+  try { LANG = localStorage.getItem('oem-lang') || 'en'; } catch (e) {}
+  function applyGuideLang() {
+    document.querySelectorAll('[data-bn]').forEach(function (el) {
+      el.textContent = LANG === 'bn' ? el.getAttribute('data-bn') : el.getAttribute('data-en');
+    });
+    document.documentElement.lang = LANG;
+    document.title = LANG === 'bn' ? 'সম্পূর্ণ গাইড — Our Ebook Maker' : 'Full Guide — Our Ebook Maker';
+    var ll = document.getElementById('lang-label'); if (ll) ll.textContent = LANG === 'bn' ? 'BN' : 'EN';
+  }
+  function applyGuideTheme() {
+    var dark = document.documentElement.classList.contains('dark');
+    var tt = document.getElementById('theme-toggle'); if (tt) tt.textContent = dark ? '☀️' : '🌙';
+  }
+  document.getElementById('lang-toggle').addEventListener('click', function () {
+    LANG = LANG === 'bn' ? 'en' : 'bn';
+    try { localStorage.setItem('oem-lang', LANG); } catch (e) {}
+    applyGuideLang();
+  });
+  document.getElementById('theme-toggle').addEventListener('click', function () {
+    var on = document.documentElement.classList.toggle('dark');
+    try { localStorage.setItem('oem-theme', on ? 'dark' : 'light'); } catch (e) {}
+    applyGuideTheme();
+  });
+  applyGuideLang();
+  applyGuideTheme();
+</script>
 </body>
 </html>
