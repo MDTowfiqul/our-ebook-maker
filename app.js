@@ -630,6 +630,14 @@
         if (fres && fres.ok) fontBuf = await fres.arrayBuffer();
       } catch (e) { fontBuf = null; }
     }
+    /* v19: the cover used to live only in the metadata (the shelf
+       thumbnail) — the reading order had no cover page, so opening
+       the book jumped straight to the title page. Now the cover gets
+       its own first page when one is set. */
+    if (cover) {
+      var coverHtml = '<div style="text-align:center;margin:0;padding:0"><img src="cover.' + cover.ext + '" alt="Cover" style="max-width:100%"/></div>';
+      chapters.unshift({ title: (detectLang(title || '') === 'bn' ? 'প্রচ্ছদ' : 'Cover'), html: coverHtml });
+    }
     var zip = new JSZip();
     zip.file('mimetype', 'application/epub', { compression: 'STORE' });
     zip.file('META-INF/container.xml', '<?xml version="1.0" encoding="UTF-8"?><container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container"><rootfiles><rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/></rootfiles></container>');
