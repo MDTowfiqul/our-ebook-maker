@@ -603,7 +603,89 @@
       + '</style></head><body>'
       + sections.join('\n') + '</body></html>';
   }
-  var pdfRasterCode = ['(function () {', "  function fail() { try { window.parent.postMessage('oem-pdf-error', '*'); } catch (e) {} }", '  function start() {', '    try {', "      var sections = document.querySelectorAll('section');", "      var pdf = new jspdf.jsPDF('p', 'mm', 'a4');", '      var firstPage = true;', '      var idx = 0;', '      function next() {', '        if (idx >= sections.length) {', "          try { pdf.save(document.title + '.pdf'); } catch (e) { fail(); return; }", "          try { window.parent.postMessage('oem-pdf-done', '*'); } catch (e) {}", '          return;', '        }', "        html2canvas(sections[idx], { scale: 1.5, backgroundColor: '#ffffff' }).then(function (canvas) {", '          var pxPerMm = canvas.width / 210;', '          var imgHmm = canvas.height / pxPerMm;', '          var y = 0;', '          while (y < imgHmm) {', '            var sliceHmm = Math.min(297, imgHmm - y);', '            var slicePx = Math.max(1, Math.round(sliceHmm * pxPerMm));', "            var sc = document.createElement('canvas');", '            sc.width = canvas.width; sc.height = slicePx;', "            var ctx = sc.getContext('2d');", "            ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, sc.width, sc.height);", '            ctx.drawImage(canvas, 0, -Math.round(y * pxPerMm));', '            if (!firstPage) pdf.addPage(); else firstPage = false;', "            pdf.addImage(sc.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, 210, sliceHmm);", '            y += sliceHmm;', '          }', '          idx++; next();', '        }).catch(fail);', '      }', '      next();', '    } catch (e) { fail(); }', '  }', '  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(function () { setTimeout(start, 300); }); }', '  else { setTimeout(start, 800); }', '})();'].join("\n");
+  /* v14: paginate BEFORE rasterising. A browser canvas caps at
+     16,384 px tall — a long chapter rendered as one canvas silently
+     comes back blank, which is why v13 PDFs had a good first/last
+     page and blank pages between. Each page-group below is one A4
+     page tall (~990 px), so no canvas ever nears the cap, and a
+     paragraph is never cut in half across pages. */
+  var pdfRasterCode = [
+  "(function () {",
+  "  function fail() { try { window.parent.postMessage('oem-pdf-error', '*'); } catch (e) {} }",
+  "  function makePage(sec, w) {",
+  "    var d = document.createElement('div');",
+  "    d.className = sec.className;",
+  "    d.style.width = w + 'px';",
+  "    document.body.appendChild(d);",
+  "    return d;",
+  "  }",
+  "  function paginate() {",
+  "    var pages = [];",
+  "    var sections = document.querySelectorAll('section');",
+  "    var pagePx = 0;",
+  "    for (var si = 0; si < sections.length; si++) {",
+  "      var sec = sections[si];",
+  "      var w = sec.clientWidth || 700;",
+  "      if (!pagePx) pagePx = Math.round(w * 297 / 210);",
+  "      var pageDiv = makePage(sec, w);",
+  "      var kids = Array.prototype.slice.call(sec.children);",
+  "      for (var ki = 0; ki < kids.length; ki++) {",
+  "        var kid = kids[ki];",
+  "        var tag = kid.tagName;",
+  "        if ((tag === 'H2' || tag === 'H3') && pageDiv.children.length > 0 && pageDiv.offsetHeight > pagePx * 0.85) {",
+  "          pages.push(pageDiv); pageDiv = makePage(sec, w);",
+  "        }",
+  "        pageDiv.appendChild(kid);",
+  "        if (pageDiv.offsetHeight > pagePx && pageDiv.children.length > 1) {",
+  "          var last = pageDiv.lastChild;",
+  "          pages.push(pageDiv);",
+  "          pageDiv = makePage(sec, w);",
+  "          pageDiv.appendChild(last);",
+  "        }",
+  "      }",
+  "      if (pageDiv.children.length) pages.push(pageDiv);",
+  "    }",
+  "    return pages;",
+  "  }",
+  "  function start() {",
+  "    try {",
+  "      var pages = paginate();",
+  "      var pdf = new jspdf.jsPDF('p', 'mm', 'a4');",
+  "      var firstPage = true;",
+  "      var idx = 0;",
+  "      function next() {",
+  "        if (idx >= pages.length) {",
+  "          try { pdf.save(document.title + '.pdf'); } catch (e) { fail(); return; }",
+  "          try { window.parent.postMessage('oem-pdf-done', '*'); } catch (e) {}",
+  "          return;",
+  "        }",
+  "        try { window.parent.postMessage({ type: 'oem-pdf-progress', page: idx + 1, total: pages.length }, '*'); } catch (e) {}",
+  "        html2canvas(pages[idx], { scale: 1.5, backgroundColor: '#ffffff' }).then(function (canvas) {",
+  "          var pxPerMm = canvas.width / 210;",
+  "          var imgHmm = canvas.height / pxPerMm;",
+  "          var y = 0;",
+  "          while (y < imgHmm) {",
+  "            var sliceHmm = Math.min(297, imgHmm - y);",
+  "            var slicePx = Math.max(1, Math.round(sliceHmm * pxPerMm));",
+  "            var sc = document.createElement('canvas');",
+  "            sc.width = canvas.width; sc.height = slicePx;",
+  "            var ctx = sc.getContext('2d');",
+  "            ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, sc.width, sc.height);",
+  "            ctx.drawImage(canvas, 0, -Math.round(y * pxPerMm));",
+  "            if (!firstPage) pdf.addPage(); else firstPage = false;",
+  "            pdf.addImage(sc.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, 210, sliceHmm);",
+  "            y += sliceHmm;",
+  "          }",
+  "          idx++; next();",
+  "        }).catch(fail);",
+  "      }",
+  "      next();",
+  "    } catch (e) { fail(); }",
+  "  }",
+  "  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(function () { setTimeout(start, 300); }); }",
+  "  else { setTimeout(start, 800); }",
+  "})();"
+  ].join("\n");
   function makePdfDownload(md, title, author) {
     finalStatusEl.textContent = L('Making the PDF… (one click — no print dialog. Long books can take a while.)',
       'PDF বানানো হচ্ছে… (এক ক্লিকেই — কোনো প্রিন্ট ডায়ালগ নয়। বড় বইয়ে কিছুটা সময় লাগতে পারে।)');
@@ -621,6 +703,11 @@
     }
     function onMsg(e) {
       if (e.source !== frame.contentWindow) return;
+      if (e.data && e.data.type === 'oem-pdf-progress') {
+        finalStatusEl.textContent = L('Making the PDF… page ' + e.data.page + ' of ' + e.data.total + '.',
+          'PDF বানানো হচ্ছে… ' + e.data.total + ' পৃষ্ঠার মধ্যে ' + e.data.page + ' নম্বর।');
+        return;
+      }
       if (e.data === 'oem-pdf-done') {
         finalStatusEl.textContent = L('PDF downloaded.', 'PDF ডাউনলোড হয়েছে।');
         cleanup();
