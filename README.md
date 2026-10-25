@@ -1,199 +1,72 @@
 # Our Ebook Maker
 
-Turn a scanned PDF into a clean ebook. The main route runs through a
-Muse chat (Muse reads the PDF, proofreads it, and hands back a
-formatted Google Doc); this site then turns that Doc into EPUB, PDF
-and Kindle formats. Browser OCR stays as a fallback for when Muse is
-not used.
+Turn a scanned PDF into a clean ebook, with Muse. The book's text,
+proofreading and formatted document all come from a Muse chat; this
+site then turns that document into EPUB, PDF and Kindle formats.
 
 **Live site:** https://mdtowfiqul.github.io/our-ebook-maker/
 
-## How it works — all steps visible
-
-Every step is on the page from the start, so anyone can see the full
-process before beginning:
+## How it works — 3 steps, all visible
 
 1. **Your book** — title, author, your name (for the ebook credit
-   page), and a cover. The line under the file picker shows a ✓
-   with the chosen file's name and size.
-2. **Muse route — scanned PDF to Google Doc (recommended)** — open a
-   Muse chat, attach the scanned PDF, and paste the full prompt
-   (Copy button on the page, or the pop-up with the whole text).
-   Muse extracts the text — converting legacy Bijoy/SutonnyMJ
-   fonts to Unicode Bangla — proofreads it in chunks (DONE, then
-   you write "continue"), and sends a formatted Google Doc link.
-   The Doc begins directly with the book title, with no cover-page
-   or artwork notes. This site itself cannot call Muse or your
-   Drive; that part happens in the Muse chat. Then download the
-   .docx from the Doc (File → Download → Microsoft Word) and
-   upload it in Step 6. Steps 3–5 are skipped on this route.
-3. **Browser OCR — read the book (fallback)** — only if the Muse
-   route is not used. Test the first 5 pages, then run the full
-   book. While it scans you see each page's time and an estimated
-   time left. A round sun button beside the screen-on description
-   holds a wake lock while the tab is open, so you can leave the
-   phone untouched; switching apps still pauses the tab. The
-   **▶️ Resume** button is always visible in this step and enables
-   whenever saved progress exists (progress saved after every
-   page) — returning to the tab re-shows it. If OCR feels too
-   slow, a collapsible vFlat box (title only, tap to expand)
-   covers the PDF → .txt route. Buttons are Boighar-style: a
-   primary accent button and secondary white buttons — Test + Read
-   full book on one row, Resume + Cancel on the next.
-4. **Proofread — from .txt to clean text** — a collapsible
-   "Already have an OCR .txt file?" box sits right after the warning
-   box: upload a .txt there and Step 3 is skipped entirely. Below
-   it are two buttons in one line, Manual and Automatic: tapping
-   one opens that panel below, tapping again closes it. Manual:
-   download the raw .txt, proofread in AI Studio (steps in a
-   pop-up) or Muse (instruction in a pop-up), upload the proofread
-   file back. Automatic: Gemini/OpenRouter key, chunked
-   proofreading. The main work of this step is turning the raw
-   .txt into proofread text. Muse-route users skip this step.
-5. **Formatted document — proofread text to a book-like document**
-   — the .docx (and the proofread .md) are built here: title
+   page), and a cover. Upload a cover if you have one, find one
+   online, or make a text cover (tap "Generate another style" as
+   many times as you like — the algorithm never repeats a fixed
+   cycle). The scanned PDF itself does not go here.
+2. **Muse route — scanned PDF to Google Doc** — open a Muse chat,
+   attach the scanned PDF, and paste the full prompt (Copy button
+   on the page, or the pop-up with the whole text). Muse extracts
+   the text — converting legacy Bijoy/SutonnyMJ fonts to Unicode
+   Bangla — proofreads it in chunks (DONE, then you write
+   "continue"), and sends a formatted Google Doc link. The Doc
+   begins directly with the book title, with no cover-page or
+   artwork notes. This site itself cannot call Muse or your Drive;
+   that part happens in the Muse chat. Then download the .docx
+   from the Doc (File → Download → Microsoft Word) and upload it
+   in Step 3.
+3. **Final ebook — from document to ebook** — upload the Google Doc
+   .docx and the EPUB, PDF and .docx-download buttons unlock at
+   once. EPUB and PDF are built automatically in the browser (title
    page, chapters on new pages, centred headings, justified text
-   (Arabic right-aligned), credit page. Making the document
-   unlocks Step 6.
-6. **Final ebook — from document to ebook** — EPUB and PDF are built
-   automatically in the browser; AZW3 / MOBI go through
-   online-convert (manual, linked in the step), and AZW3 / MOBI / KFX
-   through Calibre. Already have a formatted .docx — from Step 5,
-   or a Google Doc .docx from the Muse route? Upload it in the
-   collapsible box here and Steps 1–5 are skipped: it is parsed
-   (headings kept as chapters) and every format becomes available.
+   with Arabic right-aligned, your cover, credit page); AZW3 / MOBI
+   go through online-convert (manual, linked in the step), and
+   AZW3 / MOBI / KFX through Calibre.
 
 The header, menu and bottom bar follow Our Boighar: a hamburger opens
 a slide-in drawer (steps, language, 5 theme colours, Day/Night, Help
 & Policies chips, GitHub), a moon/sun button at the top right
-switches Day/Night, and a floating pill bottom bar has Home,
-Proofread (jumps to Step 4), Ebook (jumps to Step 6) and Guide
-(opens the guide pop-up). Guide links on the Maker open pop-ups with
-the necessary information instead of navigating to the guide page;
-the full guide page is still linked from the guide pop-up and drawer.
+switches Day/Night, and a floating pill bottom bar has Home, Muse
+(jumps to Step 2), Ebook (jumps to Step 3) and Guide (opens the guide
+pop-up). Guide links on the Maker open pop-ups with the necessary
+information instead of navigating to the guide page; the full guide
+page is still linked from the guide pop-up and drawer.
 
 ## Before you make an ebook — read this first
 
-The site itself carries this notice above the upload form, because every
+The site itself carries this notice above the book form, because every
 user should see it before starting:
 
-- **Check Our Boighar first** (https://mdtowfiqul.github.io/our-boighar/) —
-  if the book is already there, there is no need to make it again.
-  (You may still make your own copy if you want to.)
-- **Two purposes:**
-  1. **For yourself only** — you may convert any PDF book, old or new.
-     Just do not share the finished ebook online if the book is less
-     than 10 years old.
-  2. **For everyone** — share it only when the book is 10+ years old,
-     OR the writer or publisher has published the PDF publicly
-     themselves or has no problem with it being shared online.
-- A shareable finished ebook can be sent to the Our Boighar community
-  (Facebook group / Telegram linked on the site's About page) so it can
-  be checked and added to the library.
+- First, check whether the book is already on Our Boighar.
+- **For yourself only:** any PDF book, old or new, is fine — just do
+  not share the finished ebook online if the book is less than 10
+  years old.
+- **For everyone, to share with everyone:** share only when the book
+  is 10+ years old, OR the writer or publisher has published the PDF
+  publicly themselves or has no problem with it being shared online.
 
-## Cover
+## What this site does NOT do anymore
 
-Upload your own cover image, find one online (Open Library), or make a
-text cover from the title and author. Text covers are generated by an
-algorithm (golden-angle hue rotation plus layout variation), so styles
-are unlimited — every "Generate another style" tap makes a brand-new
-design. The three cover buttons sit in a single line. Download the cover
-you like, then upload it in the upload box — the uploaded file is what
-goes into the final ebook.
+Earlier versions did browser OCR (tesseract.js + pdf.js), inline
+proofreading with the visitor's own Gemini/OpenRouter key, and
+.docx building from proofread text. All of that was removed in v9:
+everyone uses the Muse route now, so the OCR engine, the
+proofreading panels, the API-key help and the document builder are
+gone. The only library left is JSZip (for reading the uploaded
+.docx and building the EPUB).
 
-## Proofread, four ways
+## Privacy
 
-1. **Automatic, inline in Step 4** — with your own Google Gemini API
-   key (free, the default) or an OpenRouter key. The text is sent in
-   chunks of about 8,000 characters with the full proofreading prompt.
-   After you enter a Gemini key, the tool loads the free models
-   actually available on that key and shows their free-tier stats.
-   A detailed "No key yet?" popup walks a brand-new user through
-   getting a free Gemini key, tap by tap. If a free key hits its limit,
-   the tool waits and retries on its own, and progress is saved after
-   every chunk. The key stays only in the visitor's browser and is sent
-   directly to Google or OpenRouter; it never reaches any server of
-   ours (there is none).
-2. **Manual, with Gemini / Google AI Studio** — the pop-up on the
-   Maker reproduces the workflow step by step, with the full
-   proofreading prompt to copy (the guide page has the same detail).
-   Upload the finished proofread file back into Step 4 and Step 5
-   opens at once.
-3. **Manual, with Muse** — download the .txt, upload it to your own
-   Muse chat, paste the ready-made instruction from the Maker's
-   pop-up, and say "continue" chunk by chunk. No API key needed.
-4. **Manual, with vFlat** — the Step 3 pop-up covers the PDF → .txt
-   route for slow browser OCR, and the guide keeps it too.
-
-## Finished ebook formats — which format, for which work
-
-Step 6 explains this before you export:
-
-- **EPUB** — built right here. Best for phones, tablets and almost
-  every reading app.
-- **PDF** — a proper PDF: the Maker opens a print-ready book page and
-  you save it from the browser's print dialog, so Bengali/Arabic
-  shaping stays correct. Best when layout must stay fixed, or for
-  printing and sharing.
-- **AZW3** — Amazon Kindle devices and apps. **MOBI** — older Kindles.
-  These are Amazon's own formats and cannot be built in a browser,
-  and this site has no server, so a server-based conversion like
-  online-convert's cannot run automatically here: download the .docx
-  or EPUB here, then convert it manually on
-  [ebook.online-convert.com](https://ebook.online-convert.com)
-  (linked in Step 6), or with free Calibre on a computer.
-- **KFX** — the newest Kindle format. Calibre only, with its
-  KFX Output plugin. (Tip: EPUB itself can also be sent to a Kindle
-  with Send to Kindle.)
-- **.docx** — the book-like document itself, for continuing by hand.
-
-Document and ebook outputs use a real-book layout: a title page,
-chapters starting on new pages, centred headings, justified text
-(Arabic right-aligned), Noto Serif Bengali styling, and an "About this
-ebook" credit page naming the ebook creator, Our Ebook Maker, and
-Our Boighar. For an exactly-like-print layout (drop caps, ornaments,
-special fonts), formatting by hand in Google Docs/Word after download
-is still best — the site says so next to the download buttons.
-
-## What it deliberately does NOT do
-
-There is **no ebook download of raw OCR text**. OCR text must be
-proofread first; only then does it become a clean ebook. That is why
-the format buttons appear only after proofreading — or after a
-formatted .docx is uploaded.
-
-## Privacy and cost
-
-There is no server and no sign-up. The PDF, the OCR and the text building
-all happen in the visitor's browser tab. Nothing is uploaded anywhere
-(except, for automatic proofreading only, text chunks sent directly to
-Google or OpenRouter with the visitor's own key), so the site costs
-nothing to run on GitHub Pages.
-
-## How it is built
-
-Plain HTML/JavaScript with Tailwind CDN, in the Our Boighar visual style
-(gradient hero, Hind Siliguri font, EN/BN toggle). No build step, no Jekyll
-needed. GitHub Pages serves the repo root.
-
-- [pdf.js](https://mozilla.github.io/pdf.js/) — page rendering for OCR
-- [tesseract.js](https://tesseract.projectnaptha.com/) (v5) — in-browser OCR
-- [JSZip](https://stuk.github.io/jszip/) — the .docx and EPUB builders
-- [Open Library](https://openlibrary.org/) — optional cover search, no key needed
-- [Google Gemini API](https://aistudio.google.com/apikey) / [OpenRouter](https://openrouter.ai/)
-  — optional automatic proofreading, visitor's key
-- [Calibre](https://calibre-ebook.com/download) — the recommended route
-  to AZW3 / MOBI / KFX (outside the site)
-
-## Honest limits
-
-OCR on old, faded or low-resolution Bengali scans will still make mistakes,
-and curved phone-camera page photos are the hardest of all — flat scans
-work best. That is why the site has a 5-page quality test, resume, and a
-full proofreading guide: the tool does the heavy lifting, proofreading
-does the finishing. Free API limits change over time — the tool is built
-to wait, retry, and save progress rather than depend on any one number.
-
-## Family
-
-Part of the Our series: Our Days, Our Boighar, Our Islamic Archive.
+There is no server and no sign-up. The .docx is read and the
+EPUB/PDF are built entirely in the visitor's browser tab. The
+scanned PDF goes only to the visitor's own Muse chat — this site
+never sees it and never uploads anything.

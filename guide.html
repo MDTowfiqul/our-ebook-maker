@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Full Guide — Our Ebook Maker</title>
-<meta name="description" content="The full Our Ebook Maker method, step by step: check Our Boighar first, get the .txt, proofread it, make a book-like document, add the cover, and convert to EPUB, PDF, AZW3, MOBI or KFX.">
+<meta name="description" content="The full Our Ebook Maker method: check Our Boighar first, send the scanned PDF to Muse with one prompt, get a formatted Google Doc, and turn it into EPUB, PDF, AZW3, MOBI or KFX.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@500;700&display=swap" rel="stylesheet">
@@ -16,43 +16,37 @@
   .accent-bg{background-color:#e0521f}
   .accent-bg:hover{filter:brightness(1.08)}
   .hero-accent{color:#ff9e6e}
-  textarea{white-space:pre-wrap}
 </style>
 </head>
 <body class="bg-[#f8f9fa] text-[#212529] min-h-screen">
 <header class="sticky top-0 z-30 bg-white/95 backdrop-blur shadow-sm border-b border-neutral-200">
   <div class="max-w-3xl mx-auto px-3 sm:px-4 py-2.5 flex items-center gap-2">
     <a href="index.html" class="font-extrabold text-lg sm:text-2xl text-emerald-800 flex items-center gap-2">
-      <span>📖</span><span data-bn="আমাদের ইবুক মেকার" data-en="Our Ebook Maker">Our Ebook Maker</span>
+      <span>📖</span><span>Our Ebook Maker</span>
     </a>
     <span class="flex-1"></span>
-    <a href="index.html" class="hidden sm:block font-bold text-sm text-neutral-600 hover:text-emerald-700" data-bn="মেকার" data-en="Maker">Maker</a>
-    <button id="lang-toggle" class="flex items-center gap-1.5 bg-[#fdf3e7] border border-orange-100 rounded-full px-3.5 h-10 text-sm font-extrabold hover:brightness-95 transition" title="Language / ভাষা">
-      <span>🌐</span><span id="lang-label">EN</span>
-    </button>
+    <a href="index.html" class="hidden sm:block font-bold text-sm text-neutral-600 hover:text-emerald-700">Maker</a>
   </div>
 </header>
 
 <div class="max-w-3xl mx-auto px-3 sm:px-4">
   <section class="hero-bg text-white rounded-[1.8rem] mt-4 px-5 py-8 sm:p-10 shadow-xl">
     <h1 class="serif text-[30px] sm:text-5xl font-extrabold leading-tight">
-      <span class="hero-accent" data-bn="যেভাবে ইবুক বানাবেন — পুরো গাইড" data-en="How to make an ebook — the full guide">How to make an ebook — the full guide</span>
+      <span class="hero-accent">How to make an ebook — the full guide</span>
     </h1>
-    <p class="text-white/75 mt-2 text-sm sm:text-base" data-bn="PDF বই থেকে পরিষ্কার ইবুক — ৭টি অংশে পুরো পদ্ধতি। মেকারে ধাপগুলো ১–৫ নম্বরে আছে; নিচের অংশ ৭-ই মেকারের ফাইনাল ধাপ (ধাপ ৫)।" data-en="From a PDF book to a clean ebook — the full method in 7 parts. On the Maker the steps are numbered 1–6; Part 7 below is the Maker's final step (Step 6).">From a PDF book to a clean ebook — the full method in 7 parts. On the Maker the steps are numbered 1–6; Part 7 below is the Maker's final step (Step 6).</p>
+    <p class="text-white/75 mt-2 text-sm sm:text-base">From a scanned PDF book to a clean ebook — the full method in 5 parts. On the Maker the steps are numbered 1–3; Part 5 below is the Maker's final step (Step 3).</p>
     <ol class="mt-4 space-y-1 text-sm text-white/85">
       <li>1 — Before you start: check Our Boighar, and the two purposes</li>
-      <li>2 — Get the .txt (Maker OCR, vFlat, or a .txt you already have)</li>
-      <li>3 — Proofread the .txt (by hand, or automatically)</li>
-      <li>4 — The formatted document: what “book-like” means</li>
-      <li>5 — Cover and credit</li>
-      <li>6 — Review in Google Docs / Word (optional, for an exactly-like-print look)</li>
-      <li>7 — Final formats: EPUB, PDF, AZW3, MOBI, KFX</li>
+      <li>2 — The Muse route: PDF to Google Doc (the only route)</li>
+      <li>3 — Cover and credit</li>
+      <li>4 — Review in Google Docs (optional, for an exactly-like-print look)</li>
+      <li>5 — Final formats: EPUB, PDF, AZW3, MOBI, KFX</li>
     </ol>
   </section>
 
   <main class="pb-10">
   <section class="bg-white rounded-2xl shadow p-5 mt-6">
-    <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="১ — শুরু করার আগে" data-en="Part 1 — Before you start">Part 1 — Before you start</h2>
+    <h2 class="serif text-xl sm:text-2xl font-extrabold">Part 1 — Before you start</h2>
     <p class="mt-2 text-[15px]">First, check whether the book is already on <a href="https://mdtowfiqul.github.io/our-boighar/" class="text-emerald-700 font-bold underline">Our Boighar</a> — if it is, there is no need to make it again. (If you still want your own copy, you can make it anyway.)</p>
     <p class="font-bold mt-4">An ebook is made for 2 purposes:</p>
     <ol class="list-decimal pl-5 mt-1 space-y-2 text-[15px]">
@@ -63,254 +57,73 @@
   </section>
 
   <section class="bg-white rounded-2xl shadow p-5 mt-6">
-    <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="২ — .txt পাওয়া" data-en="Part 2 — Get the .txt">Part 2 — Get the .txt</h2>
-    <p class="mt-2 text-[15px]">The fastest way is the Muse route below — it skips the browser OCR and the proofreading steps entirely. The other ways are fallbacks for when you do not use Muse.</p>
-    <h3 class="font-extrabold mt-4">A) Muse route — PDF to Google Doc (recommended)</h3>
+    <h2 class="serif text-xl sm:text-2xl font-extrabold">Part 2 — The Muse route: PDF to Google Doc (the only route)</h2>
+    <p class="mt-2 text-[15px]">There is no browser OCR, no API key and no proofreading panel on this site anymore — everything up to the finished document happens in a Muse chat, with one prompt. The Maker's Step 2 has the full prompt behind its Copy button and pop-up.</p>
     <ol class="list-decimal pl-5 mt-2 space-y-2 text-[15px]">
       <li>Open a Muse chat and attach your scanned PDF of an old, copyright-free book.</li>
       <li>Paste the full prompt from the Maker's Step 2 (the “Copy the full prompt” button) in the same message. It tells Muse to extract the text — converting legacy Bijoy/SutonnyMJ fonts to Unicode Bangla — proofread it in chunks, and build a formatted Google Doc.</li>
-      <li>After each chunk Muse stops and says DONE — reply “continue” until the whole book is finished.</li>
-      <li>Muse sends the Google Doc link. The Doc begins directly with the book title — no cover-page or artwork notes.</li>
-      <li>Open the Doc, go to File → Download → Microsoft Word (.docx), and upload that .docx in the Maker's Step 6. Steps 3, 4 and 5 are skipped — you go straight to EPUB, PDF and the Kindle path. (The sharing rules in Part 1 apply to this route too.)</li>
+      <li>After each chunk Muse stops and says DONE — reply “continue” until the whole book is finished. Keep going until Muse sends the Google Doc link.</li>
+      <li>The Doc begins directly with the book title — no cover-page or artwork notes. Its formatting rules are inside the prompt: centred titles and headings, justified Bangla text, Arabic right-aligned with harkat, footnotes next to their numbers in superscript third brackets, and the author's wording left untouched.</li>
+      <li>If Muse makes a mistake in a chunk, correct it in that same chat before moving on — the Doc is only as clean as the last chunk you accepted.</li>
     </ol>
-    <h3 class="font-extrabold mt-5">B) With this Maker's browser OCR (fallback)</h3>
-    <ol class="list-decimal pl-5 mt-2 space-y-2 text-[15px]">
-      <li>On the Maker, upload the PDF, write the book title and author. The line under the file picker shows a ✓ with the chosen file's name and size — if it does not, pick the file again.</li>
-      <li>Tap “Test first 5 pages” first — read the preview. If the text looks clean, tap “Read the full book”.</li>
-      <li>Long run? Tap the round sun button beside the screen-on description — the screen will not sleep while this tab stays open. It does not work once you switch to another app; that is the phone's rule and cannot be overridden.</li>
-      <li>If you switch apps and the scan pauses, come back and tap the <b>▶️ Resume</b> button in Step 3 — it is always visible, and it is enabled whenever saved progress exists for that file. Progress is saved after every page, so nothing is lost. The status also shows how long each page takes and how much time is left.</li>
-      <li>When the full book finishes, Step 4 opens. Download the raw .txt from there if you are proofreading by hand.</li>
-    </ol>
-    <h3 class="font-extrabold mt-5">C) With the vFlat app (if Maker OCR feels too slow)</h3>
-    <p class="mt-2 text-[15px]">On the Maker, Step 3 has a “PDF → .txt with vFlat (pop-up)” button with these steps:</p>
-    <ol class="list-decimal pl-5 mt-2 space-y-2 text-[15px]">
-      <li><a href="https://t.me/sharingmyprivacy/3" class="text-emerald-700 font-bold underline">Download vFlat from this link</a> and install it.</li>
-      <li>Load the PDF in vFlat.</li>
-      <li>Run OCR.</li>
-      <li>Export as .txt.</li>
-      <li>Come back to the Maker and put that .txt in Step 4's “Upload a .txt file” box — Step 3 is skipped.</li>
-    </ol>
-    <h3 class="font-extrabold mt-5">D) You already have an OCR .txt file</h3>
-    <p class="mt-2 text-[15px]">Skip Step 3 entirely: upload the .txt in Step 4's box and proofreading starts right there.</p>
-  </section>
-
-  <section id="proofread" class="bg-white rounded-2xl shadow p-5 mt-6">
-    <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="৩ — প্রুফরিডিং" data-en="Part 3 — Proofreading">Part 3 — Proofreading</h2>
-    <p class="mt-2 text-[15px]">This step's whole job: turn the raw .txt into proofread text, and from it a book-like document. On the Maker, tap the Manual or Automatic button and that panel opens below it — tap again to close it. Pick one.</p>
-    <h3 class="font-extrabold mt-4">A) By hand — Google AI Studio (Gemini)</h3>
-    <ol class="list-decimal pl-5 mt-2 space-y-2 text-[15px]">
-      <li><a href="https://aistudio.google.com/" class="text-emerald-700 font-bold underline">aistudio.google.com</a> — open it.</li>
-      <li>Tap the <b>+</b> sign and add the text file.</li>
-      <li>Tap the system-instruction spot (the red-circled icon in the guide's original pictures) and paste the full proofreading prompt below.</li>
-      <li>Write <b>continue</b> in the prompt, then Run (Ctrl + Enter).</li>
-      <li>When a response finishes, write <b>continue</b> and Run again. Keep going until the whole book is done.</li>
-      <li>On any response, tap the three dots and choose <b>Copy as Markdown</b>. The left dots let you move between responses.</li>
-      <li>Join the copied parts into one proofread file, then upload it in the Maker's Step 4 manual panel — Step 5 opens at once. (The old route still works too: paste the Markdown into a Markdown-to-Google-Docs converter, copy into Google Docs, and export .docx — see Part 6.)</li>
-    </ol>
-    <h3 class="font-extrabold mt-5">For phone</h3>
-    <p class="mt-2 text-[15px]">Wherever you paste, press and hold, then tap Paste when the option appears. Do not paste from the keyboard's popup — the formatting will be lost.</p>
-    <h3 class="font-extrabold mt-5">B) By hand — with Muse, from a .txt (no API key needed)</h3>
-    <p class="mt-2 text-[15px]">This is for when you already have a .txt. If you still have the scanned PDF, use Part 2A instead — it goes straight to a formatted Google Doc, no .txt step.</p>
-    <ol class="list-decimal pl-5 mt-2 space-y-2 text-[15px]">
-      <li>Download the .txt from the Maker's Step 4.</li>
-      <li>Upload it in a Muse chat and paste the Muse instruction below in the same message.</li>
-      <li>When Muse finishes a chunk, write “continue” — repeat until the book is done.</li>
-      <li>Join the finished chunks into one file and upload it in the Maker's Step 4 manual panel.</li>
-    </ol>
-    <h3 class="font-extrabold mt-5">C) Automatically — in the Maker, with your own key</h3>
-    <p class="mt-2 text-[15px]">In Step 4's automatic panel: pick Google Gemini (free, easiest for most people) or OpenRouter, paste your key, tap “Check key &amp; show free models” to see the free models on that key, pick one, and press “Proofread automatically”. The text is sent in chunks (about 8,000 characters) with the same proofreading prompt, and the answers are joined. If a free key hits its daily limit, the tool waits and retries on its own, and progress is saved after every chunk — run again to continue from the same place. The key stays only in your browser and goes directly to Google or OpenRouter — never to any server of ours. No key yet? The “No key yet — how do I get one?” button walks through it tap by tap (Gemini keys are free and need no card; they start with “AIza” — never screenshot one).</p>
-    <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mt-4 text-[15px]">
-      <p class="font-bold">NB</p>
-      <ul class="list-disc pl-5 mt-1 space-y-1">
-        <li>You can attach the PDF directly in AI Studio too — but the sharing-rights note must be somewhere in the book.</li>
-        <li>A .docx file cannot be added directly to AI Studio.</li>
-        <li>Open several tabs and several books can be proofread in parallel — it takes less time overall.</li>
-        <li>If anything is unclear, ask in the group.</li>
-      </ul>
-    </div>
+    <p class="mt-3 text-[15px]">This site itself cannot call Muse or your Drive — that part happens in your Muse chat. The site's job starts in Part 5, with the .docx you download from the Doc.</p>
   </section>
 
   <section class="bg-white rounded-2xl shadow p-5 mt-6">
-    <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="৪ — ফরম্যাট করা ডকুমেন্ট" data-en="Part 4 — The formatted document">Part 4 — The formatted document</h2>
-    <p class="mt-2 text-[15px]">Whether proofreading was manual or automatic, the output is a document that looks like a book — not plain text. The Maker builds it with these rules, and the proofreading prompt enforces the same rules when you proofread by hand:</p>
-    <ul class="list-disc pl-5 mt-2 space-y-2 text-[15px]">
-      <li><b>Title page</b> — book title (and author) centred on its own page, then the book itself.</li>
-      <li><b>Chapters on new pages</b> — every chapter heading starts a new page, headings centred.</li>
-      <li><b>Body text justified</b> — except Arabic text, which is right-aligned.</li>
-      <li><b>Structure</b> — # for the book title only, ## for chapters, ### for sub-sections, *** for scene breaks, page break at the end of a chapter where needed.</li>
-      <li><b>Cleanup</b> — page numbers, running headers and footers removed; broken line breaks joined into proper paragraphs; common OCR errors fixed without changing the author's wording or modernizing old spellings.</li>
-      <li><b>Typography</b> — -- becomes an em-dash (—), spaced hyphens become en-dashes (–) where appropriate, quotation marks standardized, *italics* for emphasis, book titles and foreign words.</li>
-      <li><b>Special text</b> — blockquotes with &gt;, poetry kept in stanzas with soft line breaks, footnotes kept next to their number in superscript within third brackets, endnotes and citations the same way.</li>
-      <li><b>Bangla</b> — OCR spelling corrected (য় misread as য, and similar), titles and headings centred.</li>
-      <li><b>Arabic</b> — errors corrected, harkat added, no brackets in Arabic text; Quranic ayahs in the form آيه ۝١٩١.</li>
-      <li><b>Navigation</b> — a table of contents becomes a digital linked list (no printed page numbers), and a back-of-book index becomes a linked index the same way.</li>
-      <li><b>Credit page</b> — an “About this ebook” page at the end, naming the ebook creator (your name from Step 1, if given), Our Ebook Maker and Our Boighar.</li>
-    </ul>
-    <p class="mt-3 text-[15px]">Exactly-like-print decoration (drop caps, ornaments, special fonts) cannot be produced automatically — for that, see Part 6.</p>
+    <h2 class="serif text-xl sm:text-2xl font-extrabold">Part 3 — Cover and credit</h2>
+    <p class="mt-2 text-[15px]">Set these in the Maker's Step 1 before you build the final ebook:</p>
+    <ol class="list-decimal pl-5 mt-2 space-y-2 text-[15px]">
+      <li>Upload a cover image if you have one — the uploaded cover is the one that goes into the final ebook. No cover? Find one online with the search button, or make a text cover — tap “Generate another style” as many times as you like, every tap makes a new design. Download the one you like, then upload it in the upload box.</li>
+      <li>Put your name in Step 1's “Your name” field if you want it on the credit page.</li>
+      <li>The finished EPUB and PDF both end with an “About this ebook” credit page naming the ebook creator (your name, if given), Our Ebook Maker and Our Boighar.</li>
+    </ol>
   </section>
 
   <section class="bg-white rounded-2xl shadow p-5 mt-6">
-    <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="৫ — প্রচ্ছদ ও ক্রেডিট" data-en="Part 5 — Cover and credit">Part 5 — Cover and credit</h2>
-    <ul class="list-disc pl-5 mt-2 space-y-2 text-[15px]">
-      <li>In Step 1, upload a cover image if you have one — the uploaded cover is the one that goes into the final ebook.</li>
-      <li>No cover? Use “Find a cover online” (Open Library search), or “Make a text cover”. If you don't like a style, tap “Generate another style” — there is no limit, every tap makes a new design.</li>
-      <li><b>Download the cover you like, then upload it in the upload box above</b> — only the uploaded file goes into the ebook.</li>
-      <li>Put your name in Step 1's “Your name” field if you want it on the credit page (Part 4).</li>
-    </ul>
+    <h2 class="serif text-xl sm:text-2xl font-extrabold">Part 4 — Review in Google Docs (optional)</h2>
+    <p class="mt-2 text-[15px]">Before you download the .docx, you can check the Google Doc itself:</p>
+    <ol class="list-decimal pl-5 mt-2 space-y-2 text-[15px]">
+      <li>Open the Doc Muse sent you and skim the chapter headings, the first pages of a few chapters, and any Arabic passages.</li>
+      <li>Make any final hand formatting here (drop caps, ornaments, special fonts) — this is the only place an exactly-like-print layout can be made, because no automatic tool can do that decoration.</li>
+      <li>Then download it: File → Download → Microsoft Word (.docx), and upload that file in the Maker's Step 3.</li>
+    </ol>
   </section>
 
   <section class="bg-white rounded-2xl shadow p-5 mt-6">
-    <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="৬ — Docs / Word-এ যাচাই (ঐচ্ছিক)" data-en="Part 6 — Review in Google Docs / Word (optional)">Part 6 — Review in Google Docs / Word (optional)</h2>
-    <p class="mt-2 text-[15px]">Only needed if you want the book to look exactly like the printed book, or if you took the old manual route:</p>
-    <ul class="list-disc pl-5 mt-2 space-y-2 text-[15px]">
-      <li>Download the .docx from Step 5 and open it in Google Docs or Word.</li>
-      <li>Set the font to <b>Noto Serif Bengali / SulaimanLipi</b> — it looks like the original book.</li>
-      <li>For a full-page cover: tap the image, open Image options, uncheck <b>lock aspect ratio</b> under Size &amp; rotation, set position to <b>“Fix position on page”</b>, then expand the image to fill the page.</li>
-      <li>Make any final hand formatting here (drop caps, ornaments, special fonts), then export as .docx — and if you changed it, upload that .docx in Step 6: it skips straight to the final ebook formats.</li>
-    </ul>
-  </section>
-
-  <section class="bg-white rounded-2xl shadow p-5 mt-6">
-    <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="৭ — ফাইনাল ফরম্যাট" data-en="Part 7 — Final formats">Part 7 — Final formats</h2>
-    <p class="mt-2 text-[15px]"><b>Skip straight here:</b> if you already have a formatted document (.docx) — from Part 6, or from anywhere else — upload it in the Maker's Step 6 and every earlier step is skipped. This is also where a Google Doc .docx from the Muse route goes. The document is read (headings kept as chapters) and all formats below become available.</p>
+    <h2 class="serif text-xl sm:text-2xl font-extrabold">Part 5 — Final formats</h2>
+    <p class="mt-2 text-[15px]"><b>The Maker's Step 3:</b> upload the .docx from your Google Doc. The EPUB, PDF and .docx-download buttons unlock at once. The document is read (headings kept as chapters) and all formats below become available. Nothing is uploaded to any site — the .docx is read and the EPUB/PDF are built right here in your browser.</p>
     <h3 class="font-extrabold mt-4">Which format, for which work?</h3>
-    <ul class="list-disc pl-5 mt-2 space-y-2 text-[15px]">
-      <li><b>EPUB</b> — phones, tablets and almost every reading app (Apple Books, Google Play Books, Moon+ Reader, the Our Boighar reader). Built automatically on the Maker.</li>
-      <li><b>PDF</b> — layout stays exactly fixed; for printing or sharing, and for readers with no ebook app. Built on the Maker as a print-ready page — in the print dialog choose “Save as PDF”, so Bengali/Arabic shaping stays correct.</li>
-      <li><b>AZW3</b> — Amazon Kindle devices and apps. <b>MOBI</b> — older Kindles. <b>KFX</b> — the newest Kindle format, with enhanced typesetting.</li>
+    <ul class="list-disc pl-5 mt-2 space-y-1 text-[15px]">
+      <li><b>EPUB</b> — best for phones, tablets and almost every reading app (Apple Books, Google Play Books, Moon+ Reader, the Our Boighar reader).</li>
+      <li><b>PDF</b> — layout stays exactly fixed — for printing or sharing, and for readers with no ebook app. Built here as a print-ready book page; save it from the browser's print dialog with “Save as PDF”.</li>
+      <li><b>AZW3</b> — for Amazon Kindle devices and apps.</li>
+      <li><b>MOBI</b> — for older Kindles.</li>
+      <li><b>KFX</b> — the newest Kindle format, with enhanced typesetting.</li>
     </ul>
-    <h3 class="font-extrabold mt-4">1) Automatic — on the Maker itself</h3>
-    <p class="mt-2 text-[15px]">The document (.docx) is built in Step 5, and EPUB and PDF are built in Step 6, right here in your browser — nothing has to be uploaded to any site.</p>
-    <h3 class="font-extrabold mt-4">2) Manual — with the online-convert website (for AZW3 / MOBI)</h3>
-    <p class="mt-2 text-[15px]">AZW3 / MOBI cannot be built directly in a browser — they are Amazon's own formats, and this site has no server, so a server-based conversion like online-convert's cannot run automatically here. This is the manual way:</p>
-    <ol class="list-decimal pl-5 mt-2 space-y-2 text-[15px]">
-      <li>Download the .docx in Step 5, or the EPUB in Step 6, automatically.</li>
-      <li>Open <a href="https://ebook.online-convert.com" class="text-emerald-700 font-bold underline">ebook.online-convert.com</a>, upload the file, and pick AZW3 (Kindle) or MOBI (older Kindle) as the output.</li>
+    <h3 class="font-extrabold mt-4">Automatic — right here on this site</h3>
+    <p class="mt-2 text-[15px]">EPUB and PDF are built in your browser from the uploaded .docx, with the title page, chapters on new pages, centred headings, justified text (Arabic right-aligned), your cover, and the credit page.</p>
+    <h3 class="font-extrabold mt-4">Manual — with the online-convert website (for Kindle formats)</h3>
+    <p class="mt-2 text-[15px]">AZW3 / MOBI cannot be built directly in a browser (they are Amazon's own formats) — use online-convert for those. This site has no server, so a server-based conversion like online-convert's cannot run automatically here; this is the manual way.</p>
+    <ol class="list-decimal pl-5 mt-2 space-y-1 text-[15px]">
+      <li>Use the .docx you downloaded from Google Docs, or the EPUB built above.</li>
+      <li><a href="https://ebook.online-convert.com" target="_blank" rel="noopener" class="text-emerald-700 font-bold underline">ebook.online-convert.com</a> — open it, upload the file, and pick AZW3 (Kindle) or MOBI (older Kindle) as the output.</li>
       <li>Press Convert, then download the finished file.</li>
     </ol>
-    <h3 class="font-extrabold mt-4">3) With Calibre on a computer (AZW3 / MOBI / KFX)</h3>
-    <ol class="list-decimal pl-5 mt-2 space-y-2 text-[15px]">
-      <li>Download the EPUB in Step 6.</li>
-      <li>Install the free <a href="https://calibre-ebook.com/download" class="text-emerald-700 font-bold underline">Calibre</a> software on a computer.</li>
-      <li>Add the EPUB to Calibre → select the book → “Convert books” → pick AZW3 or MOBI as output format → OK.</li>
+    <h3 class="font-extrabold mt-4">With Calibre (AZW3 / MOBI / KFX)</h3>
+    <ol class="list-decimal pl-5 mt-2 space-y-1 text-[15px]">
+      <li>Download the EPUB with the EPUB button in Step 3.</li>
+      <li><a href="https://calibre-ebook.com/download" class="text-emerald-700 font-bold underline">Calibre</a> — install this free software on a computer.</li>
+      <li>Add the EPUB to Calibre → select the book → “Convert books” → pick AZW3 (Kindle) or MOBI (older Kindle) as output format → OK.</li>
       <li>For KFX, add the “KFX Output” plugin to Calibre (Preferences → Plugins).</li>
     </ol>
-    <p class="mt-3 text-[15px]">Tip: to send straight to a Kindle, EPUB itself can be sent with Send to Kindle — no conversion needed.</p>
-  </section>
-
-  <section id="muse" class="bg-white rounded-2xl shadow p-5 mt-6">
-    <h2 class="serif text-xl font-extrabold" data-bn="Muse দিয়ে প্রুফরিড (সহজ হাতের পদ্ধতি)" data-en="Proofread with Muse (the easy manual way)">Proofread with Muse (the easy manual way)</h2>
-    <p class="mt-2 text-[15px]" data-bn="কোনো API key নেই, আর AI Studio-র লম্বা ধাপগুলোও করতে চান না? তাহলে আপনার নিজের Muse-কেই (এই চ্যাটের AI) দিয়ে প্রুফরিড করান — কোনো key লাগে না।" data-en="No API key, and you don't want AI Studio's long steps either? Then let your own Muse (the AI in this chat) proofread it for you — no key needed.">No API key, and you don't want AI Studio's long steps either? Then let your own Muse (the AI in this chat) proofread it for you — no key needed.</p>
-    <textarea id="musePrompt" readonly rows="12" class="w-full border border-neutral-300 rounded-xl p-3 text-sm mt-3">Please proofread this book for me, in chunks, so I can make a clean EPUB from it.
-
-Rules:
-- This file is OCR text from a book. Fix OCR errors, broken line breaks, stray characters in footnotes, and repeated page headers that split paragraphs in half.
-- Do NOT change the author's wording, meaning, or theological terms. Do NOT modernize old spellings.
-- For Bangla: correct OCR spelling mistakes (for example য় misread as য). Centre titles and headings.
-- For Arabic text: correct errors, add harkat, do not use brackets. Never alter Quranic verses or Hadith texts — only fix clear OCR mistakes in them.
-- Format the output as clean Markdown: # for the book title, ## for chapter titles, ### for sub-sections, *** for scene breaks. Remove page numbers, running headers and footers. Join fragmented sentences into proper paragraphs.
-- Footnotes: keep the footnote entry next to its number, in superscript, within third brackets.
-- Work through the file in chunks of about 8,000 characters. After each chunk, stop and say DONE, and wait for me to say "continue" before doing the next chunk.
-- Output ONLY the proofread Markdown for each chunk — no explanations, no "here is your text".</textarea>
-    <button id="copyMuse" class="accent-bg text-white rounded-xl px-5 py-3 font-bold mt-3" data-bn="Muse-র নির্দেশনা কপি করুন" data-en="Copy the Muse instruction">Copy the Muse instruction</button>
-  </section>
-
-  <section class="bg-white rounded-2xl shadow p-5 mt-6">
-    <h2 class="serif text-xl font-extrabold" data-bn="প্রুফরিডিং প্রম্পট" data-en="The proofreading prompt">The proofreading prompt</h2>
-    <textarea id="prompt" readonly rows="18" class="w-full border border-neutral-300 rounded-xl p-3 text-sm mt-3">Act as an expert Digital Archivist, Master Typographer, and EPUB Formatter. Your task is to digitize raw, unformatted text (often containing OCR errors) from old, copyright-free (public domain) books and convert it into pristine, beautifully structured Markdown optimized for professional EPUB conversion.
-
-I will provide the text to you chapter-by-chapter (or section-by-section).
-
-Please apply the following strict guidelines to every submission:
-
-1. STRUCTURAL HIERARCHY (Semantic Markdown):
-- Use `#` for the Book Title (only on the title page/first prompt).
-- Use `##` for Chapter Titles or Major Sections (e.g., `## Chapter I`).
-- Use `###` for Sub-chapters or Section Breaks.
-- Separate scenes or thematic breaks using a standard horizontal rule: `***`.
-- Give page break at the end of the chapter or where necessary.
-
-2. OCR ERROR CORRECTION & CLEANUP:
-- Remove all original page numbers, running headers, and running footers.
-- Fix broken line breaks (hard returns in the middle of sentences). Join fragmented sentences into cohesive paragraphs.
-- Correct common OCR errors ("scannos") without altering the original meaning (e.g., fix "rn" misread as "m", "l" misread as "1", "thc" to "the").
-- DO NOT modernize the author's vocabulary or intentional archaic spellings (e.g., keep "to-morrow", "shew", "colour" if they appear in the original text).
-
-3. PROFESSIONAL TYPOGRAPHY:
-- Replace double hyphens (`--`) with proper em-dashes (`—`) without spaces on either side.
-- Replace spaced hyphens with en-dashes (`–`) where appropriate (e.g., date ranges).
-- Standardize quotation marks. Use proper Markdown italicization `*like this*` for emphasis, book titles, and foreign words.
-- Ensure proper spacing after punctuation.
-
-4. SPECIAL FORMATTING:
-- Blockquotes: Prefix multi-line quotes or letters with `> `.
-- Poetry/Song Lyrics: Use double spaces at the end of a line to create a soft line break, preserving the stanza structure.
-- Footnotes: Footnote Entry should be added next to the footnote number and footnote entry should be within Third bracket within the text, not separately. Footnote number should be in superscript. Endnote & Citation too.
-
-5. NAVIGATION & DIGITAL LINKED INDEX:
-- Table of Contents (TOC): If processing a TOC, remove all original page numbers. Convert the entries into a digital linked list targeting chapter anchors. Format: `- [Chapter Name](#chapter-name)`.
-- Back-of-Book Index: Original printed page numbers are useless in reflowable EPUBs. When processing an Index, REMOVE all page numbers. Convert the index into a hierarchical, digital linked index. Format each main entry as a Markdown hyperlink pointing to an anchor of the term itself.
-  Example: Convert "Astrophysics ........... 45, 67" to `- [Astrophysics](#astrophysics)`.
-  Retain original sub-entries as indented sub-bullets under the main term.
-
-6. CLEAN CODE:
-- Output ONLY the formatted Markdown.
-- Do not include conversational filler (e.g., "Here is your text," "Let me know if you need changes").
-
-7. For Bangla & Arabic Language:
-- Correct Bangla OCR spelling error, য় can be mistaken as য
-- Title and Heading should be center aligned.
-- All the text should be in Justified Alignment except Arabic which must be right aligned.
-- For Arabic text: correct the Arabic sentence if there is error and add Harkat to it. Don't use any bracket in Arabic text.
-In case of Quranic ayah follow this format,
-آيه ۝١٩١ (the number is for example)</textarea>
-    <button id="copyPrompt" class="accent-bg text-white rounded-xl px-5 py-3 font-bold mt-3" data-bn="পুরো প্রম্পট কপি করুন" data-en="Copy the full prompt">Copy the full prompt</button>
-  </section>
-
-  <section class="bg-white rounded-2xl shadow p-5 mt-6">
-    <h2 class="serif text-xl font-extrabold" data-bn="ক্রেডিট — কে বইটি বানালো" data-en="Credit — who made the ebook">Credit — who made the ebook</h2>
-    <p class="mt-2 text-[15px]" data-bn="মেকারে আপনার নাম দিলে তৈরি ইবুকের শেষে একটি “About this ebook” পেজ যোগ হয় — সেখানে ইবুক নির্মাতার নাম, Our Ebook Maker এবং Our Boighar-এর উল্লেখ থাকে। সাইটের ফুটারেও একই ক্রেডিট দেওয়া আছে।" data-en="If you enter your name in the Maker, the finished ebook gets an “About this ebook” page at the end — naming the ebook creator, Our Ebook Maker, and Our Boighar. The same credit is in the site footer.">If you enter your name in the Maker, the finished ebook gets an “About this ebook” page at the end — naming the ebook creator, Our Ebook Maker, and Our Boighar. The same credit is in the site footer.</p>
-  </section>
-
-  <section class="bg-white rounded-2xl shadow p-5 mt-6">
-    <h2 class="serif text-xl font-extrabold" data-bn="শেয়ার করার নিয়ম — দুটি উদ্দেশ্য" data-en="Sharing rules — two purposes">Sharing rules — two purposes</h2>
-    <p class="mt-2 text-[15px]" data-bn="বই বানানোর আগে Our Boighar-এ দেখুন বইটি আছে কি না — থাকলে আবার বানানোর দরকার নেই (তবু নিজের জন্য বানাতে চাইলে পারেন)।" data-en="Before making a book, check Our Boighar to see if it is already there — if it is, there is no need to make it again (though you may still make your own copy if you want).">Before making a book, check Our Boighar to see if it is already there — if it is, there is no need to make it again (though you may still make your own copy if you want).</p>
-    <ol class="list-decimal pl-5 mt-2 space-y-2 text-[15px]">
-      <li><b>শুধু নিজের জন্য:</b> যেকোনো PDF বই (পুরোনো বা নতুন) কনভার্ট করতে পারেন, কোনো সমস্যা নেই। শুধু নতুন বইয়ের (১০ বছরের কম পুরোনো) তৈরি ইবুক অনলাইনে শেয়ার করবেন না।</li>
-      <li><b>সবার জন্য, সবার সাথে শেয়ার করতে:</b> শেয়ার করা যাবে শুধু তখনই, যখন বইটি ১০+ বছরের পুরোনো, অথবা লেখক/প্রকাশক নিজে PDF প্রকাশ করেছেন বা অনলাইনে শেয়ার করতে আপত্তি নেই বলে জানিয়েছেন।</li>
-    </ol>
-    <p class="mt-2 text-[15px]">শেয়ার করার মতো ইবুক তৈরি হলে বইটি <a href="https://mdtowfiqul.github.io/our-boighar/" class="text-emerald-700 font-bold underline">Our Boighar</a> কমিউনিটিতে (সাইটের About পেজে দেওয়া Facebook গ্রুপ / Telegram) পাঠান — যাচাই করে লাইব্রেরিতে যোগ করা হবে। এতে লেখক ও প্রকাশকের ক্ষতি হয় না।</p>
+    <p class="text-sm text-neutral-500 mt-2">Tip: to send straight to a Kindle, EPUB itself can be sent with Send to Kindle — no conversion needed.</p>
   </section>
   </main>
+
   <footer class="text-center text-neutral-500 text-sm py-6">
-    <span data-bn="আমাদের পরিবারের অংশ: Our Days, Our Boighar, Our Islamic Archive" data-en="Part of the Our family: Our Days, Our Boighar, Our Islamic Archive">Part of the Our family: Our Days, Our Boighar, Our Islamic Archive</span>
+    <p>Ebooks made with <a href="index.html" class="text-emerald-700 font-bold underline">Our Ebook Maker</a> • shared on <a href="https://mdtowfiqul.github.io/our-boighar/" class="text-emerald-700 font-bold underline">Our Boighar</a></p>
+    <p class="mt-1">Part of the Our family: Our Days, Our Boighar, Our Islamic Archive</p>
   </footer>
 </div>
-<script>
-(function () {
-  var LANG = localStorage.getItem('oem-lang') || 'en';
-  function apply() {
-    document.querySelectorAll('[data-bn]').forEach(function (el) {
-      el.textContent = LANG === 'bn' ? el.getAttribute('data-bn') : el.getAttribute('data-en');
-    });
-    document.documentElement.lang = LANG;
-    document.getElementById('lang-label').textContent = LANG === 'bn' ? 'BN' : 'EN';
-    try { localStorage.setItem('oem-lang', LANG); } catch (e) {}
-  }
-  document.getElementById('lang-toggle').addEventListener('click', function () {
-    LANG = LANG === 'bn' ? 'en' : 'bn'; apply();
-  });
-  apply();
-  function copy(id, btn) {
-    navigator.clipboard.writeText(document.getElementById(id).value).then(function () {
-      btn.textContent = LANG === 'bn' ? 'কপি হয়েছে!' : 'Copied!';
-    });
-  }
-  document.getElementById('copyPrompt').addEventListener('click', function () { copy('prompt', this); });
-
-  var museBtn = document.getElementById('copyMuse');
-  if (museBtn) museBtn.addEventListener('click', function () { copy('musePrompt', this); });
-})();
-</script>
 </body>
 </html>
