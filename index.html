@@ -9,34 +9,109 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = { darkMode: 'class' };
+  if (localStorage.getItem('oem-theme') === 'dark') document.documentElement.classList.add('dark');
+  document.documentElement.setAttribute('data-color', localStorage.getItem('oem-color') || 'purple');
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
   body{font-family:'Hind Siliguri',system-ui,sans-serif}
   .serif{font-family:'Noto Serif Bengali',serif}
-  .hero-bg{background:linear-gradient(150deg,#33248f,#171233)}
-  .accent-bg{background-color:#e0521f}
+  :root, [data-color="purple"]{--hero1:#33248f;--hero2:#171233;--accent:#e0521f;--accent-bright:#ff9e6e;--accent-soft:#fdeee6}
+  [data-color="emerald"]{--hero1:#065f46;--hero2:#022c22;--accent:#c8501b;--accent-bright:#ffb37a;--accent-soft:#fdf0e4}
+  [data-color="ocean"]{--hero1:#0c4a6e;--hero2:#082f49;--accent:#0284c7;--accent-bright:#7dd3fc;--accent-soft:#e0f2fe}
+  [data-color="crimson"]{--hero1:#881337;--hero2:#1f0a12;--accent:#e11d48;--accent-bright:#fda4af;--accent-soft:#ffe4e6}
+  [data-color="amber"]{--hero1:#713f12;--hero2:#1c1005;--accent:#d97706;--accent-bright:#fcd34d;--accent-soft:#fef3c7}
+  .hero-bg{background:linear-gradient(150deg,var(--hero1),var(--hero2))}
+  .accent-bg{background-color:var(--accent)}
   .accent-bg:hover{filter:brightness(1.08)}
-  .accent-text{color:#e0521f}
-  .hero-accent{color:#ff9e6e}
+  .accent-text{color:var(--accent)}
+  .hero-accent{color:var(--accent-bright)}
+  .accent-soft-bg{background-color:var(--accent-soft)}
+  .dark .accent-soft-bg{background-color:rgba(255,255,255,.09)}
+  #drawer{transition:transform .3s ease}
+  #drawer-overlay{transition:opacity .3s ease}
+  .swatch.on{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--accent)}
   #preview{white-space:pre-wrap;max-height:320px;overflow:auto}
+  /* Dark-mode fallbacks for cards that use plain bg-white / bg-neutral-50 etc. */
+  .dark .bg-white{background-color:#262626 !important;border-color:#404040 !important}
+  .dark .bg-neutral-50{background-color:#262626 !important}
+  .dark .bg-amber-50{background-color:#292524 !important}
+  .dark .bg-emerald-50{background-color:#052e16 !important}
+  .dark .text-neutral-500{color:#a3a3a3 !important}
+  .dark .text-neutral-600{color:#d4d4d4 !important}
+  .dark .text-neutral-700{color:#e5e5e5 !important}
+  .dark input, .dark select, .dark textarea{background-color:#262626 !important;color:#f5f5f5 !important;border-color:#525252 !important}
+  .dark .bg-neutral-100{background-color:#262626 !important}
+  .dark .bg-\[\#faf8f2\]{background-color:#262626 !important}
+  .dark .bg-\[\#fdf3e7\]{background-color:#262626 !important}
+  .dark .bg-\[\#fdf8f1\]{background-color:#262626 !important}
 </style>
 </head>
-<body class="bg-[#f8f9fa] text-[#212529] min-h-screen">
+<body class="bg-[#f8f9fa] text-[#212529] dark:bg-neutral-900 dark:text-neutral-100 min-h-screen pb-28">
 
-<header class="sticky top-0 z-30 bg-white/95 backdrop-blur shadow-sm border-b border-neutral-200">
+<header class="sticky top-0 z-30 bg-white/95 dark:bg-neutral-900/95 backdrop-blur shadow-sm border-b border-neutral-200 dark:border-neutral-800">
   <div class="max-w-3xl mx-auto px-3 sm:px-4 py-2.5 flex items-center gap-2">
-    <a href="index.html" class="font-extrabold text-lg sm:text-2xl text-emerald-800 flex items-center gap-2">
+    <button id="menu-btn" class="p-2 -ml-1 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 text-xl font-bold" aria-label="Menu">☰</button>
+    <a href="index.html" class="font-extrabold text-lg sm:text-2xl text-emerald-800 dark:text-emerald-400 flex items-center gap-2">
       <span>📖</span><span data-bn="আমাদের ইবুক মেকার" data-en="Our Ebook Maker">Our Ebook Maker</span>
     </a>
     <span class="flex-1"></span>
-    <a href="guide.html" class="hidden sm:block font-bold text-sm text-neutral-600 hover:text-emerald-700" data-bn="প্রুফরিডিং গাইড" data-en="Proofreading Guide">Proofreading Guide</a>
-    <button id="lang-toggle" class="flex items-center gap-1.5 bg-[#fdf3e7] border border-orange-100 rounded-full px-3.5 h-10 text-sm font-extrabold hover:brightness-95 transition" title="Language / ভাষা">
+    <button id="theme-toggle" class="border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 rounded-full w-10 h-10 text-base hover:bg-neutral-100 dark:hover:bg-neutral-700 transition" title="Dark / Light">🌙</button>
+    <button id="lang-toggle" class="flex items-center gap-1.5 bg-[#fdf3e7] dark:bg-neutral-800 border border-orange-100 dark:border-neutral-700 rounded-full px-3.5 h-10 text-sm font-extrabold hover:brightness-95 transition" title="Language / ভাষা">
       <span>🌐</span><span id="lang-label">EN</span>
     </button>
   </div>
 </header>
+
+<div id="drawer-overlay" class="fixed inset-0 bg-black/45 z-40 opacity-0 pointer-events-none"></div>
+<aside id="drawer" class="fixed inset-y-0 left-0 w-[86%] max-w-sm bg-white dark:bg-neutral-900 z-50 -translate-x-full flex flex-col shadow-2xl overflow-y-auto">
+  <div class="flex items-center justify-between px-5 py-4 border-b border-neutral-100 dark:border-neutral-800">
+    <span class="font-extrabold text-lg" data-bn="মেনু" data-en="Menu">Menu</span>
+    <button id="drawer-close" class="w-10 h-10 rounded-xl bg-[#fdf3e7] dark:bg-neutral-800 text-lg font-bold" aria-label="Close">✕</button>
+  </div>
+  <div class="px-5 py-4">
+    <button class="drawer-link accent-soft-bg accent-text rounded-xl px-4 py-3 mb-1 w-full text-left font-bold" data-scroll="top" data-bn="হোম" data-en="Home">Home</button>
+    <button class="drawer-link rounded-xl px-4 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-800 w-full text-left font-bold" data-scroll="step1" data-bn="১. আপনার বই" data-en="1. Your book">1. Your book</button>
+    <button class="drawer-link rounded-xl px-4 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-800 w-full text-left font-bold" data-scroll="step2" data-bn="২. OCR — বই পড়া" data-en="2. OCR — read the book">2. OCR — read the book</button>
+    <button class="drawer-link rounded-xl px-4 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-800 w-full text-left font-bold" data-scroll="results" data-bn="৩. প্রুফরিড" data-en="3. Proofread">3. Proofread</button>
+    <button class="drawer-link rounded-xl px-4 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-800 w-full text-left font-bold" data-scroll="docStep" data-bn="৪. ফরম্যাট করা ডকুমেন্ট" data-en="4. Formatted document">4. Formatted document</button>
+    <button class="drawer-link rounded-xl px-4 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-800 w-full text-left font-bold" data-scroll="finalFormats" data-bn="৫. ফাইনাল ইবুক" data-en="5. Final ebook">5. Final ebook</button>
+    <button class="drawer-link rounded-xl px-4 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-800 w-full text-left font-bold" data-scroll="coverSection" data-bn="বইয়ের প্রচ্ছদ" data-en="Book cover">Book cover</button>
+    <button id="drawer-lang" class="mt-3 w-full flex items-center gap-3 bg-[#fdf8f1] dark:bg-neutral-800 border border-orange-100/70 dark:border-neutral-700 rounded-2xl px-4 py-3.5 font-bold">
+      <span>🌐</span><span data-bn="ভাষা" data-en="Language">Language</span><span class="flex-1"></span><span id="drawer-lang-label" class="text-neutral-500 dark:text-neutral-300">English</span>
+    </button>
+    <div class="mt-5">
+      <p class="font-bold flex items-center gap-2"><span>🎨</span><span data-bn="থিমের রং" data-en="Theme Colour">Theme Colour</span></p>
+      <div class="flex gap-3 mt-2.5 px-1">
+        <button class="swatch w-9 h-9 rounded-full border border-black/10" data-setcolor="purple" style="background:linear-gradient(140deg,#33248f,#e0521f)" title="Purple"></button>
+        <button class="swatch w-9 h-9 rounded-full border border-black/10" data-setcolor="emerald" style="background:linear-gradient(140deg,#065f46,#c8501b)" title="Emerald"></button>
+        <button class="swatch w-9 h-9 rounded-full border border-black/10" data-setcolor="ocean" style="background:linear-gradient(140deg,#0c4a6e,#0284c7)" title="Ocean"></button>
+        <button class="swatch w-9 h-9 rounded-full border border-black/10" data-setcolor="crimson" style="background:linear-gradient(140deg,#881337,#e11d48)" title="Crimson"></button>
+        <button class="swatch w-9 h-9 rounded-full border border-black/10" data-setcolor="amber" style="background:linear-gradient(140deg,#713f12,#d97706)" title="Amber"></button>
+      </div>
+      <button id="drawer-theme-btn" class="mt-3 w-full flex items-center gap-3 bg-[#fdf8f1] dark:bg-neutral-800 border border-orange-100/70 dark:border-neutral-700 rounded-2xl px-4 py-3.5 font-bold">
+        <span id="drawer-theme-icon">🌙</span><span data-bn="দিন / রাত" data-en="Day / Night">Day / Night</span><span class="flex-1"></span><span id="drawer-theme-label">Dark</span>
+      </button>
+    </div>
+    <p class="mt-6 mb-2.5 font-bold text-neutral-600 dark:text-neutral-300" data-bn="সহায়তা ও নীতিমালা" data-en="Help & Policies">Help &amp; Policies</p>
+    <div class="flex flex-wrap gap-2 text-sm font-semibold">
+      <button class="guide-open bg-[#fdf8f1] dark:bg-neutral-800 rounded-full px-3.5 py-1.5" data-bn="গাইড" data-en="Guide">Guide</button>
+      <button class="proofsteps-open bg-[#fdf8f1] dark:bg-neutral-800 rounded-full px-3.5 py-1.5" data-bn="প্রুফরিডিং ধাপ" data-en="Proofreading steps">Proofreading steps</button>
+      <button class="muse-open bg-[#fdf8f1] dark:bg-neutral-800 rounded-full px-3.5 py-1.5" data-bn="Muse নির্দেশনা" data-en="Muse instruction">Muse instruction</button>
+      <button id="drawer-keyhelp" class="bg-[#fdf8f1] dark:bg-neutral-800 rounded-full px-3.5 py-1.5" data-bn="API key সহায়তা" data-en="API key help">API key help</button>
+      <button class="privacy-open bg-[#fdf8f1] dark:bg-neutral-800 rounded-full px-3.5 py-1.5" data-bn="গোপনীয়তা নীতি" data-en="Privacy policy">Privacy policy</button>
+      <a href="https://mdtowfiqul.github.io/our-boighar/" target="_blank" rel="noopener" class="bg-[#fdf8f1] dark:bg-neutral-800 rounded-full px-3.5 py-1.5" data-bn="Our Boighar-এ শেয়ার করুন" data-en="Share on Our Boighar">Share on Our Boighar</a>
+      <a href="guide.html" class="bg-[#fdf8f1] dark:bg-neutral-800 rounded-full px-3.5 py-1.5" data-bn="পুরো গাইড পেজ" data-en="Full guide page">Full guide page</a>
+    </div>
+  </div>
+  <div class="px-5 py-4 border-t border-neutral-100 dark:border-neutral-800 flex gap-3 mt-auto">
+    <a href="https://github.com/MDTowfiqul/our-ebook-maker" target="_blank" rel="noopener" class="flex-1 text-center font-bold rounded-xl py-3 border-2 border-neutral-800 dark:border-neutral-200">GitHub</a>
+  </div>
+</aside>
 
 <div class="max-w-3xl mx-auto px-3 sm:px-4">
   <section class="hero-bg text-white rounded-[1.8rem] mt-4 px-5 py-8 sm:p-10 shadow-xl">
@@ -63,7 +138,8 @@
     </ol>
     <p class="mt-3 text-[15px]" data-bn="শেয়ার করার মতো ইবুক তৈরি হলে Our Boighar-এ দেওয়ার জন্য বইটি Our Boighar কমিউনিটিতে (সাইটের About পেজে দেওয়া Facebook গ্রুপ / Telegram) পাঠান — যাচাই করে লাইব্রেরিতে যোগ করা হবে।" data-en="When you have an ebook that may be shared, send it to the Our Boighar community (Facebook group / Telegram linked on the site's About page) so it can be checked and added to the library.">When you have an ebook that may be shared, send it to the Our Boighar community (Facebook group / Telegram linked on the site's About page) so it can be checked and added to the library.</p>
   </section>
-  <section class="bg-white rounded-2xl shadow p-5 mt-6">
+
+  <section id="step1" class="bg-white dark:bg-neutral-800 rounded-2xl shadow p-5 mt-6">
     <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="১. আপনার বই" data-en="1. Your book">1. Your book</h2>
     <label class="block font-bold mt-4 mb-1" for="file" data-bn="PDF ফাইল" data-en="PDF file">PDF file</label>
     <input type="file" id="file" accept=".pdf,application/pdf" class="w-full">
@@ -78,16 +154,16 @@
         <input type="text" id="author" class="w-full border border-neutral-300 rounded-xl px-3 py-2.5 outline-none focus:border-emerald-600" placeholder="Author name" data-bn-ph="লেখকের নাম" data-en-ph="Author name">
       </div>
     </div>
-    <div class="border-t border-neutral-100 mt-5 pt-4">
+    <div id="coverSection" class="border-t border-neutral-100 mt-5 pt-4">
       <h3 class="font-extrabold" data-bn="বইয়ের প্রচ্ছদ (ঐচ্ছিক)" data-en="Book cover (optional)">Book cover (optional)</h3>
       <p class="text-sm text-neutral-500 mt-1" data-bn="প্রুফরিডের পর চূড়ান্ত ইবুক বানাতে প্রচ্ছদ লাগবে। কভার থাকলে আপলোড করুন, না থাকলে নিচের বোতামে অনলাইনে খুঁজুন বা লেখা-প্রচ্ছদ বানান। স্টাইল পছন্দ না হলে বারবার বানিয়ে নিন — স্টাইলের কোনো শেষ নেই, প্রতিবার নতুন ডিজাইন আসবে।" data-en="You will need a cover when you make the final ebook after proofreading. If you already have a cover, upload it. If not, find one online or make a text cover below. If you don't like a style, generate another — there is no limit, every tap makes a new design.">You will need a cover when you make the final ebook after proofreading. If you already have a cover, upload it. If not, find one online or make a text cover below. If you don't like a style, generate another — there is no limit, every tap makes a new design.</p>
       <label class="block font-bold mt-4 mb-1" for="coverFile" data-bn="কভার ছবি আপলোড করুন (যদি থাকে)" data-en="Upload a cover image (if you have one)">Upload a cover image (if you have one)</label>
       <input type="file" id="coverFile" accept="image/*" class="w-full">
       <p class="text-sm text-neutral-500 mt-1" data-bn="যে কভারটি পছন্দ হবে সেটি ডাউনলোড করুন, তারপর উপরের আপলোড বক্সে আপলোড করুন — আপলোড করা কভারটাই চূড়ান্ত ইবুকে যাবে।" data-en="Download the cover you like, then upload it in the upload box above — the uploaded cover is the one that goes into your final ebook.">Download the cover you like, then upload it in the upload box above — the uploaded cover is the one that goes into your final ebook.</p>
       <div class="grid grid-cols-3 gap-2 mt-3">
-        <button id="coverOnlineBtn" class="bg-white text-emerald-800 border-2 border-emerald-800 rounded-xl px-2 py-2.5 font-bold text-[13px] disabled:opacity-50" data-bn="অনলাইনে কভার খুঁজুন" data-en="Find a cover online">Find a cover online</button>
-        <button id="coverTextBtn" class="bg-white text-emerald-800 border-2 border-emerald-800 rounded-xl px-2 py-2.5 font-bold text-[13px]" data-bn="লেখা-প্রচ্ছদ বানান" data-en="Make a text cover">Make a text cover</button>
-        <button id="coverAnotherBtn" class="bg-white text-emerald-800 border-2 border-emerald-800 rounded-xl px-2 py-2.5 font-bold text-[13px]" data-bn="আরেকটি স্টাইল বানান" data-en="Generate another style">Generate another style</button>
+        <button id="coverOnlineBtn" class="bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-2 py-2.5 font-bold text-[13px] disabled:opacity-50" data-bn="অনলাইনে কভার খুঁজুন" data-en="Find a cover online">Find a cover online</button>
+        <button id="coverTextBtn" class="bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-2 py-2.5 font-bold text-[13px]" data-bn="লেখা-প্রচ্ছদ বানান" data-en="Make a text cover">Make a text cover</button>
+        <button id="coverAnotherBtn" class="bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-2 py-2.5 font-bold text-[13px]" data-bn="আরেকটি স্টাইল বানান" data-en="Generate another style">Generate another style</button>
       </div>
       <p id="coverStatus" class="text-sm text-neutral-500 mt-2"></p>
       <img id="coverImg" class="hidden w-40 rounded-xl shadow mt-3" alt="">
@@ -100,84 +176,102 @@
     <p class="text-sm text-neutral-500 mt-3" data-bn="ভাষা আলাদা করে বাছতে হবে না — বাংলা, ইংরেজি ও আরবি একসাথে চেনা হয়।" data-en="No need to pick a language — Bengali, English and Arabic are recognised together.">No need to pick a language — Bengali, English and Arabic are recognised together.</p>
   </section>
 
-  <section class="bg-white rounded-2xl shadow p-5 mt-6">
+  <section id="step2" class="bg-white dark:bg-neutral-800 rounded-2xl shadow p-5 mt-6">
     <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="২. OCR — বই পড়া" data-en="2. OCR — read the book">2. OCR — read the book</h2>
     <p class="text-sm text-neutral-500 mt-1" data-bn="এই ধাপে পুরো বই OCR করা হয়। বই সময় নেয়, আর OCR কখনো নিখুঁত নয় — তাই পুরো বই চালানোর আগে প্রথম ৫ পৃষ্ঠা পরীক্ষা করে দেখুন লেখা পরিষ্কার আসছে কি না।" data-en="This step reads the whole book with OCR. Books take time and OCR is never perfect — so test the first 5 pages first to see if the text comes out clean, then run the full book.">This step reads the whole book with OCR. Books take time and OCR is never perfect — so test the first 5 pages first to see if the text comes out clean, then run the full book.</p>
-    <div class="flex flex-wrap gap-2 mt-4">
-      <button id="testBtn" class="bg-white text-emerald-800 border-2 border-emerald-800 rounded-xl px-5 py-3 font-bold disabled:opacity-50" data-bn="প্রথম ৫ পৃষ্ঠা পরীক্ষা করুন" data-en="Test first 5 pages">Test first 5 pages</button>
-      <button id="runBtn" class="accent-bg text-white rounded-xl px-5 py-3 font-bold disabled:opacity-50" data-bn="পুরো বই পড়ুন" data-en="Read the full book">Read the full book</button>
-      <button id="cancelBtn" class="bg-red-800 text-white rounded-xl px-5 py-3 font-bold disabled:opacity-50" disabled data-bn="বাতিল" data-en="Cancel">Cancel</button>
-      <button id="resumeBtn" class="bg-emerald-700 text-white rounded-xl px-5 py-3 font-bold disabled:opacity-50" disabled data-bn="▶️ Resume" data-en="▶️ Resume">▶️ Resume</button>
+    <div class="grid grid-cols-2 gap-2 mt-4">
+      <button id="testBtn" class="bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-4 py-3 font-bold disabled:opacity-50" data-bn="প্রথম ৫ পৃষ্ঠা পরীক্ষা করুন" data-en="Test first 5 pages">Test first 5 pages</button>
+      <button id="runBtn" class="accent-bg text-white rounded-xl px-4 py-3 font-bold disabled:opacity-50" data-bn="পুরো বই পড়ুন" data-en="Read the full book">Read the full book</button>
+    </div>
+    <div class="grid grid-cols-2 gap-2 mt-2">
+      <button id="resumeBtn" class="bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-4 py-3 font-bold disabled:opacity-50" disabled data-bn="▶️ Resume" data-en="▶️ Resume">▶️ Resume</button>
+      <button id="cancelBtn" class="bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 text-red-700 dark:text-red-400 rounded-xl px-4 py-3 font-bold disabled:opacity-50" disabled data-bn="বাতিল" data-en="Cancel">Cancel</button>
     </div>
     <div class="flex items-start gap-3 mt-4">
       <p id="screenOnNote" class="flex-1 text-sm text-neutral-500" data-bn="ফোন হাতে না নিয়ে পাশে রেখে দিতে চাইলে পাশের গোল বোতাম চাপুন — এই ট্যাব খোলা থাকলে স্ক্রিন ঘুমাবে না। অন্য অ্যাপে গেলে স্ক্রিন-অন কাজ করে না, তখন Resume-ই ভরসা। লম্বা OCR চলার সময় স্ক্রিন অন রাখুন — ফোন ঘুমিয়ে গেলে কাজ থেমে যাবে।" data-en="If you want to leave the phone untouched while it works, tap the round button on the right — the screen will not sleep while this tab is open. It does not work once you switch to another app; then Resume is the safety net. Keep your screen on during a long OCR run — a phone that sleeps pauses the work.">If you want to leave the phone untouched while it works, tap the round button on the right — the screen will not sleep while this tab is open. It does not work once you switch to another app; then Resume is the safety net. Keep your screen on during a long OCR run — a phone that sleeps pauses the work.</p>
-      <button id="screenOnBtn" aria-label="Keep screen on" title="Keep screen on" class="shrink-0 w-16 h-16 rounded-full bg-white text-emerald-800 border-2 border-emerald-800 text-2xl font-bold shadow">🔆</button>
+      <button id="screenOnBtn" aria-label="Keep screen on" title="Keep screen on" class="shrink-0 w-16 h-16 rounded-full bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 text-2xl font-bold shadow">🔆</button>
     </div>
-    <div class="h-4 bg-neutral-100 rounded-full overflow-hidden mt-4"><div id="bar" class="h-full bg-emerald-700" style="width:0%"></div></div>
+    <div class="h-4 bg-neutral-100 rounded-full overflow-hidden mt-4"><div id="bar" class="h-full accent-bg" style="width:0%"></div></div>
     <p id="status" class="text-sm text-neutral-500 mt-2" data-bn="ফাইলের অপেক্ষায়।" data-en="Waiting for a file.">Waiting for a file.</p>
     <div id="preview" class="hidden bg-[#faf8f2] border border-neutral-200 rounded-xl p-3 text-sm mt-3"></div>
     <div class="bg-neutral-50 border border-neutral-200 rounded-xl p-4 mt-4">
-      <p class="font-extrabold" data-bn="🐢 OCR খুব ধীর মনে হচ্ছে?" data-en="🐢 OCR feeling too slow?">🐢 OCR feeling too slow?</p>
-      <p class="text-sm text-neutral-600 mt-1" data-bn="এই ধাপটি vFlat অ্যাপ দিয়ে করেও এগোতে পারেন — PDF থেকে .txt বানিয়ে এখানে আপলোড করুন, ধাপ ২ বাদ যাবে।" data-en="You can also do this step with the vFlat app — make a .txt from the PDF there and upload it here, skipping Step 2.">You can also do this step with the vFlat app — make a .txt from the PDF there and upload it here, skipping Step 2.</p>
-      <button id="vflatBtn" class="bg-white text-emerald-800 border-2 border-emerald-800 rounded-xl px-4 py-2.5 font-bold mt-3" data-bn="vFlat দিয়ে PDF → .txt (পপ-আপ)" data-en="PDF → .txt with vFlat (pop-up)">PDF → .txt with vFlat (pop-up)</button>
-    </div>
-    <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4 mt-4">
-      <p class="font-extrabold" data-bn="📄 ইতিমধ্যে OCR করা .txt ফাইল আছে?" data-en="📄 Already have an OCR .txt file?">📄 Already have an OCR .txt file?</p>
-      <p class="text-sm text-neutral-600 mt-1" data-bn="তাহলে ধাপ ২ বাদ দিন — .txt আপলোড করলেই সরাসরি ধাপ ৩ (প্রুফরিড) খুলে যাবে।" data-en="Then skip Step 2 — upload the .txt and Step 3 (proofreading) opens straight away.">Then skip Step 2 — upload the .txt and Step 3 (proofreading) opens straight away.</p>
-      <label class="block font-bold mt-3 mb-1" for="txtFile" data-bn=".txt ফাইল আপলোড করুন" data-en="Upload a .txt file">Upload a .txt file</label>
-      <input type="file" id="txtFile" accept=".txt,.md,text/plain" class="w-full">
-      <p id="txtFileStatus" class="text-sm text-neutral-500 mt-1"></p>
+      <button class="collapse-toggle w-full flex items-center justify-between gap-2 text-left font-extrabold" data-target="collapse-vflat">
+        <span data-bn="🐢 OCR খুব ধীর মনে হচ্ছে?" data-en="🐢 OCR feeling too slow?">🐢 OCR feeling too slow?</span>
+        <span class="collapse-chev shrink-0">▼</span>
+      </button>
+      <div id="collapse-vflat" class="hidden">
+        <p class="text-sm text-neutral-600 mt-2" data-bn="এই ধাপটি vFlat অ্যাপ দিয়ে করেও এগোতে পারেন — PDF থেকে .txt বানিয়ে ধাপ ৩-এ আপলোড করুন, ধাপ ২ বাদ যাবে।" data-en="You can also do this step with the vFlat app — make a .txt from the PDF there and upload it in Step 3, skipping Step 2.">You can also do this step with the vFlat app — make a .txt from the PDF there and upload it in Step 3, skipping Step 2.</p>
+        <button id="vflatBtn" class="bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-4 py-2.5 font-bold mt-3" data-bn="vFlat দিয়ে PDF → .txt (পপ-আপ)" data-en="PDF → .txt with vFlat (pop-up)">PDF → .txt with vFlat (pop-up)</button>
+      </div>
     </div>
     <div id="resumeBox" class="hidden bg-emerald-50 border border-emerald-200 rounded-xl p-4 mt-4">
       <p id="resumeInfo" class="font-bold text-sm"></p>
       <div class="flex flex-wrap gap-2 mt-3">
-        <button id="discardBtn" class="bg-white text-neutral-700 border border-neutral-300 rounded-xl px-4 py-2.5 font-bold" data-bn="আবার নতুন করে শুরু করুন" data-en="Start fresh instead">Start fresh instead</button>
+        <button id="discardBtn" class="bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-4 py-2.5 font-bold" data-bn="আবার নতুন করে শুরু করুন" data-en="Start fresh instead">Start fresh instead</button>
       </div>
     </div>
     <p class="text-sm text-neutral-500 mt-3" data-bn="অন্য অ্যাপে গেলে ব্রাউজার স্ক্যান থামিয়ে দিতে পারে — এটা ফোনের নিয়ম, এড়ানো যায় না। তবে প্রতি পৃষ্ঠার পর অগ্রগতি সেভ হয়, তাই কিছু হারাবে না: ফিরে এসে Resume চাপলেই যেখানে থেমেছিল সেখান থেকে চলবে।" data-en="If you switch to another app, the browser may pause the scan — that is the phone's rule and cannot be overridden. But progress is saved after every page, so nothing is lost: come back and tap Resume to continue exactly where it stopped.">If you switch to another app, the browser may pause the scan — that is the phone's rule and cannot be overridden. But progress is saved after every page, so nothing is lost: come back and tap Resume to continue exactly where it stopped.</p>
   </section>
 
-  <section id="results" class="bg-white rounded-2xl shadow p-5 mt-6">
+  <section id="results" class="bg-white dark:bg-neutral-800 rounded-2xl shadow p-5 mt-6">
     <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="৩. প্রুফরিড — .txt থেকে পরিষ্কার লেখা" data-en="3. Proofread — from .txt to clean text">3. Proofread — from .txt to clean text</h2>
-    <p id="summary" class="text-sm text-neutral-500 mt-1" data-bn="ধাপ ২-এ পুরো বইয়ের OCR শেষ হলে, অথবা .txt আপলোড করলে, এই ধাপ খুলে যাবে।" data-en="This step unlocks when the full OCR finishes in Step 2, or when you upload a .txt there.">This step unlocks when the full OCR finishes in Step 2, or when you upload a .txt there.</p>
+    <p id="summary" class="text-sm text-neutral-500 mt-1" data-bn="ধাপ ২-এ পুরো বইয়ের OCR শেষ হলে, অথবা .txt আপলোড করলে, এই ধাপ খুলে যাবে।" data-en="This step unlocks when the full OCR finishes in Step 2, or when you upload a .txt below.">This step unlocks when the full OCR finishes in Step 2, or when you upload a .txt below.</p>
     <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mt-4">
       <p class="font-bold" data-bn="⚠️ OCR লেখা কাঁচা থাকে — এই ধাপের কাজই হলো সেই কাঁচা .txt-কে প্রুফরিড করে বইয়ের মতো পরিষ্কার ডকুমেন্ট বানানো।" data-en="⚠️ OCR text is raw — this step's whole job is to turn that raw .txt into a proofread, book-like document.">⚠️ OCR text is raw — this step's whole job is to turn that raw .txt into a proofread, book-like document.</p>
-      <p class="text-sm text-neutral-600 mt-1" data-bn="দুটি উপায় নিচে একটার পর একটা দেওয়া আছে — কোনো পপ-আপ নেই। যেটা চান সেটা এখানেই করুন।" data-en="Both ways are below, one after the other — no pop-ups. Do whichever you want right here.">Both ways are below, one after the other — no pop-ups. Do whichever you want right here.</p>
+      <p class="text-sm text-neutral-600 mt-1" data-bn="নিচে দুটি বোতাম আছে — যেটা চান সেটা চাপলে সেই অংশ নিচে খুলবে, আবার চাপলে বন্ধ হয়ে যাবে।" data-en="Two buttons are below — tap the one you want and that section opens underneath; tap again and it closes.">Two buttons are below — tap the one you want and that section opens underneath; tap again and it closes.</p>
     </div>
 
-    <div class="border border-neutral-200 rounded-xl p-4 mt-4">
+    <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4 mt-4">
+      <button class="collapse-toggle w-full flex items-center justify-between gap-2 text-left font-extrabold" data-target="collapse-txt">
+        <span data-bn="📄 ইতিমধ্যে OCR করা .txt ফাইল আছে?" data-en="📄 Already have an OCR .txt file?">📄 Already have an OCR .txt file?</span>
+        <span class="collapse-chev shrink-0">▼</span>
+      </button>
+      <div id="collapse-txt" class="hidden">
+        <p class="text-sm text-neutral-600 mt-2" data-bn="তাহলে ধাপ ২ বাদ দিন — .txt আপলোড করলেই সরাসরি এই ধাপে প্রুফরিড শুরু হবে।" data-en="Then skip Step 2 — upload the .txt and proofreading starts right here in this step.">Then skip Step 2 — upload the .txt and proofreading starts right here in this step.</p>
+        <label class="block font-bold mt-3 mb-1" for="txtFile" data-bn=".txt ফাইল আপলোড করুন" data-en="Upload a .txt file">Upload a .txt file</label>
+        <input type="file" id="txtFile" accept=".txt,.md,text/plain" class="w-full">
+        <p id="txtFileStatus" class="text-sm text-neutral-500 mt-1"></p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-2 mt-4">
+      <button id="manualToggleBtn" class="bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-4 py-3 font-bold" data-bn="✍️ হাতে প্রুফরিড" data-en="✍️ Manual proofreading">✍️ Manual proofreading</button>
+      <button id="autoToggleBtn" class="bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-4 py-3 font-bold" data-bn="🤖 স্বয়ংক্রিয় প্রুফরিড" data-en="🤖 Automatic proofreading">🤖 Automatic proofreading</button>
+    </div>
+
+    <div id="manualPanel" class="hidden border border-neutral-200 rounded-xl p-4 mt-4">
       <h3 class="font-extrabold text-lg" data-bn="✍️ হাতে প্রুফরিড" data-en="✍️ Manual proofreading">✍️ Manual proofreading</h3>
       <p class="text-[15px] mt-1" data-bn="প্রথমে কাঁচা OCR লেখাটি ডাউনলোড করুন, তারপর যেকোনো একটি উপায়ে প্রুফরিড করুন। প্রুফরিড না করে শেয়ার করবেন না — কাঁচা লেখায় ভুল থাকে।" data-en="First download the raw OCR text, then proofread it one of these ways. Do not share it before proofreading — raw text still has errors.">First download the raw OCR text, then proofread it one of these ways. Do not share it before proofreading — raw text still has errors.</p>
       <div class="mt-3">
         <button id="txtBtn" class="accent-bg text-white rounded-xl px-5 py-3 font-bold disabled:opacity-50" disabled data-bn="⬇ .txt ডাউনলোড করুন" data-en="⬇ Download .txt">⬇ Download .txt</button>
       </div>
       <ol class="list-decimal pl-5 mt-4 space-y-2 text-[15px]">
-        <li><b>Gemini / Google AI Studio</b> — <a href="guide.html#proofread" class="text-emerald-700 font-bold underline">গাইডের ধাপগুলো</a> অনুসরণ করুন (ফাইল attach → প্রম্পট → continue → Markdown কপি)।</li>
-        <li><b>Muse</b> — .txt ফাইলটি আপনার Muse চ্যাটে আপলোড করে <a href="guide.html#muse" class="text-emerald-700 font-bold underline">গাইডের নির্দেশনা</a> পেস্ট করুন, তারপর “continue” লিখে এগোন। কোনো API key লাগে না।</li>
+        <li><b>Gemini / Google AI Studio</b> — <button class="proofsteps-open text-emerald-700 dark:text-emerald-400 font-bold underline" data-bn="গাইডের ধাপগুলো" data-en="Guide steps">Guide steps</button> <span data-bn="দেখুন (পপ-আপে) — ফাইল attach → প্রম্পট → continue → Markdown কপি।" data-en="in a pop-up — attach the file → prompt → continue → copy as Markdown.">in a pop-up — attach the file → prompt → continue → copy as Markdown.</span></li>
+        <li><b>Muse</b> — <span data-bn=".txt ফাইলটি আপনার Muse চ্যাটে আপলোড করে" data-en="Upload the .txt in your Muse chat and paste the">Upload the .txt in your Muse chat and paste the</span> <button class="muse-open text-emerald-700 dark:text-emerald-400 font-bold underline" data-bn="গাইডের নির্দেশনা" data-en="guide instruction">guide instruction</button> <span data-bn=", তারপর “continue” লিখে এগোন। কোনো API key লাগে না।" data-en=", then write “continue” to go on. No API key needed.">, then write “continue” to go on. No API key needed.</span></li>
       </ol>
-      <p class="font-bold mt-4" data-bn="প্রুফরিড করা ফাইলটি এখানে আপলোড করুন — তাহলেই ধাপ ৪ (ফাইনাল ফরম্যাট) খুলে যাবে:" data-en="Upload your proofread file here — Step 4 (final formats) will unlock right away:">Upload your proofread file here — Step 4 (final formats) will unlock right away:</p>
+      <p class="font-bold mt-4" data-bn="প্রুফরিড করা ফাইলটি এখানে আপলোড করুন — তাহলেই ধাপ ৪ (ফরম্যাট করা ডকুমেন্ট) খুলে যাবে:" data-en="Upload your proofread file here — Step 4 (formatted document) will unlock right away:">Upload your proofread file here — Step 4 (formatted document) will unlock right away:</p>
       <label class="block font-bold mt-2 mb-1" for="proofFile" data-bn="প্রুফরিড করা .txt / .md / .docx" data-en="Proofread .txt / .md / .docx">Proofread .txt / .md / .docx</label>
       <input type="file" id="proofFile" accept=".txt,.md,.docx,text/plain,text/markdown" class="w-full">
       <p id="proofFileStatus" class="text-sm text-neutral-500 mt-1"></p>
     </div>
 
-    <div class="border border-neutral-200 rounded-xl p-4 mt-4">
+    <div id="autoPanel" class="hidden border border-neutral-200 rounded-xl p-4 mt-4">
       <h3 class="font-extrabold text-lg" data-bn="🤖 স্বয়ংক্রিয় প্রুফরিড" data-en="🤖 Automatic proofreading">🤖 Automatic proofreading</h3>
       <p class="text-sm text-neutral-600 mt-1" data-bn="OCR-এর পর হাতে প্রুফরিড না করে এখানেই স্বয়ংক্রিয়ভাবে প্রুফরিড করান — আপনার নিজের Google Gemini key বা OpenRouter key দিয়ে। Key শুধু আপনার ব্রাউজারেই থাকে — আমাদের কোনো সার্ভারে যায় না, আমরাও তা দেখি না। Key সরাসরি Google বা OpenRouter-এ পাঠানো হয়।" data-en="After OCR, proofread automatically right here instead of by hand — with your own Google Gemini key or OpenRouter key. The key stays only in your browser — it goes to no server of ours, and we never see it. It is sent directly to Google or OpenRouter.">After OCR, proofread automatically right here instead of by hand — with your own Google Gemini key or OpenRouter key. The key stays only in your browser — it goes to no server of ours, and we never see it. It is sent directly to Google or OpenRouter.</p>
       <label class="block font-bold mt-4 mb-1" for="proofProvider" data-bn="কোন key ব্যবহার করবেন?" data-en="Which key will you use?">Which key will you use?</label>
-      <select id="proofProvider" class="w-full border border-neutral-300 rounded-xl px-3 py-2.5 outline-none focus:border-emerald-600 bg-white">
+      <select id="proofProvider" class="w-full border border-neutral-300 rounded-xl px-3 py-2.5 outline-none focus:border-emerald-600 bg-white dark:bg-neutral-700">
         <option value="gemini" data-bn="Google Gemini API key (ফ্রি, বেশিরভাগের জন্য এটাই সহজ)" data-en="Google Gemini API key (free, easiest for most people)">Google Gemini API key (free, easiest for most people)</option>
         <option value="openrouter" data-bn="OpenRouter API key" data-en="OpenRouter API key">OpenRouter API key</option>
       </select>
       <label class="block font-bold mt-4 mb-1" for="proofKey" data-bn="আপনার API key" data-en="Your API key">Your API key</label>
       <input type="password" id="proofKey" autocomplete="off" class="w-full border border-neutral-300 rounded-xl px-3 py-2.5 outline-none focus:border-emerald-600" placeholder="AIza…" data-bn-ph="AIza…" data-en-ph="AIza…">
       <div class="flex flex-wrap gap-2 mt-3">
-        <button id="proofLoadModelsBtn" class="bg-white text-emerald-800 border-2 border-emerald-800 rounded-xl px-4 py-2.5 font-bold" data-bn="Key যাচাই করে ফ্রি মডেল দেখান" data-en="Check key &amp; show free models">Check key &amp; show free models</button>
-        <button id="keyHelpBtn" class="bg-white text-emerald-800 border-2 border-emerald-800 rounded-xl px-4 py-2.5 font-bold" data-bn="❓ আমার key নেই — কীভাবে পাবো?" data-en="❓ No key yet — how do I get one?">❓ No key yet — how do I get one?</button>
+        <button id="proofLoadModelsBtn" class="bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-4 py-2.5 font-bold" data-bn="Key যাচাই করে ফ্রি মডেল দেখান" data-en="Check key &amp; show free models">Check key &amp; show free models</button>
+        <button id="keyHelpBtn" class="bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-4 py-2.5 font-bold" data-bn="❓ আমার key নেই — কীভাবে পাবো?" data-en="❓ No key yet — how do I get one?">❓ No key yet — how do I get one?</button>
       </div>
       <p id="proofKeyStats" class="text-sm text-neutral-500 mt-2"></p>
       <label class="block font-bold mt-4 mb-1" for="proofModelSelect" data-bn="মডেল (ফ্রি মডেলগুলো)" data-en="Model (free models)">Model (free models)</label>
-      <select id="proofModelSelect" class="w-full border border-neutral-300 rounded-xl px-3 py-2.5 outline-none focus:border-emerald-600 bg-white">
+      <select id="proofModelSelect" class="w-full border border-neutral-300 rounded-xl px-3 py-2.5 outline-none focus:border-emerald-600 bg-white dark:bg-neutral-700">
         <option value="gemini-2.5-flash">gemini-2.5-flash — free tier</option>
         <option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite — free tier</option>
         <option value="gemini-2.0-flash">gemini-2.0-flash — free tier</option>
@@ -186,25 +280,39 @@
       <p class="text-sm text-neutral-500 mt-1" data-bn="লেখা টুকরো টুকরো করে (প্রায় ৮,০০০ অক্ষর) একই প্রুফরিডিং প্রম্পট দিয়ে পাঠানো হয়, উত্তরগুলো জোড়া লাগিয়ে প্রুফরিড করা ফাইল বানানো হয়। ফ্রি key-র দৈনিক লিমিট থাকলে টুলটি নিজে থেকে অপেক্ষা করে আবার চেষ্টা করে, আর প্রতি অংশের পর অগ্রগতি সেভ হয় — লিমিট শেষ হলেও কাজ হারাবে না, পরে একই জায়গা থেকে চালাতে পারবেন। Gemini-তে খরচ নেই (ফ্রি key); OpenRouter-এ খরচ আপনার অ্যাকাউন্ট থেকে কাটবে।" data-en="The text is sent in chunks (about 8,000 characters) with the same proofreading prompt, and the answers are joined into one proofread file. If a free key hits its daily limit, the tool waits and retries on its own, and progress is saved after every chunk — nothing is lost, and you can continue from the same place later. Gemini is free on a free key; on OpenRouter the cost comes from your account.">The text is sent in chunks (about 8,000 characters) with the same proofreading prompt, and the answers are joined into one proofread file. If a free key hits its daily limit, the tool waits and retries on its own, and progress is saved after every chunk — nothing is lost, and you can continue from the same place later. Gemini is free on a free key; on OpenRouter the cost comes from your account.</p>
       <div class="flex flex-wrap gap-2 mt-4">
         <button id="autoProofBtn" class="accent-bg text-white rounded-xl px-5 py-3 font-bold disabled:opacity-50" disabled data-bn="স্বয়ংক্রিয়ভাবে প্রুফরিড করুন" data-en="Proofread automatically">Proofread automatically</button>
-        <button id="proofCancelBtn" class="bg-red-800 text-white rounded-xl px-5 py-3 font-bold disabled:opacity-50" disabled data-bn="বাতিল" data-en="Cancel">Cancel</button>
+        <button id="proofCancelBtn" class="bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 text-red-700 dark:text-red-400 rounded-xl px-5 py-3 font-bold disabled:opacity-50" disabled data-bn="বাতিল" data-en="Cancel">Cancel</button>
       </div>
-      <div class="h-4 bg-neutral-100 rounded-full overflow-hidden mt-4"><div id="proofBar" class="h-full bg-emerald-700" style="width:0%"></div></div>
+      <div class="h-4 bg-neutral-100 rounded-full overflow-hidden mt-4"><div id="proofBar" class="h-full accent-bg" style="width:0%"></div></div>
       <p id="proofStatus" class="text-sm text-neutral-500 mt-2"></p>
       <p id="proofStats" class="text-sm text-neutral-500 mt-1"></p>
-      <p class="text-sm text-neutral-500 mt-3" data-bn="বইয়ের মতো ফরম্যাট: ডকুমেন্ট ও ইবুক আউটপুটে টাইটেল পেজ, নতুন পেজে অধ্যায়, মাঝখানে শিরোনাম, জাস্টিফাইড লেখা থাকে (আরবি লেখা ডানদিকে সাজানো)। প্রিন্টের মতো হুবহু সাজসজ্জা (ড্রপ ক্যাপ, অলংকরণ, বিশেষ ফন্ট) চাইলে ডাউনলোডের পর Google Docs/Word-এ হাতে সাজানোই সেরা।" data-en="Book-like format: document and ebook outputs use a title page, chapters starting on new pages, centred headings, justified text (Arabic text right-aligned). For an exactly-like-print layout (drop caps, ornaments, special fonts), formatting by hand in Google Docs/Word after download is still best.">Book-like format: document and ebook outputs use a title page, chapters starting on new pages, centred headings, justified text (Arabic text right-aligned). For an exactly-like-print layout (drop caps, ornaments, special fonts), formatting by hand in Google Docs/Word after download is still best.</p>
     </div>
-    <p class="text-sm text-neutral-500 mt-3"><a href="guide.html" class="text-emerald-700 font-bold underline" data-bn="পুরো বিস্তারিত গাইড পড়ুন →" data-en="Read the full detailed guide →">Read the full detailed guide →</a></p>
+    <p class="text-sm text-neutral-500 mt-3"><button class="guide-open text-emerald-700 dark:text-emerald-400 font-bold underline" data-bn="গাইড (পপ-আপে) দেখুন →" data-en="See the guide (in a pop-up) →">See the guide (in a pop-up) →</button></p>
   </section>
 
-  <section id="finalFormats" class="bg-white rounded-2xl shadow p-5 mt-6">
-    <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="৪. ফাইনাল ফরম্যাট — ডকুমেন্ট থেকে ইবুক" data-en="4. Final formats — from document to ebook">4. Final formats — from document to ebook</h2>
-    <p id="finalStatus" class="text-sm text-neutral-500 mt-1" data-bn="ধাপ ৩-এ প্রুফরিড শেষ হলে, অথবা নিচে তৈরি ডকুমেন্ট আপলোড করলে, এখানকার বোতাম চালু হবে।" data-en="These buttons unlock when proofreading finishes in Step 3, or when you upload a finished document below.">These buttons unlock when proofreading finishes in Step 3, or when you upload a finished document below.</p>
+  <section id="docStep" class="bg-white dark:bg-neutral-800 rounded-2xl shadow p-5 mt-6">
+    <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="৪. ফরম্যাট করা ডকুমেন্ট — প্রুফরিড লেখা থেকে বইয়ের মতো ডকুমেন্ট" data-en="4. Formatted document — proofread text to a book-like document">4. Formatted document — proofread text to a book-like document</h2>
+    <p id="docStatus" class="text-sm text-neutral-500 mt-1" data-bn="ধাপ ৩-এ প্রুফরিড শেষ হলে এখানকার বোতাম চালু হবে।" data-en="These buttons unlock when proofreading finishes in Step 3.">These buttons unlock when proofreading finishes in Step 3.</p>
+    <p class="text-sm text-neutral-600 mt-3" data-bn="এই ধাপের কাজ: প্রুফরিড করা লেখাকে বইয়ের মতো ডকুমেন্ট বানানো — টাইটেল পেজ, নতুন পেজে অধ্যায়, মাঝখানে শিরোনাম, জাস্টিফাইড লেখা (আরবি লেখা ডানদিকে সাজানো), শেষে “About this ebook” ক্রেডিট পেজ। প্রিন্টের মতো হুবহু সাজসজ্জা (ড্রপ ক্যাপ, অলংকরণ, বিশেষ ফন্ট) চাইলে ডাউনলোডের পর Google Docs/Word-এ হাতে সাজিয়ে ধাপ ৫-এ আবার আপলোড করুন।" data-en="This step's job: turn proofread text into a book-like document — a title page, chapters starting on new pages, centred headings, justified text (Arabic text right-aligned), and an “About this ebook” credit page at the end. For an exactly-like-print layout (drop caps, ornaments, special fonts), format by hand in Google Docs/Word after download, then upload the revised file again in Step 5.">This step's job: turn proofread text into a book-like document — a title page, chapters starting on new pages, centred headings, justified text (Arabic text right-aligned), and an “About this ebook” credit page at the end. For an exactly-like-print layout (drop caps, ornaments, special fonts), format by hand in Google Docs/Word after download, then upload the revised file again in Step 5.</p>
+    <div class="grid grid-cols-2 gap-2 mt-4">
+      <button id="proofDocxBtn" class="hidden accent-bg text-white rounded-xl px-5 py-3 font-bold" data-bn="⬇ ডকুমেন্ট (.docx)" data-en="⬇ Document (.docx)">⬇ Document (.docx)</button>
+      <button id="proofDownloadBtn" class="hidden bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-5 py-3 font-bold" data-bn="⬇ প্রুফরিড করা ফাইল (.md)" data-en="⬇ Proofread file (.md)">⬇ Proofread file (.md)</button>
+    </div>
+  </section>
+
+  <section id="finalFormats" class="bg-white dark:bg-neutral-800 rounded-2xl shadow p-5 mt-6">
+    <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="৫. ফাইনাল ইবুক — ডকুমেন্ট থেকে ইবুক" data-en="5. Final ebook — from document to ebook">5. Final ebook — from document to ebook</h2>
+    <p id="finalStatus" class="text-sm text-neutral-500 mt-1" data-bn="ধাপ ৪-এ ডকুমেন্ট তৈরি হলে, অথবা নিচে তৈরি ডকুমেন্ট আপলোড করলে, এখানকার বোতাম চালু হবে।" data-en="These buttons unlock when the document is made in Step 4, or when you upload a finished document below.">These buttons unlock when the document is made in Step 4, or when you upload a finished document below.</p>
     <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4 mt-4">
-      <p class="font-extrabold" data-bn="📄 ইতিমধ্যে ফরম্যাট করা ডকুমেন্ট (.docx) আছে?" data-en="📄 Already have a formatted document (.docx)?">📄 Already have a formatted document (.docx)?</p>
-      <p class="text-sm text-neutral-600 mt-1" data-bn="তাহলে উপরের সব ধাপ বাদ দিন — ডকুমেন্টটি এখানে আপলোড করলেই সরাসরি এই ফাইনাল ধাপে চলে আসবেন।" data-en="Then skip every step above — upload the document here and you go straight to this final step.">Then skip every step above — upload the document here and you go straight to this final step.</p>
-      <label class="block font-bold mt-3 mb-1" for="docFile" data-bn="ফরম্যাট করা .docx আপলোড করুন" data-en="Upload a formatted .docx">Upload a formatted .docx</label>
-      <input type="file" id="docFile" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" class="w-full">
-      <p id="docFileStatus" class="text-sm text-neutral-500 mt-1"></p>
+      <button class="collapse-toggle w-full flex items-center justify-between gap-2 text-left font-extrabold" data-target="collapse-docx">
+        <span data-bn="📄 ইতিমধ্যে ফরম্যাট করা ডকুমেন্ট (.docx) আছে?" data-en="📄 Already have a formatted document (.docx)?">📄 Already have a formatted document (.docx)?</span>
+        <span class="collapse-chev shrink-0">▼</span>
+      </button>
+      <div id="collapse-docx" class="hidden">
+        <p class="text-sm text-neutral-600 mt-2" data-bn="তাহলে উপরের সব ধাপ বাদ দিন — ডকুমেন্টটি এখানে আপলোড করলেই সরাসরি এই ফাইনাল ধাপে চলে আসবেন।" data-en="Then skip every step above — upload the document here and you go straight to this final step.">Then skip every step above — upload the document here and you go straight to this final step.</p>
+        <label class="block font-bold mt-3 mb-1" for="docFile" data-bn="ফরম্যাট করা .docx আপলোড করুন" data-en="Upload a formatted .docx">Upload a formatted .docx</label>
+        <input type="file" id="docFile" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" class="w-full">
+        <p id="docFileStatus" class="text-sm text-neutral-500 mt-1"></p>
+      </div>
     </div>
     <h3 class="font-extrabold mt-5" data-bn="কোন ফরম্যাট, কোন কাজে?" data-en="Which format, for which work?">Which format, for which work?</h3>
     <ul class="list-disc pl-5 mt-2 space-y-1 text-[15px]">
@@ -215,23 +323,21 @@
       <li><b>KFX</b> — <span data-bn="নতুন Kindle ফরম্যাট, উন্নত টাইপসেটিংসহ।" data-en="the newest Kindle format, with enhanced typesetting.">the newest Kindle format, with enhanced typesetting.</span></li>
     </ul>
     <h3 class="font-extrabold mt-5" data-bn="১) স্বয়ংক্রিয় — এই সাইটেই" data-en="1) Automatic — right here on this site">1) Automatic — right here on this site</h3>
-    <p class="text-sm text-neutral-600 mt-1" data-bn="ডকুমেন্ট (.docx), EPUB ও PDF এই ব্রাউজারেই বানানো যায় — কোনো সাইটে আপলোড করতে হয় না।" data-en="The document (.docx), EPUB and PDF are built right here in your browser — nothing has to be uploaded to any site.">The document (.docx), EPUB and PDF are built right here in your browser — nothing has to be uploaded to any site.</p>
-    <div class="flex flex-wrap gap-2 mt-3">
-      <button id="proofDocxBtn" class="hidden bg-white text-emerald-800 border-2 border-emerald-800 rounded-xl px-5 py-3 font-bold" data-bn="⬇ ডকুমেন্ট (.docx)" data-en="⬇ Document (.docx)">⬇ Document (.docx)</button>
-      <button id="proofDownloadBtn" class="hidden accent-bg text-white rounded-xl px-5 py-3 font-bold" data-bn="⬇ প্রুফরিড করা ফাইল (.md)" data-en="⬇ Proofread file (.md)">⬇ Proofread file (.md)</button>
+    <p class="text-sm text-neutral-600 mt-1" data-bn="EPUB ও PDF এই ব্রাউজারেই বানানো যায় — কোনো সাইটে আপলোড করতে হয় না।" data-en="EPUB and PDF are built right here in your browser — nothing has to be uploaded to any site.">EPUB and PDF are built right here in your browser — nothing has to be uploaded to any site.</p>
+    <div class="grid grid-cols-2 gap-2 mt-3">
       <button id="proofEpubBtn" class="hidden accent-bg text-white rounded-xl px-5 py-3 font-bold" data-bn="📖 EPUB ডাউনলোড" data-en="📖 Download EPUB">📖 Download EPUB</button>
-      <button id="proofPdfBtn" class="hidden bg-white text-emerald-800 border-2 border-emerald-800 rounded-xl px-5 py-3 font-bold" data-bn="📄 PDF বানান (প্রিন্ট)" data-en="📄 Make PDF (print)">📄 Make PDF (print)</button>
+      <button id="proofPdfBtn" class="hidden bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-5 py-3 font-bold" data-bn="📄 PDF বানান (প্রিন্ট)" data-en="📄 Make PDF (print)">📄 Make PDF (print)</button>
     </div>
     <h3 class="font-extrabold mt-5" data-bn="২) হাতে — online-convert ওয়েবসাইট দিয়ে (Kindle ফরম্যাটের জন্য)" data-en="2) Manual — with the online-convert website (for Kindle formats)">2) Manual — with the online-convert website (for Kindle formats)</h3>
     <p class="text-sm text-neutral-600 mt-1" data-bn="AZW3 / MOBI এই ব্রাউজারে সরাসরি বানানো যায় না (Amazon-এর নিজস্ব ফরম্যাট) — এগুলোর জন্য online-convert ব্যবহার করুন। এই সাইটের কোনো সার্ভার নেই, তাই online-convert-এর মতো সার্ভার-ভিত্তিক কনভার্ট এখানে স্বয়ংক্রিয়ভাবে চালানো যায় না; এটাই হাতের উপায়।" data-en="AZW3 / MOBI cannot be built directly in a browser (they are Amazon's own formats) — use online-convert for those. This site has no server, so a server-based conversion like online-convert's cannot run automatically here; this is the manual way.">AZW3 / MOBI cannot be built directly in a browser (they are Amazon's own formats) — use online-convert for those. This site has no server, so a server-based conversion like online-convert's cannot run automatically here; this is the manual way.</p>
     <ol class="list-decimal pl-5 mt-2 space-y-1 text-[15px]">
-      <li><span data-bn="উপরে স্বয়ংক্রিয়ভাবে .docx বা EPUB ডাউনলোড করুন।" data-en="Download the .docx or EPUB automatically above.">Download the .docx or EPUB automatically above.</span></li>
+      <li><span data-bn="উপরে স্বয়ংক্রিয়ভাবে EPUB ডাউনলোড করুন (অথবা ধাপ ৪ থেকে .docx নিন)।" data-en="Download the EPUB automatically above (or take the .docx from Step 4).">Download the EPUB automatically above (or take the .docx from Step 4).</span></li>
       <li><a href="https://ebook.online-convert.com" target="_blank" rel="noopener" class="text-emerald-700 font-bold underline">ebook.online-convert.com</a> <span data-bn="খুলুন, ফাইলটি আপলোড করুন, আউটপুটে AZW3 (Kindle) বা MOBI (পুরোনো Kindle) বাছুন।" data-en="— open it, upload the file, and pick AZW3 (Kindle) or MOBI (older Kindle) as the output.">— open it, upload the file, and pick AZW3 (Kindle) or MOBI (older Kindle) as the output.</span></li>
       <li><span data-bn="Convert চাপুন, তারপর তৈরি ফাইল ডাউনলোড করুন।" data-en="Press Convert, then download the finished file.">Press Convert, then download the finished file.</span></li>
     </ol>
     <div class="flex flex-wrap gap-2 mt-3">
       <a href="https://ebook.online-convert.com" target="_blank" rel="noopener" class="accent-bg text-white rounded-xl px-5 py-3 font-bold inline-block" data-bn="🌐 online-convert খুলুন" data-en="🌐 Open online-convert">🌐 Open online-convert</a>
-      <button id="proofCalibreBtn" class="hidden bg-white text-emerald-800 border-2 border-emerald-800 rounded-xl px-5 py-3 font-bold" data-bn="📚 AZW3 / MOBI / KFX (Calibre দিয়ে)" data-en="📚 AZW3 / MOBI / KFX (via Calibre)">📚 AZW3 / MOBI / KFX (via Calibre)</button>
+      <button id="proofCalibreBtn" class="hidden bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-5 py-3 font-bold" data-bn="📚 AZW3 / MOBI / KFX (Calibre দিয়ে)" data-en="📚 AZW3 / MOBI / KFX (via Calibre)">📚 AZW3 / MOBI / KFX (via Calibre)</button>
     </div>
     <div id="calibreNote" class="hidden bg-neutral-50 border border-neutral-200 rounded-xl p-4 mt-3 text-[15px]">
       <p class="font-bold" data-bn="Calibre দিয়ে AZW3 / MOBI / KFX বানান:" data-en="Make AZW3 / MOBI / KFX with Calibre:">Make AZW3 / MOBI / KFX with Calibre:</p>
@@ -246,7 +352,7 @@
   </section>
 
   <div id="vflatModal" class="hidden fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-xl max-w-lg w-full p-5 max-h-[85vh] overflow-y-auto">
+    <div class="bg-white dark:bg-neutral-800 rounded-2xl shadow-xl max-w-lg w-full p-5 max-h-[85vh] overflow-y-auto">
       <h3 class="serif text-xl font-extrabold" data-bn="🐢 OCR ধীর? vFlat দিয়ে PDF → .txt" data-en="🐢 OCR too slow? PDF → .txt with vFlat">🐢 OCR too slow? PDF → .txt with vFlat</h3>
       <p class="text-[15px] mt-2" data-bn="ফোনে ব্রাউজার OCR ধীর হলে vFlat অ্যাপে PDF থেকে .txt বানিয়ে এখানে ফিরে আসুন — ধাপ ২ বাদ যাবে, সরাসরি ধাপ ৩-এ প্রুফরিড শুরু হবে।" data-en="If browser OCR is slow on your phone, make the .txt in the vFlat app and come back here — Step 2 is skipped and proofreading starts straight in Step 3.">If browser OCR is slow on your phone, make the .txt in the vFlat app and come back here — Step 2 is skipped and proofreading starts straight in Step 3.</p>
       <ol class="list-decimal pl-5 mt-4 space-y-2 text-[15px]">
@@ -254,32 +360,167 @@
         <li><span data-bn="vFlat-এ PDF লোড করুন।" data-en="Load the PDF in vFlat.">Load the PDF in vFlat.</span></li>
         <li><span data-bn="OCR করুন।" data-en="Run OCR.">Run OCR.</span></li>
         <li><span data-bn=".txt হিসেবে এক্সপোর্ট করুন।" data-en="Export as .txt.">Export as .txt.</span></li>
-        <li><span data-bn="এখানে ফিরে এসে ধাপ ২-এর “.txt ফাইল আপলোড করুন” বক্সে সেই .txt দিন।" data-en="Come back here and put that .txt in Step 2's “Upload a .txt file” box.">Come back here and put that .txt in Step 2's “Upload a .txt file” box.</span></li>
+        <li><span data-bn="এখানে ফিরে এসে ধাপ ৩-এর “.txt ফাইল আপলোড করুন” বক্সে সেই .txt দিন।" data-en="Come back here and put that .txt in Step 3's “Upload a .txt file” box.">Come back here and put that .txt in Step 3's “Upload a .txt file” box.</span></li>
       </ol>
       <div class="flex flex-wrap gap-2 mt-4">
-        <button id="vflatClose" class="bg-white text-neutral-700 border border-neutral-300 rounded-xl px-5 py-3 font-bold" data-bn="বন্ধ করুন" data-en="Close">Close</button>
+        <button id="vflatClose" class="bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-5 py-3 font-bold" data-bn="বন্ধ করুন" data-en="Close">Close</button>
         <button id="vflatUploadBtn" class="accent-bg text-white rounded-xl px-5 py-3 font-bold" data-bn=".txt আপলোড বক্সে যান" data-en="Go to the .txt upload box">Go to the .txt upload box</button>
       </div>
     </div>
   </div>
 
   <div id="keyHelpModal" class="hidden fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-5 max-h-[85vh] overflow-y-auto">
+    <div class="bg-white dark:bg-neutral-800 rounded-2xl shadow-xl max-w-md w-full p-5 max-h-[85vh] overflow-y-auto">
       <h3 class="serif text-xl font-extrabold" data-bn="ফ্রি API key কীভাবে পাবেন" data-en="How to get a free API key">How to get a free API key</h3>
       <p id="keyHelpText" class="text-[15px] mt-3"></p>
       <div class="flex flex-wrap gap-2 mt-4">
         <a id="keyHelpLink" href="https://aistudio.google.com/apikey" target="_blank" rel="noopener" class="accent-bg text-white rounded-xl px-5 py-3 font-bold inline-block" data-bn="API key পেজ খুলুন" data-en="Open the API key page">Open the API key page</a>
-        <button id="keyHelpClose" class="bg-white text-neutral-700 border border-neutral-300 rounded-xl px-5 py-3 font-bold" data-bn="বন্ধ করুন" data-en="Close">Close</button>
+        <button id="keyHelpClose" class="bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-5 py-3 font-bold" data-bn="বন্ধ করুন" data-en="Close">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="guideModal" class="hidden fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-neutral-800 rounded-2xl shadow-xl max-w-lg w-full p-5 max-h-[85vh] overflow-y-auto">
+      <h3 class="serif text-xl font-extrabold" data-bn="📘 গাইড — যেভাবে ইবুক বানাবেন" data-en="📘 Guide — how to make an ebook">📘 Guide — how to make an ebook</h3>
+      <ol class="list-decimal pl-5 mt-4 space-y-2 text-[15px]">
+        <li><b>Before you start:</b> check Our Boighar first. For yourself only, any book is fine; to share, it must be 10+ years old or writer/publisher-approved.</li>
+        <li><b>Get the .txt:</b> Maker OCR (test 5 pages, then full book, Resume if paused), vFlat if slow, or upload a .txt you already have.</li>
+        <li><b>Proofread:</b> by hand (AI Studio or Muse) or automatically with your Gemini/OpenRouter key — in chunks, with progress saved.</li>
+        <li><b>Formatted document:</b> title page, chapters on new pages, centred headings, justified text (Arabic right-aligned), credit page.</li>
+        <li><b>Final ebook:</b> EPUB and PDF here automatically; AZW3/MOBI via online-convert; KFX via Calibre. A formatted .docx skips straight here.</li>
+        <li><b>Cover &amp; credit:</b> upload a cover (or find/make one), add your name for the credit page.</li>
+        <li><b>Share:</b> a shareable ebook goes to the Our Boighar community to be checked and added.</li>
+      </ol>
+      <div class="flex flex-wrap gap-2 mt-4">
+        <button class="proofsteps-open bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-4 py-2.5 font-bold" data-bn="প্রুফরিডিং ধাপ" data-en="Proofreading steps">Proofreading steps</button>
+        <button class="muse-open bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-4 py-2.5 font-bold" data-bn="Muse নির্দেশনা" data-en="Muse instruction">Muse instruction</button>
+        <button class="guide-close bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-4 py-2.5 font-bold" data-bn="বন্ধ করুন" data-en="Close">Close</button>
+      </div>
+      <p class="text-sm text-neutral-500 mt-3"><a href="guide.html" class="text-emerald-700 dark:text-emerald-400 font-bold underline" data-bn="পুরো বিস্তারিত গাইড পেজ (ঐচ্ছিক)" data-en="Full detailed guide page (optional)">Full detailed guide page (optional)</a></p>
+    </div>
+  </div>
+
+  <div id="proofStepsModal" class="hidden fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-neutral-800 rounded-2xl shadow-xl max-w-lg w-full p-5 max-h-[85vh] overflow-y-auto">
+      <h3 class="serif text-xl font-extrabold" data-bn="Google AI Studio দিয়ে হাতে প্রুফরিড" data-en="Manual proofreading with Google AI Studio">Manual proofreading with Google AI Studio</h3>
+      <ol class="list-decimal pl-5 mt-4 space-y-2 text-[15px]">
+        <li>Open <a href="https://aistudio.google.com/" target="_blank" rel="noopener" class="text-emerald-700 dark:text-emerald-400 font-bold underline">aistudio.google.com</a>.</li>
+        <li>Tap <b>+</b> and add the text file.</li>
+        <li>Tap the system-instruction spot and paste the prompt below (use the Copy button).</li>
+        <li>Write <b>continue</b>, then Run (Ctrl + Enter). Repeat until the whole book is done.</li>
+        <li>On any response, tap the three dots and choose <b>Copy as Markdown</b>. Join the parts into one file and upload it in Step 3.</li>
+        <li>On a phone: press and hold where you paste, then tap Paste — do not paste from the keyboard popup, or formatting is lost.</li>
+      </ol>
+      <label class="block font-bold mt-4 mb-1" for="proofPromptText" data-bn="প্রুফরিডিং প্রম্পট" data-en="Proofreading prompt">Proofreading prompt</label>
+      <textarea id="proofPromptText" readonly rows="10" class="w-full border border-neutral-300 rounded-xl p-3 text-sm">Act as an expert Digital Archivist, Master Typographer, and EPUB Formatter. Your task is to digitize raw, unformatted text (often containing OCR errors) from old, copyright-free (public domain) books and convert it into pristine, beautifully structured Markdown optimized for professional EPUB conversion.
+
+I will provide the text to you chapter-by-chapter (or section-by-section).
+
+Please apply the following strict guidelines to every submission:
+
+1. STRUCTURAL HIERARCHY (Semantic Markdown):
+- Use `#` for the Book Title (only on the title page/first prompt).
+- Use `##` for Chapter Titles or Major Sections (e.g., `## Chapter I`).
+- Use `###` for Sub-chapters or Section Breaks.
+- Separate scenes or thematic breaks using a standard horizontal rule: `***`.
+- Give page break at the end of the chapter or where necessary.
+
+2. OCR ERROR CORRECTION & CLEANUP:
+- Remove all original page numbers, running headers, and running footers.
+- Fix broken line breaks (hard returns in the middle of sentences). Join fragmented sentences into cohesive paragraphs.
+- Correct common OCR errors ("scannos") without altering the original meaning (e.g., fix "rn" misread as "m", "l" misread as "1", "thc" to "the").
+- DO NOT modernize the author's vocabulary or intentional archaic spellings (e.g., keep "to-morrow", "shew", "colour" if they appear in the original text).
+
+3. PROFESSIONAL TYPOGRAPHY:
+- Replace double hyphens (`--`) with proper em-dashes (`—`) without spaces on either side.
+- Replace spaced hyphens with en-dashes (`–`) where appropriate (e.g., date ranges).
+- Standardize quotation marks. Use proper Markdown italicization `*like this*` for emphasis, book titles, and foreign words.
+- Ensure proper spacing after punctuation.
+
+4. SPECIAL FORMATTING:
+- Blockquotes: Prefix multi-line quotes or letters with `> `.
+- Poetry/Song Lyrics: Use double spaces at the end of a line to create a soft line break, preserving the stanza structure.
+- Footnotes: Footnote Entry should be added next to the footnote number and footnote entry should be within Third bracket within the text, not separately. Footnote number should be in superscript. Endnote & Citation too.
+
+5. NAVIGATION & DIGITAL LINKED INDEX:
+- Table of Contents (TOC): If processing a TOC, remove all original page numbers. Convert the entries into a digital linked list targeting chapter anchors. Format: `- [Chapter Name](#chapter-name)`.
+- Back-of-Book Index: Original printed page numbers are useless in reflowable EPUBs. When processing an Index, REMOVE all page numbers. Convert the index into a hierarchical, digital linked index. Format each main entry as a Markdown hyperlink pointing to an anchor of the term itself.
+  Example: Convert "Astrophysics ........... 45, 67" to `- [Astrophysics](#astrophysics)`.
+  Retain original sub-entries as indented sub-bullets under the main term.
+
+6. CLEAN CODE:
+- Output ONLY the formatted Markdown.
+- Do not include conversational filler (e.g., "Here is your text," "Let me know if you need changes").
+
+7. For Bangla & Arabic Language:
+- Correct Bangla OCR spelling error, য় can be mistaken as য
+- Title and Heading should be center aligned.
+- All the text should be in Justified Alignment except Arabic which must be right aligned.
+- For Arabic text: correct the Arabic sentence if there is error and add Harkat to it. Don't use any bracket in Arabic text.
+In case of Quranic ayah follow this format,
+آيه ۝١٩١ (the number is for example)</textarea>
+      <div class="flex flex-wrap gap-2 mt-3">
+        <button id="copyProofPromptBtn" class="accent-bg text-white rounded-xl px-4 py-2.5 font-bold" data-bn="প্রম্পট কপি করুন" data-en="Copy prompt">Copy prompt</button>
+        <button class="proofsteps-close bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-4 py-2.5 font-bold" data-bn="বন্ধ করুন" data-en="Close">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="museModal" class="hidden fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-neutral-800 rounded-2xl shadow-xl max-w-lg w-full p-5 max-h-[85vh] overflow-y-auto">
+      <h3 class="serif text-xl font-extrabold" data-bn="Muse দিয়ে প্রুফরিড" data-en="Proofread with Muse">Proofread with Muse</h3>
+      <p class="text-[15px] mt-2" data-bn="কোনো API key লাগে না: .txt ফাইলটি Muse চ্যাটে আপলোড করে নিচের নির্দেশনাটি একই মেসেজে পেস্ট করুন, তারপর “continue” লিখে এগোন।" data-en="No API key needed: upload the .txt in a Muse chat, paste the instruction below in the same message, then write “continue” to go on.">No API key needed: upload the .txt in a Muse chat, paste the instruction below in the same message, then write “continue” to go on.</p>
+      <textarea id="musePromptText" readonly rows="12" class="w-full border border-neutral-300 rounded-xl p-3 text-sm mt-3">Please proofread this book for me, in chunks, so I can make a clean EPUB from it.
+
+Rules:
+- This file is OCR text from a book. Fix OCR errors, broken line breaks, stray characters in footnotes, and repeated page headers that split paragraphs in half.
+- Do NOT change the author's wording, meaning, or theological terms. Do NOT modernize old spellings.
+- For Bangla: correct OCR spelling mistakes (for example য় misread as য). Centre titles and headings.
+- For Arabic text: correct errors, add harkat, do not use brackets. Never alter Quranic verses or Hadith texts — only fix clear OCR mistakes in them.
+- Format the output as clean Markdown: # for the book title, ## for chapter titles, ### for sub-sections, *** for scene breaks. Remove page numbers, running headers and footers. Join fragmented sentences into proper paragraphs.
+- Footnotes: keep the footnote entry next to its number, in superscript, within third brackets.
+- Work through the file in chunks of about 8,000 characters. After each chunk, stop and say DONE, and wait for me to say "continue" before doing the next chunk.
+- Output ONLY the proofread Markdown for each chunk — no explanations, no "here is your text".</textarea>
+      <div class="flex flex-wrap gap-2 mt-3">
+        <button id="copyMusePromptBtn" class="accent-bg text-white rounded-xl px-4 py-2.5 font-bold" data-bn="নির্দেশনা কপি করুন" data-en="Copy instruction">Copy instruction</button>
+        <button class="muse-close bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-4 py-2.5 font-bold" data-bn="বন্ধ করুন" data-en="Close">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="privacyModal" class="hidden fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-neutral-800 rounded-2xl shadow-xl max-w-md w-full p-5 max-h-[85vh] overflow-y-auto">
+      <h3 class="serif text-xl font-extrabold" data-bn="গোপনীয়তা নীতি" data-en="Privacy policy">Privacy policy</h3>
+      <p class="text-[15px] mt-3" data-bn="এই সাইটের কোনো সার্ভার নেই, কোনো অ্যাকাউন্ট নেই, কিছু আপলোড হয় না। PDF, OCR ও ফাইল বানানো সব আপনার ব্রাউজার ট্যাবেই হয়। স্বয়ংক্রিয় প্রুফরিডের ক্ষেত্রে শুধু লেখার অংশগুলো আপনার নিজের key দিয়ে সরাসরি Google বা OpenRouter-এ যায় — key আপনার ব্রাউজারেই থাকে, আমরা তা দেখি না।" data-en="This site has no server, no account, and nothing is uploaded. The PDF, OCR and file building all happen in your browser tab. For automatic proofreading only, text chunks go directly to Google or OpenRouter with your own key — the key stays in your browser, and we never see it.">This site has no server, no account, and nothing is uploaded. The PDF, OCR and file building all happen in your browser tab. For automatic proofreading only, text chunks go directly to Google or OpenRouter with your own key — the key stays in your browser, and we never see it.</p>
+      <div class="flex flex-wrap gap-2 mt-4">
+        <button class="privacy-close bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-4 py-2.5 font-bold" data-bn="বন্ধ করুন" data-en="Close">Close</button>
       </div>
     </div>
   </div>
   </main>
 
   <footer class="text-center text-neutral-500 text-sm py-6">
-    <p><span data-bn="ইবুক বানানো হয়েছে" data-en="Ebooks made with">Ebooks made with</span> <a href="index.html" class="text-emerald-700 font-bold underline">Our Ebook Maker</a> <span data-bn="• শেয়ার করা হয়" data-en="• shared on">• shared on</span> <a href="https://mdtowfiqul.github.io/our-boighar/" class="text-emerald-700 font-bold underline">Our Boighar</a></p>
+    <p><span data-bn="ইবুক বানানো হয়েছে" data-en="Ebooks made with">Ebooks made with</span> <a href="index.html" class="text-emerald-700 dark:text-emerald-400 font-bold underline">Our Ebook Maker</a> <span data-bn="• শেয়ার করা হয়" data-en="• shared on">• shared on</span> <a href="https://mdtowfiqul.github.io/our-boighar/" class="text-emerald-700 dark:text-emerald-400 font-bold underline">Our Boighar</a></p>
     <p class="mt-1"><span data-bn="আমাদের পরিবারের অংশ: Our Days, Our Boighar, Our Islamic Archive" data-en="Part of the Our family: Our Days, Our Boighar, Our Islamic Archive">Part of the Our family: Our Days, Our Boighar, Our Islamic Archive</span></p>
   </footer>
 </div>
+
+<nav class="fixed bottom-3 inset-x-3 sm:inset-x-0 sm:max-w-md sm:mx-auto z-30 bg-white dark:bg-neutral-800 rounded-full shadow-2xl border border-neutral-200/80 dark:border-neutral-700 flex justify-between px-2 py-1.5">
+  <button id="navHome" class="nav-btn flex-1 flex flex-col items-center gap-0.5 rounded-full py-1.5 text-neutral-500 dark:text-neutral-300 accent-soft-bg accent-text">
+    <span class="text-xl leading-none">🏠</span><span class="text-[11px] font-bold" data-bn="হোম" data-en="Home">Home</span>
+  </button>
+  <button id="navProofread" class="nav-btn flex-1 flex flex-col items-center gap-0.5 rounded-full py-1.5 text-neutral-500 dark:text-neutral-300">
+    <span class="text-xl leading-none">✍️</span><span class="text-[11px] font-bold" data-bn="প্রুফরিড" data-en="Proofread">Proofread</span>
+  </button>
+  <button id="navEbook" class="nav-btn flex-1 flex flex-col items-center gap-0.5 rounded-full py-1.5 text-neutral-500 dark:text-neutral-300">
+    <span class="text-xl leading-none">📖</span><span class="text-[11px] font-bold" data-bn="ইবুক" data-en="Ebook">Ebook</span>
+  </button>
+  <button id="navGuide" class="nav-btn flex-1 flex flex-col items-center gap-0.5 rounded-full py-1.5 text-neutral-500 dark:text-neutral-300">
+    <span class="text-xl leading-none">📘</span><span class="text-[11px] font-bold" data-bn="গাইড" data-en="Guide">Guide</span>
+  </button>
+</nav>
+
 <script src="app.js"></script>
 </body>
 </html>

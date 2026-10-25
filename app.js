@@ -55,7 +55,7 @@
 
   /* ---- Language (EN/BN toggle, like Our Boighar) ---- */
   var LANG = localStorage.getItem('oem-lang') || 'en';
-  var DYNAMIC_IDS = { status: 1, summary: 1, fileinfo: 1, coverStatus: 1, preview: 1, resumeInfo: 1, proofStatus: 1, txtFileStatus: 1, proofFileStatus: 1, docFileStatus: 1, finalStatus: 1, proofStats: 1, proofKeyStats: 1 };
+  var DYNAMIC_IDS = { status: 1, summary: 1, fileinfo: 1, coverStatus: 1, preview: 1, resumeInfo: 1, proofStatus: 1, txtFileStatus: 1, proofFileStatus: 1, docFileStatus: 1, finalStatus: 1, docStatus: 1, proofStats: 1, proofKeyStats: 1 };
   function L(en, bn) { return LANG === 'bn' ? bn : en; }
   function applyLang() {
     document.querySelectorAll('[data-bn]').forEach(function (el) {
@@ -67,13 +67,148 @@
     });
     document.documentElement.lang = LANG;
     if (langLabel) langLabel.textContent = LANG === 'bn' ? 'BN' : 'EN';
+    var dl = $('drawer-lang-label'); if (dl) dl.textContent = LANG === 'bn' ? 'বাংলা' : 'English';
     try { localStorage.setItem('oem-lang', LANG); } catch (e) {}
   }
-  if (langToggle) langToggle.addEventListener('click', function () {
-    LANG = LANG === 'bn' ? 'en' : 'bn';
-    applyLang();
-  });
+  function toggleLang() { LANG = LANG === 'bn' ? 'en' : 'bn'; applyLang(); }
+  if (langToggle) langToggle.addEventListener('click', toggleLang);
+  var drawerLangBtn = $('drawer-lang');
+  if (drawerLangBtn) drawerLangBtn.addEventListener('click', toggleLang);
   applyLang();
+
+  /* ---- v7: Boighar-style theme, drawer, collapsibles, panels, nav, guide pop-ups ---- */
+  function paintTheme() {
+    var dark = document.documentElement.classList.contains('dark');
+    var tt = $('theme-toggle'); if (tt) tt.textContent = dark ? '☀️' : '🌙';
+    var di = $('drawer-theme-icon'); if (di) di.textContent = dark ? '☀️' : '🌙';
+    var dl2 = $('drawer-theme-label'); if (dl2) dl2.textContent = dark ? L('Dark', 'অন্ধকার') : L('Light', 'আলো');
+    var cur = localStorage.getItem('oem-color') || 'purple';
+    document.querySelectorAll('.swatch').forEach(function (s) { s.classList.toggle('on', s.getAttribute('data-setcolor') === cur); });
+  }
+  function toggleTheme() {
+    var on = document.documentElement.classList.toggle('dark');
+    try { localStorage.setItem('oem-theme', on ? 'dark' : 'light'); } catch (e) {}
+    paintTheme();
+  }
+  var themeToggle = $('theme-toggle');
+  if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
+  var drawerThemeBtn = $('drawer-theme-btn');
+  if (drawerThemeBtn) drawerThemeBtn.addEventListener('click', toggleTheme);
+  document.querySelectorAll('.swatch').forEach(function (s) {
+    s.addEventListener('click', function () {
+      document.documentElement.setAttribute('data-color', s.getAttribute('data-setcolor'));
+      try { localStorage.setItem('oem-color', s.getAttribute('data-setcolor')); } catch (e) {}
+      paintTheme();
+    });
+  });
+  paintTheme();
+  function openDrawer() {
+    var d = $('drawer'), o = $('drawer-overlay');
+    if (d) d.classList.remove('-translate-x-full');
+    if (o) { o.classList.remove('opacity-0', 'pointer-events-none'); }
+  }
+  function closeDrawer() {
+    var d = $('drawer'), o = $('drawer-overlay');
+    if (d) d.classList.add('-translate-x-full');
+    if (o) { o.classList.add('opacity-0', 'pointer-events-none'); }
+  }
+  var menuBtn = $('menu-btn');
+  if (menuBtn) menuBtn.addEventListener('click', openDrawer);
+  var drawerClose = $('drawer-close');
+  if (drawerClose) drawerClose.addEventListener('click', closeDrawer);
+  var drawerOverlay = $('drawer-overlay');
+  if (drawerOverlay) drawerOverlay.addEventListener('click', closeDrawer);
+  document.querySelectorAll('.drawer-link').forEach(function (b) {
+    b.addEventListener('click', function () {
+      closeDrawer();
+      var t = b.getAttribute('data-scroll');
+      if (t === 'top') window.scrollTo({ top: 0, behavior: 'smooth' });
+      else { var el = $(t); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    });
+  });
+  function setCollapse(id, open) {
+    var body = $(id); if (!body) return;
+    body.classList.toggle('hidden', !open);
+    var btn = document.querySelector('.collapse-toggle[data-target="' + id + '"]');
+    if (btn) { var chev = btn.querySelector('.collapse-chev'); if (chev) chev.textContent = open ? '▲' : '▼'; }
+  }
+  document.querySelectorAll('.collapse-toggle').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var id = btn.getAttribute('data-target');
+      var body = $(id); if (body) setCollapse(id, body.classList.contains('hidden'));
+    });
+  });
+  function setPanel(which) {
+    var mp = $('manualPanel'), ap = $('autoPanel');
+    var mb = $('manualToggleBtn'), ab = $('autoToggleBtn');
+    var manualOpen = which === 'manual' && mp && mp.classList.contains('hidden');
+    var autoOpen = which === 'auto' && ap && ap.classList.contains('hidden');
+    if (mp) mp.classList.add('hidden');
+    if (ap) ap.classList.add('hidden');
+    if (mb) mb.classList.remove('accent-soft-bg', 'accent-text');
+    if (ab) ab.classList.remove('accent-soft-bg', 'accent-text');
+    if (manualOpen && mp) { mp.classList.remove('hidden'); if (mb) mb.classList.add('accent-soft-bg', 'accent-text'); }
+    if (autoOpen && ap) { ap.classList.remove('hidden'); if (ab) ab.classList.add('accent-soft-bg', 'accent-text'); }
+  }
+  var manualToggleBtn = $('manualToggleBtn'), autoToggleBtn = $('autoToggleBtn');
+  if (manualToggleBtn) manualToggleBtn.addEventListener('click', function () { setPanel('manual'); });
+  if (autoToggleBtn) autoToggleBtn.addEventListener('click', function () { setPanel('auto'); });
+  function setNavActive(btn) {
+    document.querySelectorAll('.nav-btn').forEach(function (b) { b.classList.remove('accent-soft-bg', 'accent-text'); });
+    if (btn) btn.classList.add('accent-soft-bg', 'accent-text');
+  }
+  var navHome = $('navHome'), navProofread = $('navProofread'), navEbook = $('navEbook'), navGuide = $('navGuide');
+  if (navHome) navHome.addEventListener('click', function () { setNavActive(navHome); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+  if (navProofread) navProofread.addEventListener('click', function () { setNavActive(navProofread); var el = $('results'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+  if (navEbook) navEbook.addEventListener('click', function () { setNavActive(navEbook); var el = $('finalFormats'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+  /* Guide pop-ups (v7): the maker no longer navigates to guide.html for the
+     proofreading links — the necessary information opens here instead. */
+  document.querySelectorAll('.guide-open').forEach(function (b) {
+    b.addEventListener('click', function () { closeDrawer(); openModal($('guideModal')); });
+  });
+  document.querySelectorAll('.guide-close').forEach(function (b) {
+    b.addEventListener('click', function () { closeModal($('guideModal')); });
+  });
+  document.querySelectorAll('.proofsteps-open').forEach(function (b) {
+    b.addEventListener('click', function () { closeDrawer(); closeModal($('guideModal')); openModal($('proofStepsModal')); });
+  });
+  document.querySelectorAll('.proofsteps-close').forEach(function (b) {
+    b.addEventListener('click', function () { closeModal($('proofStepsModal')); });
+  });
+  document.querySelectorAll('.muse-open').forEach(function (b) {
+    b.addEventListener('click', function () { closeDrawer(); closeModal($('guideModal')); openModal($('museModal')); });
+  });
+  document.querySelectorAll('.muse-close').forEach(function (b) {
+    b.addEventListener('click', function () { closeModal($('museModal')); });
+  });
+  document.querySelectorAll('.privacy-open').forEach(function (b) {
+    b.addEventListener('click', function () { closeDrawer(); openModal($('privacyModal')); });
+  });
+  document.querySelectorAll('.privacy-close').forEach(function (b) {
+    b.addEventListener('click', function () { closeModal($('privacyModal')); });
+  });
+  if (navGuide) navGuide.addEventListener('click', function () { setNavActive(navGuide); openModal($('guideModal')); });
+  var drawerKeyhelp = $('drawer-keyhelp');
+  if (drawerKeyhelp) drawerKeyhelp.addEventListener('click', function () { closeDrawer(); openModal($('keyHelpModal')); });
+  ['guideModal', 'proofStepsModal', 'museModal', 'privacyModal'].forEach(function (id) {
+    var m = $(id);
+    if (m) m.addEventListener('click', function (ev) { if (ev.target === m) closeModal(m); });
+  });
+  function copyTextarea(id, btn, doneBn, doneEn) {
+    var ta = $(id); if (!ta) return;
+    var done = function () {
+      var old = btn.textContent;
+      btn.textContent = L(doneEn, doneBn);
+      setTimeout(function () { btn.textContent = old; }, 2000);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(ta.value).then(done).catch(function () { ta.select(); document.execCommand('copy'); done(); });
+    } else { ta.select(); document.execCommand('copy'); done(); }
+  }
+  var copyProofBtn = $('copyProofPromptBtn');
+  if (copyProofBtn) copyProofBtn.addEventListener('click', function () { copyTextarea('proofPromptText', copyProofBtn, 'কপি হয়েছে!', 'Copied!'); });
+  var copyMuseBtn = $('copyMusePromptBtn');
+  if (copyMuseBtn) copyMuseBtn.addEventListener('click', function () { copyTextarea('musePromptText', copyMuseBtn, 'কপি হয়েছে!', 'Copied!'); });
 
   /* ---- Saved progress: IndexedDB when available, else localStorage ---- */
   var PROGRESS_KEY = 'oem-progress-v1';
@@ -243,8 +378,8 @@
     if (!screenOnBtn) return;
     screenOnBtn.textContent = on ? '✓' : '🔆';
     screenOnBtn.className = 'shrink-0 w-16 h-16 rounded-full text-2xl font-bold shadow ' + (on
-      ? 'bg-emerald-700 text-white border-2 border-emerald-700'
-      : 'bg-white text-emerald-800 border-2 border-emerald-800');
+      ? 'accent-bg text-white border-2 border-transparent'
+      : 'bg-white dark:bg-neutral-700 text-neutral-800 dark:text-neutral-100 border border-neutral-300 dark:border-neutral-600');
   }
   if (screenOnBtn) screenOnBtn.addEventListener('click', async function () {
     if (!navigator.wakeLock) {
@@ -274,21 +409,29 @@
   if (vflatClose) vflatClose.addEventListener('click', function () { closeModal(vflatModal); });
   if (vflatUploadBtn) vflatUploadBtn.addEventListener('click', function () {
     closeModal(vflatModal);
+    setCollapse('collapse-txt', true);
     if (txtFileEl) txtFileEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
   });
   if (vflatModal) vflatModal.addEventListener('click', function (ev) { if (ev.target === vflatModal) closeModal(vflatModal); });
-  /* Step 3 unlocks on OCR text or an uploaded .txt; Step 4 unlocks on
-     proofread text or an uploaded formatted .docx. */
+  /* v7 split: Step 4 (formatted document) unlocks on proofread text;
+     Step 5 (final ebook) unlocks only when the document exists — made in
+     Step 4, or uploaded as a formatted .docx. */
   function unlockStep3() {
     if (txtBtn) txtBtn.disabled = false;
     if (autoProofBtn) autoProofBtn.disabled = false;
     summaryEl.textContent = L('Text ready — proofread it below (by hand or automatically), then go to Step 4.',
       'লেখা তৈরি — নিচে হাতে বা স্বয়ংক্রিয়ভাবে প্রুফরিড করুন, তারপর ধাপ ৪-এ যান।');
   }
-  function unlockFinal(msg) {
-    showProofOutputs();
-    if (finalStatusEl) finalStatusEl.textContent = msg || L('Proofread document ready — pick a format below.',
-      'প্রুফরিড ডকুমেন্ট তৈরি — নিচে ফরম্যাট বাছুন।');
+  function unlockDoc(msg) {
+    showDocOutputs();
+    var ds = $('docStatus');
+    if (ds) ds.textContent = msg || L('Proofread text ready — make the formatted document below.',
+      'প্রুফরিড লেখা তৈরি — নিচে ফরম্যাট করা ডকুমেন্ট বানান।');
+  }
+  function unlockEbook(msg) {
+    showEbookOutputs();
+    if (finalStatusEl) finalStatusEl.textContent = msg || L('Document ready — pick an ebook format below.',
+      'ডকুমেন্ট তৈরি — নিচে ইবুক ফরম্যাট বাছুন।');
   }
   function setBusy(busy) {
     testBtn.disabled = busy; runBtn.disabled = busy; cancelBtn.disabled = !busy;
@@ -347,7 +490,7 @@
     updateFileInfo();
     if (!titleEl.value) titleEl.value = f.name.replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' ');
     state.fullText = ''; state.proofText = ''; state.docBlob = null; state.docIsOriginal = false;
-    hideProofOutputs();
+    hideDocOutputs(); hideEbookOutputs();
     summaryEl.textContent = L('Run the full book first — Step 3 unlocks when the text is ready.',
       'পুরো বই চালানোর পর লেখা তৈরি হলে ধাপ ৩ খুলবে।');
     if (txtBtn) txtBtn.disabled = true;
@@ -459,21 +602,29 @@
     }
     return md.join('\n\n');
   }
-  function setProofReady(sourceLabel, filename) {
-    if (finalStatusEl) finalStatusEl.textContent = '✓ ' + sourceLabel + ' — ' + L('Step 4 is now open: pick a format below.', 'ধাপ ৪ এখন খোলা: নিচে ফরম্যাট বাছুন।');
-    document.getElementById('finalFormats').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
   if (proofFileEl) proofFileEl.addEventListener('change', async function () {
     var f = proofFileEl.files[0];
     if (!f) return;
     try {
-      state.docBlob = null; state.docIsOriginal = false;
-      state.proofText = /\.docx$/i.test(f.name) ? await parseDocxToMd(f) : (await f.text()).trim();
+      var isDocx = /\.docx$/i.test(f.name);
+      state.proofText = isDocx ? await parseDocxToMd(f) : (await f.text()).trim();
       if (!state.proofText) { proofFileStatusEl.textContent = L('That file looks empty.', 'ফাইলটি খালি মনে হচ্ছে।'); return; }
       if (!titleEl.value) titleEl.value = f.name.replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' ');
       proofFileStatusEl.textContent = '✓ ' + L('Proofread file loaded: ', 'প্রুফরিড ফাইল লোড হয়েছে: ') + f.name;
-      unlockFinal();
-      setProofReady(L('Proofread file loaded', 'প্রুফরিড ফাইল লোড হয়েছে'), f.name);
+      if (isDocx) {
+        /* A .docx uploaded here is already a formatted document, so it
+           unlocks both Step 4 (hand it back) and Step 5 (make ebooks). */
+        state.docBlob = f; state.docIsOriginal = true;
+        unlockDoc(L('Formatted document loaded — Step 4 is open, and Step 5 (final ebook) is open too.',
+          'ফরম্যাট করা ডকুমেন্ট লোড হয়েছে — ধাপ ৪ খোলা, আর ধাপ ৫ (ফাইনাল ইবুক) ও খোলা।'));
+        unlockEbook(L('Formatted document loaded — pick an ebook format below.',
+          'ফরম্যাট করা ডকুমেন্ট লোড হয়েছে — নিচে ইবুক ফরম্যাট বাছুন।'));
+      } else {
+        state.docBlob = null; state.docIsOriginal = false;
+        unlockDoc(L('Proofread file loaded — Step 4 (formatted document) is now open.',
+          'প্রুফরিড ফাইল লোড হয়েছে — ধাপ ৪ (ফরম্যাট করা ডকুমেন্ট) এখন খোলা।'));
+      }
+      document.getElementById('docStep').scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch (e) {
       proofFileStatusEl.textContent = L('Could not read that file: ', 'ফাইলটি পড়া যায়নি: ') + e.message;
     }
@@ -485,9 +636,10 @@
       state.proofText = await parseDocxToMd(f);
       state.docBlob = f; state.docIsOriginal = true;
       if (!titleEl.value) titleEl.value = f.name.replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' ');
-      docFileStatusEl.textContent = '✓ ' + L('Formatted document loaded: ', 'ফরম্যাট করা ডকুমেন্ট লোড হয়েছে: ') + f.name + L(' — Steps 1–3 skipped, you are in the final step.', ' — ধাপ ১–৩ বাদ গেল, আপনি এখন ফাইনাল ধাপে।');
-      unlockFinal();
-      setProofReady(L('Formatted document loaded', 'ফরম্যাট করা ডকুমেন্ট লোড হয়েছে'), f.name);
+      docFileStatusEl.textContent = '✓ ' + L('Formatted document loaded: ', 'ফরম্যাট করা ডকুমেন্ট লোড হয়েছে: ') + f.name + L(' — Steps 1–4 skipped, you are in the final step.', ' — ধাপ ১–৪ বাদ গেল, আপনি এখন ফাইনাল ধাপে।');
+      showDocOutputs();
+      unlockEbook(L('Formatted document loaded — pick an ebook format below.',
+        'ফরম্যাট করা ডকুমেন্ট লোড হয়েছে — নিচে ইবুক ফরম্যাট বাছুন।'));
     } catch (e) {
       docFileStatusEl.textContent = L('Could not read that .docx: ', 'এই .docx পড়া যায়নি: ') + e.message;
     }
@@ -774,16 +926,20 @@
     var data = await res.json();
     return data && data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message.content : '';
   }
-  function showProofOutputs() {
+  function showDocOutputs() {
     if (proofDownloadBtn) proofDownloadBtn.classList.remove('hidden');
     if (proofDocxBtn) proofDocxBtn.classList.remove('hidden');
+  }
+  function hideDocOutputs() {
+    if (proofDownloadBtn) proofDownloadBtn.classList.add('hidden');
+    if (proofDocxBtn) proofDocxBtn.classList.add('hidden');
+  }
+  function showEbookOutputs() {
     if (proofEpubBtn) proofEpubBtn.classList.remove('hidden');
     if (proofPdfBtn) proofPdfBtn.classList.remove('hidden');
     if (proofCalibreBtn) proofCalibreBtn.classList.remove('hidden');
   }
-  function hideProofOutputs() {
-    if (proofDownloadBtn) proofDownloadBtn.classList.add('hidden');
-    if (proofDocxBtn) proofDocxBtn.classList.add('hidden');
+  function hideEbookOutputs() {
     if (proofEpubBtn) proofEpubBtn.classList.add('hidden');
     if (proofPdfBtn) proofPdfBtn.classList.add('hidden');
     if (proofCalibreBtn) proofCalibreBtn.classList.add('hidden');
@@ -808,7 +964,7 @@
     state.proofStartedAt = Date.now();
     autoProofBtn.disabled = true;
     proofCancelBtn.disabled = false;
-    hideProofOutputs();
+    hideDocOutputs(); hideEbookOutputs();
     var chunks = chunkText(state.fullText, provider === 'gemini' ? 8000 : 6000);
     var fp = proofFp(state.fullText);
     var out = [];
@@ -822,7 +978,7 @@
       proofBar.style.width = '100%';
       proofStatusEl.textContent = L('Proofreading already complete — your document is ready in Step 4 below.',
         'প্রুফরিড আগেই শেষ — আপনার ডকুমেন্ট নিচে ধাপ ৪-এ তৈরি।');
-      unlockFinal();
+      unlockDoc();
       autoProofBtn.disabled = false;
       proofCancelBtn.disabled = true;
       return;
@@ -851,11 +1007,11 @@
         proofBar.style.width = '100%';
         var words = state.fullText.split(/\s+/).filter(Boolean).length;
         var mins = Math.max(0.1, (Date.now() - state.proofStartedAt) / 60000).toFixed(1);
-        proofStatusEl.textContent = L('Proofreading done: ' + chunks.length + ' chunks. Your proofread document is ready in Step 4 below — .md, .docx, EPUB or PDF.',
-          'প্রুফরিড শেষ: ' + chunks.length + 'টি অংশ। আপনার প্রুফরিড ডকুমেন্ট নিচে ধাপ ৪-এ তৈরি — .md, .docx, EPUB বা PDF।');
+        proofStatusEl.textContent = L('Proofreading done: ' + chunks.length + ' chunks. Your formatted document is ready in Step 4 below — .md or .docx.',
+          'প্রুফরিড শেষ: ' + chunks.length + 'টি অংশ। আপনার ফরম্যাট করা ডকুমেন্ট নিচে ধাপ ৪-এ তৈরি — .md বা .docx।');
         if (proofStatsEl) proofStatsEl.textContent = L('Stats: ' + chunks.length + ' chunks • about ' + words.toLocaleString('en-US') + ' words • ' + mins + ' min',
           'পরিসংখ্যান: ' + chunks.length + 'টি অংশ • প্রায় ' + words.toLocaleString('en-US') + ' শব্দ • ' + mins + ' মিনিট');
-        unlockFinal();
+        unlockDoc();
       }
     } catch (e) {
       proofStatusEl.textContent = L('Proofreading failed: ' + e.message + ' Progress up to chunk ' + out.length + ' is saved — check your key/model and run again to continue.',
@@ -963,7 +1119,8 @@
   if (proofDocxBtn) proofDocxBtn.addEventListener('click', async function () {
     if (!state.proofText && !state.docBlob) return;
     proofDocxBtn.disabled = true;
-    if (finalStatusEl) finalStatusEl.textContent = L('Getting the document file…', 'ডকুমেন্ট ফাইল নেওয়া হচ্ছে…');
+    var docStatusEl = $('docStatus');
+    if (docStatusEl) docStatusEl.textContent = L('Getting the document file…', 'ডকুমেন্ট ফাইল নেওয়া হচ্ছে…');
     try {
       if (state.docIsOriginal && state.docBlob) {
         /* A formatted .docx the user uploaded is already the document —
@@ -973,10 +1130,13 @@
         var blob = await buildDocx(state.proofText, (titleEl.value || 'book').trim(), (authorEl.value || '').trim());
         download(blob, safeName((titleEl.value || 'book').trim()) + '-proofread.docx');
       }
-      if (finalStatusEl) finalStatusEl.textContent = L('Document downloaded. Now pick EPUB or PDF above, or use online-convert below for AZW3/MOBI.',
-        'ডকুমেন্ট ডাউনলোড হয়েছে। এখন উপরে EPUB বা PDF বাছুন, অথবা AZW3/MOBI-র জন্য নিচে online-convert ব্যবহার করুন।');
+      /* Making the document is what unlocks Step 5 (final ebook). */
+      unlockEbook(L('Document ready — Step 5 (final ebook) is now open below: EPUB, PDF, or online-convert for AZW3/MOBI.',
+        'ডকুমেন্ট তৈরি — নিচে ধাপ ৫ (ফাইনাল ইবুক) খুলে গেছে: EPUB, PDF, অথবা AZW3/MOBI-র জন্য online-convert।'));
+      if (docStatusEl) docStatusEl.textContent = L('Document downloaded — Step 5 below is now open.',
+        'ডকুমেন্ট ডাউনলোড হয়েছে — নিচে ধাপ ৫ এখন খোলা।');
     } catch (e) {
-      if (finalStatusEl) finalStatusEl.textContent = L('Document build failed: ' + e.message, 'ডকুমেন্ট বানানো ব্যর্থ: ' + e.message);
+      if (docStatusEl) docStatusEl.textContent = L('Document build failed: ' + e.message, 'ডকুমেন্ট বানানো ব্যর্থ: ' + e.message);
     }
     proofDocxBtn.disabled = false;
   });
