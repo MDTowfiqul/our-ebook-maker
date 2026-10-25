@@ -176,7 +176,9 @@
      written (spaces live inside the runs, so no separator is added).
      Tabs and line breaks become spaces; XML entities are decoded. */
   function decodeXmlEntities(t) {
-    return String(t).replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, '&');
+    return String(t).replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, '&')
+      .replace(/&#(\d+);/g, function (m, d) { return String.fromCharCode(parseInt(d, 10)); })
+      .replace(/&#x([0-9a-fA-F]+);/g, function (m, h) { return String.fromCharCode(parseInt(h, 16)); });
   }
   async function parseDocxToMd(file) {
     if (typeof JSZip === 'undefined') throw new Error('The document library did not load — check connection and try again.');
@@ -184,22 +186,69 @@
     var doc = zip.file('word/document.xml');
     if (!doc) throw new Error('Not a readable .docx file.');
     var xml = await doc.async('string');
-    var md = [];
-    var paraRe = /<w:p[ >][\s\S]*?<\/w:p>/g, m;
-    while ((m = paraRe.exec(xml)) !== null) {
-      var p = m[0];
-      var style = (p.match(/<w:pStyle w:val="([^"]+)"/) || [])[1] || '';
-      var body = p.replace(/<w:tab[^>]*\/>/g, ' ').replace(/<w:br[^>]*\/>/g, ' ');
-      var parts = [], tm;
-      var tRe = /<w:t[^>]*>([^<]*)<\/w:t>/g;
-      while ((tm = tRe.exec(body)) !== null) parts.push(tm[1]);
-      var text = decodeXmlEntities(parts.join('')).trim();
-      if (!text) continue;
-      if (/^Title/i.test(style)) md.push('# ' + text);
-      else if (/^Heading\s*1/i.test(style)) md.push('## ' + text);
-      else if (/^Heading\s*2/i.test(style)) md.push('### ' + text);
-      else md.push(text);
+    /* Pass 1: collect blocks in document order. Tables become one line
+       per row (cells joined with ' | ') instead of loose paragraphs. */
+    var raw = [];
+    var blockRe = /(<w:p[ >][\s\S]*?<\/w:p>)|(<w:tbl[ >][\s\S]*?<\/w:tbl>)/g, bm;
+    while ((bm = blockRe.exec(xml)) !== null) {
+      if (bm[2]) {
+        var rows = [], rm;
+        var rowRe = /<w:tr[ >][\s\S]*?<\/w:tr>/g;
+        while ((rm = rowRe.exec(bm[2])) !== null) {
+          var cells = [], cm;
+          var cellRe = /<w:tc[ >][\s\S]*?<\/w:tc>/g;
+          while ((cm = cellRe.exec(rm[0])) !== null) {
+            var ct = [];
+            var cp;
+            var cpRe = /<w:p[ >][\s\S]*?<\/w:p>/g;
+            while ((cp = cpRe.exec(cm[0])) !== null) {
+              var cb = cp[0].replace(/<w:tab[^>]*\/>/g, ' ').replace(/<w:br[^>]*\/>/g, ' ');
+              var ps = [], tr;
+              var trRe = /<w:t[^>]*>([^<]*)<\/w:t>/g;
+              while ((tr = trRe.exec(cb)) !== null) ps.push(tr[1]);
+              ct.push(decodeXmlEntities(ps.join('')).trim());
+            }
+            cells.push(ct.join(' ').trim());
+          }
+          var row = cells.filter(function (c) { return c; }).join(' | ');
+          if (row) rows.push(row);
+        }
+        rows.forEach(function (r) { raw.push({ table: true, text: r }); });
+      } else {
+        var p = bm[1];
+        var style = (p.match(/<w:pStyle w:val="([^"]+)"/) || [])[1] || '';
+        var body = p.replace(/<w:tab[^>]*\/>/g, ' ').replace(/<w:br[^>]*\/>/g, ' ');
+        var parts = [], tm;
+        var tRe = /<w:t[^>]*>([^<]*)<\/w:t>/g;
+        while ((tm = tRe.exec(body)) !== null) parts.push(tm[1]);
+        var text = decodeXmlEntities(parts.join('')).trim();
+        if (!text) continue;
+        var bold = /<w:b\/>|<w:b w:val="(1|true|on)"\/>/.test(p);
+        var szs = [], szm;
+        var szRe = /<w:sz(?:Cs)? w:val="(\d+)"/g;
+        while ((szm = szRe.exec(p)) !== null) szs.push(parseInt(szm[1], 10));
+        var maxSz = szs.length ? Math.max.apply(null, szs) : 0;
+        raw.push({ style: style, text: text, bold: bold, maxSz: maxSz });
+      }
     }
+    /* Body size = the most common run size; headings are bold runs
+       clearly larger than it. Titles are bold runs at 40 half-points
+       (20pt) or more. This covers .docx files that carry no styles
+       at all and mark headings only by direct formatting. */
+    var counts = {};
+    raw.forEach(function (b) { if (!b.table && b.maxSz) counts[b.maxSz] = (counts[b.maxSz] || 0) + 1; });
+    var bodySz = 24, best = 0;
+    Object.keys(counts).forEach(function (k) { if (counts[k] > best) { best = counts[k]; bodySz = parseInt(k, 10); } });
+    var md = [];
+    raw.forEach(function (b, i) {
+      if (b.table) { md.push(b.text); return; }
+      if (/^Title/i.test(b.style)) md.push('# ' + b.text);
+      else if (/^Heading\s*1/i.test(b.style)) md.push('## ' + b.text);
+      else if (/^Heading\s*2/i.test(b.style)) md.push('### ' + b.text);
+      else if (b.bold && b.maxSz >= 40 && b.text.length <= 150) md.push('# ' + b.text);
+      else if (b.bold && b.maxSz > bodySz && b.text.length <= 150) md.push('## ' + b.text);
+      else md.push(b.text);
+    });
     return md.join('\n\n');
   }
   /* v16: a phone photo can be 2400x3600 and 2.6 MB — that one file
@@ -451,7 +500,7 @@
     return escapeXml(s).replace(/'/g, '&#39;');
   }
   function mdInline(s) {
-    return escapeHtml(s).replace(/\*([^*]+)\*/g, '<em>$1</em>');
+    return escapeHtml(s).replace(/\*([^\s*](?:[^*]*[^\s*])?)\*/g, '<em>$1</em>');
   }
   function mdPlain(s) {
     return String(s).replace(/\*([^*]+)\*/g, '$1').trim();
