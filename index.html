@@ -159,8 +159,8 @@
       <input type="file" id="coverFile" accept="image/*" class="w-full">
       <p class="text-sm text-neutral-500 mt-1" data-bn="নিচের যেকোনো কভারে “Use as cover” চাপলেই সেটি সরাসরি চূড়ান্ত ইবুকে যাবে — ডাউনলোড করে আবার আপলোড করতে হবে না।" data-en="Tap “Use as cover” on any cover below and it goes straight into your final ebook — no need to download and upload it again.">Tap “Use as cover” on any cover below and it goes straight into your final ebook — no need to download and upload it again.</p>
       <div class="grid grid-cols-2 gap-2 mt-3">
-        <button id="coverOnlineBtn" class="bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-2 py-2.5 font-bold text-[13px] disabled:opacity-50" data-bn="অনলাইনে কভার খুঁজুন" data-en="Find a cover online">Find a cover online</button>
-        <button id="coverTextBtn" class="bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-2 py-2.5 font-bold text-[13px]" data-bn="লেখা-প্রচ্ছদ বানান (আবার চাপলে নতুন স্টাইল)" data-en="Make a text cover (tap again for a new style)">Make a text cover (tap again for a new style)</button>
+        <button id="coverOnlineBtn" class="accent-bg text-white border border-transparent rounded-xl px-2 py-2.5 font-bold text-[13px] disabled:opacity-50" data-bn="অনলাইনে কভার খুঁজুন" data-en="Find a cover online">Find a cover online</button>
+        <button id="coverTextBtn" class="accent-bg text-white border border-transparent rounded-xl px-2 py-2.5 font-bold text-[13px]"><span data-bn="লেখা-প্রচ্ছদ বানান" data-en="Make a text cover">Make a text cover</span><br><span data-bn="(আবার চাপলে নতুন স্টাইল)" data-en="(tap again for a new style)">(tap again for a new style)</span></button>
       </div>
       <p id="coverStatus" class="text-sm text-neutral-500 mt-2"></p>
       <img id="coverImg" class="hidden w-40 rounded-xl shadow mt-3" alt="">
@@ -180,7 +180,7 @@
   <section id="museRoute" class="bg-white dark:bg-neutral-800 rounded-2xl shadow p-5 mt-6">
     <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="২. Muse রুট — স্ক্যান করা PDF থেকে Google Doc (সহজ উপায়)" data-en="2. Muse route — scanned PDF to Google Doc (the easy way)">2. Muse route — scanned PDF to Google Doc (the easy way)</h2>
     <p class="text-sm text-neutral-600 mt-2" data-bn="এই সাইট নিজে Muse-কে ডাকতে পারে না — কাজটি Muse চ্যাটেই হয়, আর এই সাইট তারপরের ধাপগুলো করে। তাই এই রুটে কোনো ব্রাউজার OCR, Resume বা key লাগে না।" data-en="This site itself cannot call Muse — that part happens in a Muse chat, and this site does the steps after it. So this route needs no browser OCR, no Resume, and no API key.">This site itself cannot call Muse — that part happens in a Muse chat, and this site does the steps after it. So this route needs no browser OCR, no Resume, and no API key.</p>
-    <button class="collapse-toggle w-full flex justify-between items-center bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-xl px-4 py-3 font-bold mt-4 text-left" data-target="collapse-vpn"><span data-bn="🇧🇩 বাংলাদেশ থেকে Muse অ্যাকাউন্ট খুলতে পারছেন না?" data-en="🇧🇩 No Muse account yet? (Bangladesh users)">🇧🇩 No Muse account yet? (Bangladesh users)</span><span class="collapse-chev">▼</span></button>
+    <button class="collapse-toggle w-full flex justify-between items-center accent-bg text-white border border-transparent rounded-xl px-4 py-3 font-bold mt-4 text-left" data-target="collapse-vpn"><span data-bn="🇧🇩 বাংলাদেশ থেকে Muse অ্যাকাউন্ট খুলতে পারছেন না?" data-en="🇧🇩 No Muse account yet? (Bangladesh users)">🇧🇩 No Muse account yet? (Bangladesh users)</span><span class="collapse-chev">▼</span></button>
     <div id="collapse-vpn" class="hidden bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-xl p-4 mt-2 text-[15px]">
       <p data-bn="বাংলাদেশে Muse সরাসরি পাওয়া যায় না — USA VPN দিয়ে অ্যাকাউন্ট খুলতে হয়।" data-en="Muse is not directly available in Bangladesh — you open an account with a USA VPN.">Muse is not directly available in Bangladesh — you open an account with a USA VPN.</p>
       <ol class="list-decimal pl-5 mt-2 space-y-1">
@@ -195,8 +195,8 @@
       <li><b data-bn="Google Doc লিঙ্কটি নিন" data-en="Take the Google Doc link">Take the Google Doc link</b> — <span data-bn="শেষে Muse ফরম্যাট করা Google Doc বানিয়ে লিঙ্ক দেবে। Doc-টি সরাসরি বইয়ের নাম দিয়ে শুরু হবে — কোনো কভার-পেজ বা ছবির বর্ণনা থাকবে না।" data-en="at the end Muse builds a formatted Google Doc and sends you the link. The Doc begins directly with the book title — no cover-page or artwork notes.">at the end Muse builds a formatted Google Doc and sends you the link. The Doc begins directly with the book title — no cover-page or artwork notes.</span></li>
       <li><b data-bn="Doc থেকে .docx ডাউনলোড করে ধাপ ৩-এ আপলোড করুন" data-en="Download the .docx from the Doc and upload it in Step 3">Download the .docx from the Doc and upload it in Step 3</b> — <span data-bn="Google Doc খুলে File → Download → Microsoft Word (.docx) করুন, তারপর সেই ফাইল ধাপ ৩-এর বক্সে দিন — EPUB, PDF আর Kindle-এর পথ সেখান থেকে খুলবে।" data-en="open the Google Doc, go to File → Download → Microsoft Word (.docx), then put that file in Step 3's box — EPUB and the Kindle path open from there.">open the Google Doc, go to File → Download → Microsoft Word (.docx), then put that file in Step 3's box — EPUB and the Kindle path open from there.</span></li>
     </ol>
-    <div class="flex flex-wrap gap-2 mt-4">
-      <button class="museDirect-open accent-bg text-white rounded-xl px-5 py-3 font-bold" data-bn="📖 প্রম্পটটি পড়ুন ও কপি করুন" data-en="📖 Read &amp; copy the prompt">📖 Read &amp; copy the prompt</button>
+    <div class="grid grid-cols-1 gap-2 mt-4">
+      <button class="museDirect-open accent-bg text-white rounded-xl px-5 py-3 font-bold w-full text-center" data-bn="📖 প্রম্পটটি পড়ুন ও কপি করুন" data-en="📖 Read &amp; copy the prompt">📖 Read &amp; copy the prompt</button>
     </div>
 
     <p id="directCopyStatus" class="text-sm text-neutral-500 mt-2"></p>
@@ -213,7 +213,7 @@
         <input type="file" id="docFile" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" class="w-full">
         <p id="docFileStatus" class="text-sm text-neutral-500 mt-1"></p>
     </div>
-    <button class="collapse-toggle w-full flex justify-between items-center bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-xl px-4 py-3 font-bold mt-5 text-left" data-target="collapse-formats"><span data-bn="কোন ফরম্যাট, কোন কাজে?" data-en="Which format, for which work?">Which format, for which work?</span><span class="collapse-chev">▼</span></button>
+    <button class="collapse-toggle w-full flex justify-between items-center accent-bg text-white border border-transparent rounded-xl px-4 py-3 font-bold mt-5 text-left" data-target="collapse-formats"><span data-bn="কোন ফরম্যাট, কোন কাজে?" data-en="Which format, for which work?">Which format, for which work?</span><span class="collapse-chev">▼</span></button>
     <div id="collapse-formats" class="hidden bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-xl p-4 mt-2">
     <ul class="list-disc pl-5 mt-2 space-y-1 text-[15px]">
       <li><b>EPUB</b> — <span data-bn="ফোন, ট্যাবলেট ও প্রায় সব রিডিং অ্যাপের জন্য সেরা (Apple Books, Google Play Books, Moon+ Reader, Our Boighar রিডার)।" data-en="best for phones, tablets and almost every reading app (Apple Books, Google Play Books, Moon+ Reader, the Our Boighar reader).">best for phones, tablets and almost every reading app (Apple Books, Google Play Books, Moon+ Reader, the Our Boighar reader).</span></li>
@@ -238,8 +238,8 @@
       <li><a href="https://ebook.online-convert.com" target="_blank" rel="noopener" class="text-emerald-700 font-bold underline">ebook.online-convert.com</a> <span data-bn="খুলুন, ফাইলটি আপলোড করুন, আউটপুটে AZW3 (Kindle) বা MOBI (পুরোনো Kindle) বাছুন।" data-en="— open it, upload the file, and pick AZW3 (Kindle) or MOBI (older Kindle) as the output.">— open it, upload the file, and pick AZW3 (Kindle) or MOBI (older Kindle) as the output.</span></li>
       <li><span data-bn="Convert চাপুন, তারপর তৈরি ফাইল ডাউনলোড করুন।" data-en="Press Convert, then download the finished file.">Press Convert, then download the finished file.</span></li>
     </ol>
-    <div class="flex flex-wrap gap-2 mt-3">
-      <a href="https://ebook.online-convert.com" target="_blank" rel="noopener" class="accent-bg text-white rounded-xl px-5 py-3 font-bold inline-block" data-bn="🌐 online-convert খুলুন" data-en="🌐 Open online-convert">🌐 Open online-convert</a>
+    <div class="grid grid-cols-1 gap-2 mt-3">
+      <a href="https://ebook.online-convert.com" target="_blank" rel="noopener" class="accent-bg text-white rounded-xl px-5 py-3 font-bold block text-center" data-bn="🌐 online-convert খুলুন" data-en="🌐 Open online-convert">🌐 Open online-convert</a>
     </div>
 
   </section>
