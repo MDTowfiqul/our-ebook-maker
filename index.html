@@ -155,7 +155,7 @@
       <p class="text-sm text-neutral-500 mt-1" data-bn="চূড়ান্ত ইবুক বানাতে প্রচ্ছদ লাগবে। কভার থাকলে আপলোড করুন, না থাকলে নিচের বোতামে অনলাইনে খুঁজুন বা লেখা-প্রচ্ছদ বানান। স্টাইল পছন্দ না হলে বারবার বানিয়ে নিন — স্টাইলের কোনো শেষ নেই, প্রতিবার নতুন ডিজাইন আসবে।" data-en="You will need a cover when you make the final ebook. If you already have a cover, upload it. If not, find one online or make a text cover below. If you don't like a style, generate another — there is no limit, every tap makes a new design.">You will need a cover when you make the final ebook. If you already have a cover, upload it. If not, find one online or make a text cover below. If you don't like a style, generate another — there is no limit, every tap makes a new design.</p>
       <label class="block font-bold mt-4 mb-1" for="coverFile" data-bn="কভার ছবি আপলোড করুন (যদি থাকে)" data-en="Upload a cover image (if you have one)">Upload a cover image (if you have one)</label>
       <input type="file" id="coverFile" accept="image/*" class="w-full">
-      <p class="text-sm text-neutral-500 mt-1" data-bn="যে কভারটি পছন্দ হবে সেটি ডাউনলোড করুন, তারপর উপরের আপলোড বক্সে আপলোড করুন — আপলোড করা কভারটাই চূড়ান্ত ইবুকে যাবে।" data-en="Download the cover you like, then upload it in the upload box above — the uploaded cover is the one that goes into your final ebook.">Download the cover you like, then upload it in the upload box above — the uploaded cover is the one that goes into your final ebook.</p>
+      <p class="text-sm text-neutral-500 mt-1" data-bn="নিচের যেকোনো কভারে “Use as cover” চাপলেই সেটি সরাসরি চূড়ান্ত ইবুকে যাবে — ডাউনলোড করে আবার আপলোড করতে হবে না।" data-en="Tap “Use as cover” on any cover below and it goes straight into your final ebook — no need to download and upload it again.">Tap “Use as cover” on any cover below and it goes straight into your final ebook — no need to download and upload it again.</p>
       <div class="grid grid-cols-3 gap-2 mt-3">
         <button id="coverOnlineBtn" class="bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-2 py-2.5 font-bold text-[13px] disabled:opacity-50" data-bn="অনলাইনে কভার খুঁজুন" data-en="Find a cover online">Find a cover online</button>
         <button id="coverTextBtn" class="bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-2 py-2.5 font-bold text-[13px]" data-bn="লেখা-প্রচ্ছদ বানান" data-en="Make a text cover">Make a text cover</button>
@@ -163,7 +163,14 @@
       </div>
       <p id="coverStatus" class="text-sm text-neutral-500 mt-2"></p>
       <img id="coverImg" class="hidden w-40 rounded-xl shadow mt-3" alt="">
-      <div><a id="coverDownloadBtn" class="hidden accent-bg text-white rounded-xl px-4 py-2.5 font-bold inline-block mt-3" download="cover.png" data-bn="⬇ কভার ডাউনলোড করুন" data-en="⬇ Download cover">⬇ Download cover</a></div>
+      <div id="coverCarouselWrap" class="hidden mt-3">
+        <div class="flex items-center gap-2">
+          <button id="coverPrevBtn" class="shrink-0 bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-full w-9 h-9 font-bold" aria-label="Previous covers">‹</button>
+          <div id="coverCarousel" class="flex gap-3 overflow-x-auto pb-2 snap-x"></div>
+          <button id="coverNextBtn" class="shrink-0 bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-full w-9 h-9 font-bold" aria-label="Next covers">›</button>
+        </div>
+        <p class="text-sm text-neutral-500 mt-1" data-bn="ডানে/বামে সোয়াইপ করে কভার দেখুন, পছন্দেরটিতে “Use as cover” চাপুন।" data-en="Swipe left/right to browse the covers, then tap “Use as cover” on the one you like.">Swipe left/right to browse the covers, then tap “Use as cover” on the one you like.</p>
+      </div>
     </div>
 
   </section>
@@ -173,14 +180,21 @@
     <p class="text-sm text-neutral-600 mt-2" data-bn="এই সাইট নিজে Muse-কে ডাকতে পারে না — কাজটি Muse চ্যাটেই হয়, আর এই সাইট তারপরের ধাপগুলো করে। তাই এই রুটে কোনো ব্রাউজার OCR, Resume বা key লাগে না।" data-en="This site itself cannot call Muse — that part happens in a Muse chat, and this site does the steps after it. So this route needs no browser OCR, no Resume, and no API key.">This site itself cannot call Muse — that part happens in a Muse chat, and this site does the steps after it. So this route needs no browser OCR, no Resume, and no API key.</p>
     <ol class="list-decimal pl-5 mt-3 space-y-2 text-[15px]">
       <li><b data-bn="Muse চ্যাট খুলে স্ক্যান করা PDF attach করুন" data-en="Open a Muse chat and attach your scanned PDF">Open a Muse chat and attach your scanned PDF</b> — <span data-bn="পুরোনো, কপিরাইট-মুক্ত বইয়ের PDF। Bijoy/SutonnyMJ-এর মতো পুরোনো ফন্ট থাকলেও চলবে — Muse সেটিকে Unicode বাংলায় বদলে নেবে।" data-en="a scanned PDF of an old, copyright-free book. Even legacy Bijoy/SutonnyMJ fonts are fine — Muse converts them to Unicode Bangla.">a scanned PDF of an old, copyright-free book. Even legacy Bijoy/SutonnyMJ fonts are fine — Muse converts them to Unicode Bangla.</span></li>
-      <li><b data-bn="পুরো প্রম্পটটি পেস্ট করুন" data-en="Paste the full prompt">Paste the full prompt</b> — <span data-bn="নিচের বোতামে প্রম্পটটি কপি করুন, একই মেসেজে পেস্ট করুন।" data-en="copy it with the button below and paste it in the same message.">copy it with the button below and paste it in the same message.</span></li>
-      <li><b data-bn="Muse টুকরো টুকরো করে প্রুফরিড করবে" data-en="Muse proofreads it in chunks">Muse proofreads it in chunks</b> — <span data-bn="প্রতি অংশের পর Muse “DONE” লিখে থামবে — আপনি “continue” লিখলেই পরের অংশ শুরু হবে। পুরো বই শেষ না হওয়া পর্যন্ত এভাবে চালান।" data-en="after each chunk Muse stops and says DONE — you write “continue” and the next chunk starts. Keep going until the whole book is done.">after each chunk Muse stops and says DONE — you write “continue” and the next chunk starts. Keep going until the whole book is done.</span></li>
+      <li><b data-bn="পুরো প্রম্পটটি পেস্ট করুন" data-en="Paste the full prompt">Paste the full prompt</b> — <span data-bn="নিচের “Read &amp; copy the prompt” বোতামে প্রম্পটটি পড়ে কপি করুন, একই মেসেজে পেস্ট করুন।" data-en="read it with the “Read &amp; copy the prompt” button below, copy it from there, and paste it in the same message.">read it with the “Read &amp; copy the prompt” button below, copy it from there, and paste it in the same message.</span></li>
       <li><b data-bn="Google Doc লিঙ্কটি নিন" data-en="Take the Google Doc link">Take the Google Doc link</b> — <span data-bn="শেষে Muse ফরম্যাট করা Google Doc বানিয়ে লিঙ্ক দেবে। Doc-টি সরাসরি বইয়ের নাম দিয়ে শুরু হবে — কোনো কভার-পেজ বা ছবির বর্ণনা থাকবে না।" data-en="at the end Muse builds a formatted Google Doc and sends you the link. The Doc begins directly with the book title — no cover-page or artwork notes.">at the end Muse builds a formatted Google Doc and sends you the link. The Doc begins directly with the book title — no cover-page or artwork notes.</span></li>
       <li><b data-bn="Doc থেকে .docx ডাউনলোড করে ধাপ ৩-এ আপলোড করুন" data-en="Download the .docx from the Doc and upload it in Step 3">Download the .docx from the Doc and upload it in Step 3</b> — <span data-bn="Google Doc খুলে File → Download → Microsoft Word (.docx) করুন, তারপর সেই ফাইল ধাপ ৩-এর বক্সে দিন — EPUB, PDF আর Kindle-এর পথ সেখান থেকে খুলবে।" data-en="open the Google Doc, go to File → Download → Microsoft Word (.docx), then put that file in Step 3's box — EPUB, PDF and the Kindle path open from there.">open the Google Doc, go to File → Download → Microsoft Word (.docx), then put that file in Step 3's box — EPUB, PDF and the Kindle path open from there.</span></li>
     </ol>
     <div class="flex flex-wrap gap-2 mt-4">
-      <button class="copy-direct-prompt accent-bg text-white rounded-xl px-5 py-3 font-bold" data-bn="📋 পুরো প্রম্পট কপি করুন" data-en="📋 Copy the full prompt">📋 Copy the full prompt</button>
-      <button class="museDirect-open bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-5 py-3 font-bold" data-bn="📖 প্রম্পটটি পড়ুন (পপ-আপ)" data-en="📖 Read the prompt (pop-up)">📖 Read the prompt (pop-up)</button>
+      <button class="museDirect-open accent-bg text-white rounded-xl px-5 py-3 font-bold" data-bn="📖 প্রম্পটটি পড়ুন ও কপি করুন" data-en="📖 Read &amp; copy the prompt">📖 Read &amp; copy the prompt</button>
+    </div>
+    <button class="collapse-toggle w-full flex justify-between items-center bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-xl px-4 py-3 font-bold mt-4 text-left" data-target="collapse-vpn"><span data-bn="🇧🇩 বাংলাদেশ থেকে Muse অ্যাকাউন্ট খুলতে পারছেন না?" data-en="🇧🇩 No Muse account yet? (Bangladesh users)">🇧🇩 No Muse account yet? (Bangladesh users)</span><span class="collapse-chev">▼</span></button>
+    <div id="collapse-vpn" class="hidden bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-xl p-4 mt-2 text-[15px]">
+      <p data-bn="বাংলাদেশে Muse সরাসরি পাওয়া যায় না — USA VPN দিয়ে অ্যাকাউন্ট খুলতে হয়।" data-en="Muse is not directly available in Bangladesh — you open an account with a USA VPN.">Muse is not directly available in Bangladesh — you open an account with a USA VPN.</p>
+      <ol class="list-decimal pl-5 mt-2 space-y-1">
+        <li><span data-bn="USA VPN ইন্সটল করুন — আমি Green VPN ব্যবহার করি: " data-en="Install a USA VPN — I use Green VPN: ">Install a USA VPN — I use Green VPN: </span><a href="https://play.google.com/store/apps/details?id=oscar.greenvpn.app" target="_blank" rel="noopener" class="text-emerald-700 font-bold underline">Green VPN on Google Play</a><span data-bn=" — USA সার্ভারে কানেক্ট করুন।" data-en=" — connect to a USA server."> — connect to a USA server.</span></li>
+        <li><span data-bn="এই ভিডিওর ধাপগুলো অনুসরণ করে Muse অ্যাকাউন্ট খুলুন: " data-en="Follow the steps in this video to create your Muse account: ">Follow the steps in this video to create your Muse account: </span><a href="https://youtube.com/watch?v=RS43MFNBNI8" target="_blank" rel="noopener" class="text-emerald-700 font-bold underline">Video tutorial</a></li>
+        <li><span data-bn="তারপর এখানে ফিরে এসে উপরের Muse রুট অনুসরণ করুন।" data-en="Then come back here and follow the Muse route above.">Then come back here and follow the Muse route above.</span></li>
+      </ol>
     </div>
     <p id="directCopyStatus" class="text-sm text-neutral-500 mt-2"></p>
     <p class="text-sm text-neutral-500 mt-3" data-bn="শেয়ারের নিয়ম (উপরে ⚠️ বক্স) এই রুটেও একই।" data-en="The sharing rules (⚠️ box above) apply to this route too.">The sharing rules (⚠️ box above) apply to this route too.</p>
@@ -196,7 +210,8 @@
         <input type="file" id="docFile" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" class="w-full">
         <p id="docFileStatus" class="text-sm text-neutral-500 mt-1"></p>
     </div>
-    <h3 class="font-extrabold mt-5" data-bn="কোন ফরম্যাট, কোন কাজে?" data-en="Which format, for which work?">Which format, for which work?</h3>
+    <button class="collapse-toggle w-full flex justify-between items-center font-extrabold mt-5 text-left" data-target="collapse-formats"><span data-bn="কোন ফরম্যাট, কোন কাজে?" data-en="Which format, for which work?">Which format, for which work?</span><span class="collapse-chev">▼</span></button>
+    <div id="collapse-formats" class="hidden">
     <ul class="list-disc pl-5 mt-2 space-y-1 text-[15px]">
       <li><b>EPUB</b> — <span data-bn="ফোন, ট্যাবলেট ও প্রায় সব রিডিং অ্যাপের জন্য সেরা (Apple Books, Google Play Books, Moon+ Reader, Our Boighar রিডার)।" data-en="best for phones, tablets and almost every reading app (Apple Books, Google Play Books, Moon+ Reader, the Our Boighar reader).">best for phones, tablets and almost every reading app (Apple Books, Google Play Books, Moon+ Reader, the Our Boighar reader).</span></li>
       <li><b>PDF</b> — <span data-bn="লেআউট একদম ঠিক থাকবে, প্রিন্ট বা শেয়ারের জন্য; যাদের ইবুক অ্যাপ নেই তাদের জন্য।" data-en="layout stays exactly fixed — for printing or sharing, and for readers with no ebook app.">layout stays exactly fixed — for printing or sharing, and for readers with no ebook app.</span></li>
@@ -204,11 +219,12 @@
       <li><b>MOBI</b> — <span data-bn="পুরোনো Kindle-এর জন্য।" data-en="for older Kindles.">for older Kindles.</span></li>
       <li><b>KFX</b> — <span data-bn="নতুন Kindle ফরম্যাট, উন্নত টাইপসেটিংসহ।" data-en="the newest Kindle format, with enhanced typesetting.">the newest Kindle format, with enhanced typesetting.</span></li>
     </ul>
+    </div>
     <h3 class="font-extrabold mt-5" data-bn="১) স্বয়ংক্রিয় — এই সাইটেই" data-en="1) Automatic — right here on this site">1) Automatic — right here on this site</h3>
     <p class="text-sm text-neutral-600 mt-1" data-bn="EPUB ও PDF এই ব্রাউজারেই বানানো যায় — কোনো সাইটে আপলোড করতে হয় না।" data-en="EPUB and PDF are built right here in your browser — nothing has to be uploaded to any site.">EPUB and PDF are built right here in your browser — nothing has to be uploaded to any site.</p>
     <div class="grid grid-cols-2 gap-2 mt-3">
       <button id="proofEpubBtn" class="accent-bg text-white rounded-xl px-5 py-3 font-bold disabled:opacity-50" disabled data-bn="📖 EPUB ডাউনলোড" data-en="📖 Download EPUB">📖 Download EPUB</button>
-      <button id="proofPdfBtn" class="bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-5 py-3 font-bold disabled:opacity-50" disabled data-bn="📄 PDF বানান (প্রিন্ট)" data-en="📄 Make PDF (print)">📄 Make PDF (print)</button>
+      <button id="proofPdfBtn" class="bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-5 py-3 font-bold disabled:opacity-50" disabled data-bn="📄 PDF ডাউনলোড" data-en="📄 Download PDF">📄 Download PDF</button>
       <button id="docxBackBtn" class="bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-5 py-3 font-bold disabled:opacity-50" disabled data-bn="⬇ ডকুমেন্ট (.docx)" data-en="⬇ Document (.docx)">⬇ Document (.docx)</button>
     </div>
     <h3 class="font-extrabold mt-5" data-bn="২) হাতে — online-convert ওয়েবসাইট দিয়ে (Kindle ফরম্যাটের জন্য)" data-en="2) Manual — with the online-convert website (for Kindle formats)">2) Manual — with the online-convert website (for Kindle formats)</h3>
@@ -220,18 +236,8 @@
     </ol>
     <div class="flex flex-wrap gap-2 mt-3">
       <a href="https://ebook.online-convert.com" target="_blank" rel="noopener" class="accent-bg text-white rounded-xl px-5 py-3 font-bold inline-block" data-bn="🌐 online-convert খুলুন" data-en="🌐 Open online-convert">🌐 Open online-convert</a>
-      <button id="proofCalibreBtn" class="bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-5 py-3 font-bold disabled:opacity-50" disabled data-bn="📚 AZW3 / MOBI / KFX (Calibre দিয়ে)" data-en="📚 AZW3 / MOBI / KFX (via Calibre)">📚 AZW3 / MOBI / KFX (via Calibre)</button>
     </div>
-    <div id="calibreNote" class="hidden bg-neutral-50 border border-neutral-200 rounded-xl p-4 mt-3 text-[15px]">
-      <p class="font-bold" data-bn="Calibre দিয়ে AZW3 / MOBI / KFX বানান:" data-en="Make AZW3 / MOBI / KFX with Calibre:">Make AZW3 / MOBI / KFX with Calibre:</p>
-      <ol class="list-decimal pl-5 mt-1 space-y-1">
-        <li><span data-bn="উপরের EPUB বোতাম দিয়ে EPUB ডাউনলোড করুন।" data-en="Download the EPUB with the EPUB button above.">Download the EPUB with the EPUB button above.</span></li>
-        <li><a href="https://calibre-ebook.com/download" class="text-emerald-700 font-bold underline">Calibre</a> <span data-bn="ফ্রি সফটওয়্যারটি কম্পিউটারে ইন্সটল করুন।" data-en="— install this free software on a computer.">— install this free software on a computer.</span></li>
-        <li><span data-bn="Calibre-তে EPUB যোগ করুন → বইটি সিলেক্ট করে “Convert books” → আউটপুট ফরম্যাটে AZW3 (Kindle) বা MOBI (পুরোনো Kindle) বাছুন → OK।" data-en="Add the EPUB to Calibre → select the book → “Convert books” → pick AZW3 (Kindle) or MOBI (older Kindle) as output format → OK.">Add the EPUB to Calibre → select the book → “Convert books” → pick AZW3 (Kindle) or MOBI (older Kindle) as output format → OK.</span></li>
-        <li><span data-bn="KFX চাইলে Calibre-তে “KFX Output” প্লাগইন যোগ করতে হয় (Preferences → Plugins)।" data-en="For KFX, add the “KFX Output” plugin to Calibre (Preferences → Plugins).">For KFX, add the “KFX Output” plugin to Calibre (Preferences → Plugins).</span></li>
-      </ol>
-      <p class="text-sm text-neutral-500 mt-2" data-bn="টিপস: Kindle-এ সরাসরি পাঠাতে চাইলে EPUB-ই Send to Kindle দিয়ে পাঠানো যায় — তখন কনভার্টের দরকার নেই।" data-en="Tip: to send straight to a Kindle, EPUB itself can be sent with Send to Kindle — no conversion needed.">Tip: to send straight to a Kindle, EPUB itself can be sent with Send to Kindle — no conversion needed.</p>
-    </div>
+
   </section>
 
 
@@ -241,7 +247,7 @@
       <h3 class="serif text-xl font-extrabold" data-bn="📘 গাইড — যেভাবে ইবুক বানাবেন" data-en="📘 Guide — how to make an ebook">📘 Guide — how to make an ebook</h3>
       <ol class="list-decimal pl-5 mt-4 space-y-2 text-[15px]">
         <li><b>Your book (Step 1):</b> title, author, cover and your name for the credit page. Your scanned PDF does not go here.</li>
-        <li><b>Muse route (Step 2):</b> attach the scanned PDF in a Muse chat, paste the full prompt, answer “continue” after each DONE, and take the Google Doc link. Muse handles Bijoy conversion and proofreading.</li>
+        <li><b>Muse route (Step 2):</b> attach the scanned PDF in a Muse chat, paste the full prompt, and take the Google Doc link — Muse finishes the whole book automatically. Muse handles Bijoy conversion and proofreading.</li>
         <li><b>Final ebook (Step 3):</b> download the .docx from the Google Doc (File → Download → Microsoft Word), upload it here, and download EPUB or PDF. AZW3/MOBI via online-convert, KFX via Calibre.</li>
         <li><b>Before you share:</b> check Our Boighar first. For yourself only, any book is fine; to share, it must be 10+ years old or writer/publisher-approved.</li>
       </ol>
@@ -258,14 +264,20 @@
   <div id="museDirectModal" class="hidden fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
     <div class="bg-white dark:bg-neutral-800 rounded-2xl shadow-xl max-w-lg w-full p-5 max-h-[85vh] overflow-y-auto">
       <h3 class="serif text-xl font-extrabold" data-bn="Muse দিয়ে PDF থেকে Google Doc — পুরো প্রম্পট" data-en="PDF to Google Doc with Muse — the full prompt">PDF to Google Doc with Muse — the full prompt</h3>
-      <p class="text-[15px] mt-2" data-bn="Muse চ্যাটে PDF attach করে নিচের পুরো লেখাটি একই মেসেজে পেস্ট করুন। তারপর প্রতি অংশের পর Muse “DONE” লিখলে “continue” লিখুন।" data-en="In a Muse chat, attach the PDF and paste the whole text below in the same message. Then, after each chunk, when Muse writes “DONE”, write “continue”.">In a Muse chat, attach the PDF and paste the whole text below in the same message. Then, after each chunk, when Muse writes “DONE”, write “continue”.</p>
+      <p class="text-[15px] mt-2" data-bn="Muse চ্যাটে PDF attach করে নিচের পুরো লেখাটি একই মেসেজে পেস্ট করুন — Muse পুরো বইটি নিজে নিজে শেষ করবে, মাঝে অনুমতি চাইবে না।" data-en="In a Muse chat, attach the PDF and paste the whole text below in the same message — Muse finishes the whole book on its own, without asking permission in between.">In a Muse chat, attach the PDF and paste the whole text below in the same message — Muse finishes the whole book on its own, without asking permission in between.</p>
       <textarea id="museDirectPromptText" readonly rows="12" class="w-full border border-neutral-300 rounded-xl p-3 text-sm mt-3">I am attaching a PDF of an old, copyright-free (public domain) book. Extract all of its text (if the PDF is in legacy Bijoy/SutonnyMJ encoding, convert it to Unicode Bangla), then digitize and proofread it following the strict guidelines below, and finally create a formatted Google Doc from the finished Markdown and send me the link. No cover-page or artwork description notes — the document must begin directly with the book title.
 
 Act as an expert Digital Archivist, Master Typographer, and EPUB Formatter. Your task is to digitize raw, unformatted text (often containing OCR errors) from old, copyright-free (public domain) books and convert it into pristine, beautifully structured Markdown optimized for professional EPUB conversion.
 
-I will provide the text to you chapter-by-chapter (or section-by-section).
+I am attaching the whole book as a PDF.
 
-Please apply the following strict guidelines to every submission:
+The book may be in Bengali, Arabic, English, or a mix of all three. Handle each language by its own rules below — Bengali spelling and conjuncts, Arabic harkat and right alignment, English typography — so the finished book reads naturally in every language it contains.
+
+Work through the whole book automatically, from start to finish, without stopping for permission between parts. Do not wait for me to say "continue" — keep going until the entire book is done, then build the Google Doc and send me the link.
+
+The finished document must read like a main published book: it begins directly with the book title, followed by the author, translator and publication information exactly as printed in the original; then the table of contents if the original has one (linked, without page numbers); then the chapters in order, with footnotes beside their numbers; and any index at the end. Keep the original's front matter (foreword, publisher's note) in place — nothing that belongs in the book may be dropped.
+
+Please apply the following strict guidelines to every part:
 
 1. STRUCTURAL HIERARCHY (Semantic Markdown):
 - Use `#` for the Book Title (only on the title page/first prompt).
@@ -309,7 +321,7 @@ Please apply the following strict guidelines to every submission:
 In case of Quranic ayah follow this format,
 آيه ۝١٩١ (the number is for example)
 
-Please proofread this book for me, in chunks, so I can make a clean EPUB from it.
+Please proofread this whole book for me, so I can make a clean EPUB from it.
 
 Rules:
 - This file is OCR text from a book. Fix OCR errors, broken line breaks, stray characters in footnotes, and repeated page headers that split paragraphs in half.
@@ -318,8 +330,8 @@ Rules:
 - For Arabic text: correct errors, add harkat, do not use brackets. Never alter Quranic verses or Hadith texts — only fix clear OCR mistakes in them.
 - Format the output as clean Markdown: # for the book title, ## for chapter titles, ### for sub-sections, *** for scene breaks. Remove page numbers, running headers and footers. Join fragmented sentences into proper paragraphs.
 - Footnotes: keep the footnote entry next to its number, in superscript, within third brackets.
-- Work through the file in chunks of about 8,000 characters. After each chunk, stop and say DONE, and wait for me to say "continue" before doing the next chunk.
-- Output ONLY the proofread Markdown for each chunk — no explanations, no "here is your text".
+- Work through the whole book in one go, automatically — do not stop between parts and do not ask me to say "continue".
+- Output no explanations and no conversational filler — just do the work, and send the Google Doc link when the whole book is finished.
 
 When the whole book is finished, convert the completed Markdown into a formatted Google Doc (headings, tables, and lists preserved; Bangla text justified, titles and headings centred, Arabic right-aligned), name the Doc with the book's title, and send me the Google Docs link.</textarea>
       <div class="flex flex-wrap gap-2 mt-3">

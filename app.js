@@ -14,11 +14,11 @@
   var titleEl = $('title'), authorEl = $('author'), creatorEl = $('creator');
   var coverFileEl = $('coverFile'), coverOnlineBtn = $('coverOnlineBtn'), coverTextBtn = $('coverTextBtn');
   var coverAnotherBtn = $('coverAnotherBtn');
-  var coverImg = $('coverImg'), coverDownloadBtn = $('coverDownloadBtn'), coverStatusEl = $('coverStatus');
+  var coverImg = $('coverImg'), coverStatusEl = $('coverStatus'), coverCarouselWrap = $('coverCarouselWrap'), coverCarousel = $('coverCarousel'), coverPrevBtn = $('coverPrevBtn'), coverNextBtn = $('coverNextBtn');
   var langToggle = $('lang-toggle'), langLabel = $('lang-label');
   var docFileEl = $('docFile'), docFileStatusEl = $('docFileStatus'), finalStatusEl = $('finalStatus');
   var proofEpubBtn = $('proofEpubBtn');
-  var proofPdfBtn = $('proofPdfBtn'), proofCalibreBtn = $('proofCalibreBtn'), calibreNote = $('calibreNote');
+  var proofPdfBtn = $('proofPdfBtn');
   var docxBackBtn = $('docxBackBtn');
   var navHome = $('navHome'), navMuse = $('navMuse'), navEbook = $('navEbook'), navGuide = $('navGuide');
   var state = { proofText: '', coverBlob: null, coverExt: 'png', docBlob: null };
@@ -209,9 +209,6 @@
   function showCover(src, filename, blob) {
     coverImg.src = src;
     coverImg.classList.remove('hidden');
-    coverDownloadBtn.href = src;
-    coverDownloadBtn.download = filename;
-    coverDownloadBtn.classList.remove('hidden');
     /* The uploaded/generated file itself is what the ebook builder embeds. */
     state.coverBlob = blob || null;
     state.coverExt = (blob && blob.type && blob.type.indexOf('jpeg') !== -1) ? 'jpg' : 'png';
@@ -223,14 +220,61 @@
     coverStatusEl.textContent = L('Cover uploaded — this is the cover that will go into your final ebook.',
       'কভার আপলোড হয়েছে — এই কভারটাই চূড়ান্ত ইবুকে যাবে।');
   });
-  async function searchCover(params) {
+  /* v11: the old code showed only ONE online cover as a preview URL and
+     never put it in the ebook (coverBlob stayed null) — that is why
+     search "did not work". Now every cover with an image is shown in a
+     swipeable strip, and "Use as cover" fetches that image and sets it
+     as the cover at once — no download-and-upload round trip. */
+  async function searchCovers(params) {
     var url = 'https://openlibrary.org/search.json?' + params;
     var res = await fetch(url);
-    if (!res.ok) return null;
+    if (!res.ok) return [];
     var data = await res.json();
-    var doc = (data.docs || []).find(function (d) { return d.cover_i; });
-    return doc ? 'https://covers.openlibrary.org/b/id/' + doc.cover_i + '-L.jpg' : null;
+    var seen = {}, out = [];
+    (data.docs || []).forEach(function (d) {
+      if (d.cover_i && !seen[d.cover_i]) {
+        seen[d.cover_i] = true;
+        out.push({ src: 'https://covers.openlibrary.org/b/id/' + d.cover_i + '-L.jpg',
+          title: (d.title || ''), author: ((d.author_name || [])[0] || '') });
+      }
+    });
+    return out.slice(0, 12);
   }
+  function renderCoverCarousel(covers) {
+    if (!coverCarousel) return;
+    coverCarousel.innerHTML = '';
+    covers.forEach(function (c) {
+      var card = document.createElement('div');
+      card.className = 'shrink-0 w-32 snap-start';
+      var img = document.createElement('img');
+      img.src = c.src; img.alt = c.title; img.className = 'w-32 rounded-xl shadow';
+      img.addEventListener('click', function () { coverImg.src = c.src; coverImg.classList.remove('hidden'); });
+      var btn = document.createElement('button');
+      btn.className = 'accent-bg text-white rounded-xl px-3 py-2 font-bold text-[13px] w-full mt-2';
+      btn.textContent = 'Use as cover';
+      btn.addEventListener('click', async function () {
+        btn.disabled = true;
+        coverStatusEl.textContent = L('Setting this cover…', 'কভার সেট করা হচ্ছে…');
+        try {
+          var r = await fetch(c.src);
+          if (!r.ok) throw new Error('cover fetch failed');
+          var blob = await r.blob();
+          showCover(URL.createObjectURL(blob), 'cover.jpg', blob);
+          coverStatusEl.textContent = L('Cover set — this is the cover that will go into your final ebook.',
+            'কভার সেট হয়েছে — এই কভারটাই চূড়ান্ত ইবুকে যাবে।');
+        } catch (e) {
+          coverStatusEl.textContent = L('Could not fetch that cover — try another one.',
+            'এই কভার আনা যায়নি — আরেকটি চেষ্টা করুন।');
+        }
+        btn.disabled = false;
+      });
+      card.appendChild(img); card.appendChild(btn);
+      coverCarousel.appendChild(card);
+    });
+    if (coverCarouselWrap) coverCarouselWrap.classList.remove('hidden');
+  }
+  if (coverPrevBtn) coverPrevBtn.addEventListener('click', function () { if (coverCarousel) coverCarousel.scrollBy({ left: -160, behavior: 'smooth' }); });
+  if (coverNextBtn) coverNextBtn.addEventListener('click', function () { if (coverCarousel) coverCarousel.scrollBy({ left: 160, behavior: 'smooth' }); });
   coverOnlineBtn.addEventListener('click', async function () {
     var title = (titleEl.value || '').trim();
     var author = (authorEl.value || '').trim();
@@ -238,12 +282,12 @@
     coverOnlineBtn.disabled = true;
     coverStatusEl.textContent = L('Searching online for a cover…', 'অনলাইনে কভার খোঁজা হচ্ছে…');
     try {
-      var src = await searchCover('title=' + encodeURIComponent(title) + (author ? '&author=' + encodeURIComponent(author) : ''));
-      if (!src) src = await searchCover('title=' + encodeURIComponent(title));
-      if (src) {
-        showCover(src, 'cover.jpg', null);
-        coverStatusEl.textContent = L('Cover found online. Download it, then upload it above — the uploaded file is what goes into your final ebook.',
-          'অনলাইনে কভার পাওয়া গেছে। ডাউনলোড করে উপরে আপলোড করুন — আপলোড করা ফাইলটাই চূড়ান্ত ইবুকে যাবে।');
+      var covers = await searchCovers('title=' + encodeURIComponent(title) + (author ? '&author=' + encodeURIComponent(author) : ''));
+      if (!covers.length) covers = await searchCovers('title=' + encodeURIComponent(title));
+      if (covers.length) {
+        renderCoverCarousel(covers);
+        coverStatusEl.textContent = L(covers.length + ' covers found — swipe left/right and tap "Use as cover" on the one you like.',
+          covers.length + 'টি কভার পাওয়া গেছে — ডানে/বামে সোয়াইপ করে পছন্দেরটিতে "Use as cover" চাপুন।');
       } else {
         coverStatusEl.textContent = L('No cover found online — make a text cover instead.',
           'অনলাইনে কভার পাওয়া যায়নি — লেখা-প্রচ্ছদ বানিয়ে নিন।');
@@ -321,8 +365,8 @@
     }
     cv.toBlob(function (blob) {
       showCover(URL.createObjectURL(blob), 'cover.png', blob);
-      coverStatusEl.textContent = L('Text cover ready (design #' + (coverStyleIdx + 1) + ', unlimited styles) — download it, then upload it above so it goes into your final ebook. Tap "Generate another style" for a brand-new design.',
-        'লেখা-প্রচ্ছদ তৈরি (ডিজাইন #' + (coverStyleIdx + 1) + ', স্টাইলের শেষ নেই) — ডাউনলোড করে উপরে আপলোড করুন, তাহলে চূড়ান্ত ইবুকে যাবে। নতুন ডিজাইনের জন্য "আরেকটি স্টাইল বানান" চাপুন।');
+      coverStatusEl.textContent = L('Text cover ready (design #' + (coverStyleIdx + 1) + ', unlimited styles) — this cover is already set for your final ebook. Tap "Generate another style" for a brand-new design.',
+        'লেখা-প্রচ্ছদ তৈরি (ডিজাইন #' + (coverStyleIdx + 1) + ', স্টাইলের শেষ নেই) — এই কভারটাই চূড়ান্ত ইবুকের জন্য সেট হয়েছে। নতুন ডিজাইনের জন্য "আরেকটি স্টাইল বানান" চাপুন।');
     }, 'image/png');
   }
   if (coverTextBtn) coverTextBtn.addEventListener('click', function () { drawTextCover(); });
@@ -375,12 +419,18 @@
     return 'en';
   }
   function creditName() { return (creatorEl && creatorEl.value ? creatorEl.value : '').trim(); }
-  function creditLines() {
-    var lines = [];
-    if (creditName()) lines.push('Ebook creator: ' + creditName());
-    lines.push('Made with Our Ebook Maker (https://mdtowfiqul.github.io/our-ebook-maker/)');
-    lines.push('Shared on Our Boighar (https://mdtowfiqul.github.io/our-boighar/)');
-    return lines;
+  /* v11: credit page like his own books — "ইবুক নির্মাতা: <name>" then
+     "সৌজন্যে: Our Ebook Maker ও Our Boighar" (labels follow the book's
+     language: Bengali for Bengali books, English otherwise). */
+  function creditBlockHtml(title) {
+    var bn = detectLang(title || '') === 'bn';
+    var html = '<h2>' + (bn ? 'এই ইবুক সম্পর্কে' : 'About this ebook') + '</h2>';
+    if (creditName()) html += '<p>' + (bn ? 'ইবুক নির্মাতা: ' : 'Ebook creator: ') + escapeHtml(creditName()) + '</p>';
+    html += '<p>' + (bn ? 'সৌজন্যে: ' : 'Courtesy: ')
+      + '<a href="https://mdtowfiqul.github.io/our-ebook-maker/">Our Ebook Maker</a>'
+      + (bn ? ' ও ' : ' and ')
+      + '<a href="https://mdtowfiqul.github.io/our-boighar/">Our Boighar</a></p>';
+    return html;
   }
   function docxPara(text, style, jc, pageBreakBefore) {
     var lines = String(text).split('\n').map(function (ln) {
@@ -414,9 +464,7 @@
     if (!chapters[0].blocks.length) chapters[0].blocks = [{ t: 'h1', text: title }].concat(author ? [{ t: 'p', text: author }] : []);
     /* Title page first, credit page last — like a real book. */
     var titleHtml = '<div style="text-align:center;margin-top:30%"><h1>' + escapeHtml(title) + '</h1>' + (author ? '<p>' + escapeHtml(author) + '</p>' : '') + '</div>';
-    var creditHtml = '<h2>About this ebook</h2>' + creditLines().map(function (ln) { return '<p>' + escapeHtml(ln) + '</p>'; }).join('')
-      + '<p>Made with <a href="https://mdtowfiqul.github.io/our-ebook-maker/">Our Ebook Maker</a></p>'
-      + '<p>Shared on <a href="https://mdtowfiqul.github.io/our-boighar/">Our Boighar</a></p>';
+    var creditHtml = creditBlockHtml(title);
     chapters.unshift({ title: title, html: titleHtml });
     chapters.push({ title: 'About this ebook', html: creditHtml });
     var lang = detectLang(md);
@@ -506,21 +554,25 @@
     });
     chapters = chapters.filter(function (c, i) { return i === 0 || c.blocks.length; });
     var sections = ['<section class="titlepage"><h1>' + escapeHtml(title) + '</h1>' + (author ? '<p>' + escapeHtml(author) + '</p>' : '') + '</section>'];
-    chapters.forEach(function (ch) {
-      sections.push('<section class="chapter">' + (ch.heading ? '<h2>' + escapeHtml(ch.title) + '</h2>' : '') + ch.blocks.map(blockToXhtml).join('\n') + '</section>');
+    /* v11: the first, heading-less section is the book's front matter
+       (title repeat, মূল / অনুবাদ / প্রকাশনা lines) — centre it like
+       the title page, but only when real chapters follow it. */
+    var hasHeaded = chapters.some(function (c) { return c.heading; });
+    chapters.forEach(function (ch, ci) {
+      var cls = (hasHeaded && ci === 0 && !ch.heading) ? 'chapter frontmatter' : 'chapter';
+      sections.push('<section class="' + cls + '">' + (ch.heading ? '<h2>' + escapeHtml(ch.title) + '</h2>' : '') + ch.blocks.map(blockToXhtml).join('\n') + '</section>');
     });
-    sections.push('<section class="chapter"><h2>About this ebook</h2>' + creditLines().map(function (ln) { return '<p>' + escapeHtml(ln) + '</p>'; }).join('')
-      + '<p>Made with <a href="https://mdtowfiqul.github.io/our-ebook-maker/">Our Ebook Maker</a></p>'
-      + '<p>Shared on <a href="https://mdtowfiqul.github.io/our-boighar/">Our Boighar</a></p></section>');
+    sections.push('<section class="chapter">' + creditBlockHtml(title) + '</section>');
     return '<!DOCTYPE html><html><head><meta charset="utf-8"><title>' + escapeHtml(title) + '</title><link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;700&family=Noto+Serif+Bengali:wght@500;700&display=swap" rel="stylesheet"><style>'
       + 'body{font-family:"Hind Siliguri","Noto Serif Bengali",serif;line-height:1.7;max-width:700px;margin:0 auto;padding:24px}'
       + 'h1,h2,h3{text-align:center}p{text-align:justify;margin:0 0 1em 0}'
-      + '.titlepage{text-align:center;margin-top:30%}.chapter{page-break-before:always}.titlepage{page-break-before:auto}'
+      + '.titlepage{text-align:center;margin-top:30%}.titlepage p{text-align:center}.frontmatter p{text-align:center}.chapter{page-break-before:always}.titlepage{page-break-before:auto}'
       + '@media print{.noprint{display:none}}'
       + '</style></head><body>'
       + '<div class="noprint" style="font-family:sans-serif;border:1px solid #ccc;padding:12px;margin-bottom:24px">'
-      + '<b>Save this book as PDF:</b> press the Print button below, then in the print dialog choose <b>Save as PDF</b> as the destination.'
+      + 'The print dialog opens automatically — choose <b>Save as PDF</b> as the destination to download the PDF. If it did not open, press Print below.'
       + ' <button onclick="window.print()" style="padding:8px 16px;font-weight:bold">Print / Save as PDF</button></div>'
+      + '<script>window.addEventListener("load", function () { function go() { try { window.print(); } catch (e) {} } if (document.fonts && document.fonts.ready) { document.fonts.ready.then(function () { setTimeout(go, 300); }); } else { setTimeout(go, 800); } });</script>'
       + sections.join('\n') + '</body></html>';
   }
   if (proofPdfBtn) proofPdfBtn.addEventListener('click', function () {
@@ -534,8 +586,8 @@
     }
     w.document.write(html);
     w.document.close();
-    finalStatusEl.textContent = L('PDF view opened in a new tab — in the print dialog, choose "Save as PDF".',
-      'নতুন ট্যাবে PDF ভিউ খুলেছে — প্রিন্ট ডায়ালগে "Save as PDF" বাছুন।');
+    finalStatusEl.textContent = L('Print dialog opened — choose "Save as PDF" to download the PDF.',
+        'প্রিন্ট ডায়ালগ খুলেছে — PDF ডাউনলোড করতে "Save as PDF" বাছুন।');
   });
 
   /* ---- Step 3: Google Doc .docx in, EPUB/PDF out ---- */
@@ -550,7 +602,6 @@
         + L(' — EPUB, PDF and the .docx download below are ready.', ' — নিচে EPUB, PDF আর .docx ডাউনলোড তৈরি।');
       if (proofEpubBtn) proofEpubBtn.disabled = false;
       if (proofPdfBtn) proofPdfBtn.disabled = false;
-      if (proofCalibreBtn) proofCalibreBtn.disabled = false;
       if (docxBackBtn) docxBackBtn.disabled = false;
       finalStatusEl.textContent = L('Document loaded — pick a format below.',
         'ডকুমেন্ট লোড হয়েছে — নিচে ফরম্যাট বাছুন।');
@@ -561,8 +612,5 @@
   if (docxBackBtn) docxBackBtn.addEventListener('click', function () {
     if (!state.docBlob) return;
     download(state.docBlob, state.docBlob.name);
-  });
-  if (proofCalibreBtn) proofCalibreBtn.addEventListener('click', function () {
-    if (calibreNote) calibreNote.classList.toggle('hidden');
   });
 })(); 

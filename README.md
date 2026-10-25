@@ -17,18 +17,22 @@ site then turns that document into EPUB, PDF and Kindle formats.
    attach the scanned PDF, and paste the full prompt (Copy button
    on the page, or the pop-up with the whole text). Muse extracts
    the text — converting legacy Bijoy/SutonnyMJ fonts to Unicode
-   Bangla — proofreads it in chunks (DONE, then you write
-   "continue"), and sends a formatted Google Doc link. The Doc
+   Bangla — proofreads the whole book automatically (no
+   DONE/continue round trip) and sends a formatted Google Doc
+   link that reads like a main published book. The Doc
    begins directly with the book title, with no cover-page or
    artwork notes. This site itself cannot call Muse or your Drive;
    that part happens in the Muse chat. Then download the .docx
    from the Doc (File → Download → Microsoft Word) and upload it
    in Step 3.
 3. **Final ebook — from document to ebook** — upload the Google Doc
-   .docx and the EPUB, PDF and .docx-download buttons unlock at
-   once. EPUB and PDF are built automatically in the browser (the
-   EPUB embeds the Hind Siliguri font so Bengali renders correctly
-   in Play Books' default font; title
+   .docx and the EPUB, Download PDF and .docx-download buttons
+   unlock at once (Download PDF opens the print dialog
+   automatically — choose Save as PDF). EPUB and PDF are built
+   automatically in the browser (the EPUB embeds the Hind
+   Siliguri font so Bengali renders correctly in Play Books'
+   default font; the credit page reads "ইবুক নির্মাতা: <name>"
+   and "সৌজন্যে: Our Ebook Maker ও Our Boighar"; title
    page, chapters on new pages, centred headings, justified text
    with Arabic right-aligned, your cover, credit page); AZW3 / MOBI
    go through online-convert (manual, linked in the step), and
