@@ -28,8 +28,9 @@ site then turns that document into EPUB, PDF and Kindle formats.
    in Step 3.
 3. **Final ebook — from document to ebook** — upload the Google Doc
    .docx and the EPUB and Download PDF buttons
-   unlock at once (Download PDF opens the print dialog
-   automatically — choose Save as PDF). EPUB and PDF are built
+   unlock at once (Download PDF downloads the PDF with one
+   click — no print dialog; the pages are rendered as images, so
+   the text is not selectable). EPUB and PDF are built
    automatically in the browser (the EPUB embeds the Hind
    Siliguri font so Bengali renders correctly in Play Books'
    default font; the credit page reads "ইবুক নির্মাতা: <name>"

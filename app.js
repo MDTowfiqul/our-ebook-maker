@@ -571,10 +571,12 @@
     }
     proofEpubBtn.disabled = false;
   });
-  /* Proper PDF: a print-ready book page rendered by the browser itself,
-     so Bengali/Arabic shaping stays correct. The user saves it as PDF
-     from the browser's print dialog — that is what makes it a real PDF
-     instead of a broken script rendering. */
+  /* v13 one-click PDF: the book page is rendered in a hidden iframe
+     and rasterised to a real PDF with html2canvas + jsPDF — one tap,
+     no print dialog. Honest trade-off, stated in the guide: the PDF
+     pages are images, so the text is not selectable. Rasterising
+     (not a script text layout) is what keeps Bengali/Arabic shaping
+     correct, which text-based PDF libraries break. */
   function buildBookHtml(md, title, author) {
     var blocks = mdToBlocks(md);
     var chapters = [{ title: title, blocks: [] }];
@@ -598,27 +600,56 @@
       + 'body{font-family:"Hind Siliguri","Noto Serif Bengali",serif;line-height:1.7;max-width:700px;margin:0 auto;padding:24px}'
       + 'h1,h2,h3{text-align:center}p{text-align:justify;margin:0 0 1em 0}'
       + '.titlepage{text-align:center;margin-top:30%}.titlepage p{text-align:center}.frontmatter p{text-align:center}.chapter{page-break-before:always}.titlepage{page-break-before:auto}'
-      + '@media print{.noprint{display:none}}'
       + '</style></head><body>'
-      + '<div class="noprint" style="font-family:sans-serif;border:1px solid #ccc;padding:12px;margin-bottom:24px">'
-      + 'The print dialog opens automatically — choose <b>Save as PDF</b> as the destination to download the PDF. If it did not open, press Print below.'
-      + ' <button onclick="window.print()" style="padding:8px 16px;font-weight:bold">Print / Save as PDF</button></div>'
-      + '<script>window.addEventListener("load", function () { function go() { try { window.print(); } catch (e) {} } if (document.fonts && document.fonts.ready) { document.fonts.ready.then(function () { setTimeout(go, 300); }); } else { setTimeout(go, 800); } });</script>'
       + sections.join('\n') + '</body></html>';
+  }
+  var pdfRasterCode = ['(function () {', "  function fail() { try { window.parent.postMessage('oem-pdf-error', '*'); } catch (e) {} }", '  function start() {', '    try {', "      var sections = document.querySelectorAll('section');", "      var pdf = new jspdf.jsPDF('p', 'mm', 'a4');", '      var firstPage = true;', '      var idx = 0;', '      function next() {', '        if (idx >= sections.length) {', "          try { pdf.save(document.title + '.pdf'); } catch (e) { fail(); return; }", "          try { window.parent.postMessage('oem-pdf-done', '*'); } catch (e) {}", '          return;', '        }', "        html2canvas(sections[idx], { scale: 1.5, backgroundColor: '#ffffff' }).then(function (canvas) {", '          var pxPerMm = canvas.width / 210;', '          var imgHmm = canvas.height / pxPerMm;', '          var y = 0;', '          while (y < imgHmm) {', '            var sliceHmm = Math.min(297, imgHmm - y);', '            var slicePx = Math.max(1, Math.round(sliceHmm * pxPerMm));', "            var sc = document.createElement('canvas');", '            sc.width = canvas.width; sc.height = slicePx;', "            var ctx = sc.getContext('2d');", "            ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, sc.width, sc.height);", '            ctx.drawImage(canvas, 0, -Math.round(y * pxPerMm));', '            if (!firstPage) pdf.addPage(); else firstPage = false;', "            pdf.addImage(sc.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, 210, sliceHmm);", '            y += sliceHmm;', '          }', '          idx++; next();', '        }).catch(fail);', '      }', '      next();', '    } catch (e) { fail(); }', '  }', '  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(function () { setTimeout(start, 300); }); }', '  else { setTimeout(start, 800); }', '})();'].join("\n");
+  function makePdfDownload(md, title, author) {
+    finalStatusEl.textContent = L('Making the PDF… (one click — no print dialog. Long books can take a while.)',
+      'PDF বানানো হচ্ছে… (এক ক্লিকেই — কোনো প্রিন্ট ডায়ালগ নয়। বড় বইয়ে কিছুটা সময় লাগতে পারে।)');
+    var html = buildBookHtml(md, title, author);
+    var frame = document.createElement('iframe');
+    frame.style.position = 'fixed'; frame.style.left = '-12000px'; frame.style.top = '0';
+    frame.style.width = '794px'; frame.style.border = '0';
+    document.body.appendChild(frame);
+    var fdoc = frame.contentDocument || (frame.contentWindow && frame.contentWindow.document);
+    function cleanup() { if (frame.remove) frame.remove(); window.removeEventListener('message', onMsg); }
+    function fail() {
+      finalStatusEl.textContent = L('PDF could not be made — check your connection and try again.',
+        'PDF বানানো যায়নি — সংযোগ দেখে আবার চেষ্টা করুন।');
+      cleanup();
+    }
+    function onMsg(e) {
+      if (e.source !== frame.contentWindow) return;
+      if (e.data === 'oem-pdf-done') {
+        finalStatusEl.textContent = L('PDF downloaded.', 'PDF ডাউনলোড হয়েছে।');
+        cleanup();
+      } else if (e.data === 'oem-pdf-error') { fail(); }
+    }
+    window.addEventListener('message', onMsg);
+    try {
+      fdoc.open(); fdoc.write(html); fdoc.close();
+      if (fdoc.body && fdoc.body.scrollHeight) { try { frame.style.height = fdoc.body.scrollHeight + 'px'; } catch (e) {} }
+    } catch (e) { fail(); return; }
+    var s1 = fdoc.createElement('script');
+    s1.onerror = fail;
+    s1.onload = function () {
+      var s2 = fdoc.createElement('script');
+      s2.onerror = fail;
+      s2.onload = function () {
+        var s3 = fdoc.createElement('script');
+        s3.textContent = pdfRasterCode;
+        fdoc.body.appendChild(s3);
+      };
+      s2.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+      fdoc.body.appendChild(s2);
+    };
+    s1.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+    fdoc.body.appendChild(s1);
   }
   if (proofPdfBtn) proofPdfBtn.addEventListener('click', function () {
     if (!state.proofText) return;
-    var html = buildBookHtml(state.proofText, (titleEl.value || 'book').trim(), (authorEl.value || '').trim());
-    var w = window.open('', '_blank');
-    if (!w) {
-      finalStatusEl.textContent = L('Pop-up was blocked — allow pop-ups for this site and tap the PDF button again.',
-        'পপ-আপ ব্লক হয়েছে — এই সাইটের জন্য পপ-আপ অনুমতি দিয়ে আবার PDF বোতাম চাপুন।');
-      return;
-    }
-    w.document.write(html);
-    w.document.close();
-    finalStatusEl.textContent = L('Print dialog opened — choose "Save as PDF" to download the PDF.',
-        'প্রিন্ট ডায়ালগ খুলেছে — PDF ডাউনলোড করতে "Save as PDF" বাছুন।');
+    makePdfDownload(state.proofText, (titleEl.value || 'book').trim(), (authorEl.value || '').trim());
   });
 
   /* ---- Step 3: Google Doc .docx in, EPUB/PDF out ---- */

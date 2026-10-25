@@ -183,7 +183,7 @@
       <p data-bn="বাংলাদেশে Muse সরাসরি পাওয়া যায় না — USA VPN দিয়ে অ্যাকাউন্ট খুলতে হয়।" data-en="Muse is not directly available in Bangladesh — you open an account with a USA VPN.">Muse is not directly available in Bangladesh — you open an account with a USA VPN.</p>
       <ol class="list-decimal pl-5 mt-2 space-y-1">
         <li><span data-bn="USA VPN ইন্সটল করুন — আমি Green VPN ব্যবহার করি: " data-en="Install a USA VPN — I use Green VPN: ">Install a USA VPN — I use Green VPN: </span><a href="https://play.google.com/store/apps/details?id=oscar.greenvpn.app" target="_blank" rel="noopener" class="text-emerald-700 font-bold underline">Green VPN on Google Play</a><span data-bn=" — USA সার্ভারে কানেক্ট করুন।" data-en=" — connect to a USA server."> — connect to a USA server.</span></li>
-        <li><span data-bn="এই ভিডিওর ধাপগুলো অনুসরণ করে Muse অ্যাকাউন্ট খুলুন: " data-en="Follow the steps in this video to create your Muse account: ">Follow the steps in this video to create your Muse account: </span><a href="https://youtube.com/watch?v=RS43MFNBNI8" target="_blank" rel="noopener" class="text-emerald-700 font-bold underline">Video tutorial</a></li>
+        <li><span data-bn="এই ভিডিওর ধাপগুলো অনুসরণ করে Muse অ্যাকাউন্ট খুলুন: " data-en="Follow the steps in this video to create your Muse account: ">Follow the steps in this video to create your Muse account: </span><a href="https://youtu.be/1WX31a0XgXY" target="_blank" rel="noopener" class="text-emerald-700 font-bold underline">Video tutorial</a></li>
         <li><span data-bn="তারপর এখানে ফিরে এসে উপরের Muse রুট অনুসরণ করুন।" data-en="Then come back here and follow the Muse route above.">Then come back here and follow the Muse route above.</span></li>
       </ol>
     </div>
@@ -265,7 +265,7 @@
     <div class="bg-white dark:bg-neutral-800 rounded-2xl shadow-xl max-w-lg w-full p-5 max-h-[85vh] overflow-y-auto">
       <h3 class="serif text-xl font-extrabold" data-bn="Muse দিয়ে PDF থেকে Google Doc — পুরো প্রম্পট" data-en="PDF to Google Doc with Muse — the full prompt">PDF to Google Doc with Muse — the full prompt</h3>
       <p class="text-[15px] mt-2" data-bn="Muse চ্যাটে PDF attach করে নিচের পুরো লেখাটি একই মেসেজে পেস্ট করুন — Muse পুরো বইটি নিজে নিজে শেষ করবে, মাঝে অনুমতি চাইবে না।" data-en="In a Muse chat, attach the PDF and paste the whole text below in the same message — Muse finishes the whole book on its own, without asking permission in between.">In a Muse chat, attach the PDF and paste the whole text below in the same message — Muse finishes the whole book on its own, without asking permission in between.</p>
-      <textarea id="museDirectPromptText" readonly rows="12" class="w-full border border-neutral-300 rounded-xl p-3 text-sm mt-3">I am attaching a PDF of an old, copyright-free (public domain) book. Extract all of its text (if the PDF is in legacy Bijoy/SutonnyMJ encoding, convert it to Unicode Bangla), then digitize and proofread it following the strict guidelines below, and finally create a formatted Google Doc from the finished Markdown and send me the link. No cover-page or artwork description notes — the document must begin directly with the book title.
+      <textarea id="museDirectPromptText" readonly rows="12" class="w-full border border-neutral-300 rounded-xl p-3 text-sm mt-3">I am attaching a PDF of an old, copyright-free (public domain) book. Extract all of its text (if the PDF is in legacy Bijoy/SutonnyMJ encoding, convert it to Unicode Bangla), then digitize and proofread it following the strict guidelines below, and finally create a formatted Google Doc from the finished Markdown and send me the link and the downloadable file. No cover-page or artwork description notes — the document must begin directly with the book title.
 
 Act as an expert Digital Archivist, Master Typographer, and EPUB Formatter. Your task is to digitize raw, unformatted text (often containing OCR errors) from old, copyright-free (public domain) books and convert it into pristine, beautifully structured Markdown optimized for professional EPUB conversion.
 
@@ -273,9 +273,9 @@ I am attaching the whole book as a PDF.
 
 The book may be in Bengali, Arabic, English, or a mix of all three. Handle each language by its own rules below — Bengali spelling and conjuncts, Arabic harkat and right alignment, English typography — so the finished book reads naturally in every language it contains.
 
-Work through the whole book automatically, from start to finish, without stopping for permission between parts. Do not wait for me to say "continue" — keep going until the entire book is done, then build the Google Doc and send me the link.
+Work through the whole book automatically, from start to finish, without stopping for permission between parts. Do not wait for me to say "continue" — keep going until the entire book is done, then build the Google Doc and send me the link and the downloadable file.
 
-The finished document must read like a main published book: it begins directly with the book title, followed by the author, translator and publication information exactly as printed in the original; then the table of contents if the original has one (linked, without page numbers); then the chapters in order, with footnotes beside their numbers; and any index at the end. Keep the original's front matter (foreword, publisher's note) in place — nothing that belongs in the book may be dropped.
+The finished document must read like a main published book: it begins directly with the book title, followed by the author, translator and publication information exactly as printed in the original; then the chapters in order, with footnotes beside their numbers; and any index at the end. Keep the original's front matter (foreword, publisher's note) in place — nothing that belongs in the book may be dropped.
 
 Please apply the following strict guidelines to every part:
 
@@ -304,7 +304,7 @@ Please apply the following strict guidelines to every part:
 - Footnotes: Footnote Entry should be added next to the footnote number and footnote entry should be within Third bracket within the text, not separately. Footnote number should be in superscript. Endnote & Citation too.
 
 5. NAVIGATION & DIGITAL LINKED INDEX:
-- Table of Contents (TOC): If processing a TOC, remove all original page numbers. Convert the entries into a digital linked list targeting chapter anchors. Format: `- [Chapter Name](#chapter-name)`.
+- Printed সূচিপত্র / Table of Contents: do NOT include the book's printed contents pages in the output at all — remove the সূচিপত্র chapter entirely. The ebook's digital linked headings are the navigation, so no contents list is needed inside the ebook.
 - Back-of-Book Index: Original printed page numbers are useless in reflowable EPUBs. When processing an Index, REMOVE all page numbers. Convert the index into a hierarchical, digital linked index. Format each main entry as a Markdown hyperlink pointing to an anchor of the term itself.
   Example: Convert "Astrophysics ........... 45, 67" to `- [Astrophysics](#astrophysics)`.
   Retain original sub-entries as indented sub-bullets under the main term.
@@ -331,9 +331,7 @@ Rules:
 - Format the output as clean Markdown: # for the book title, ## for chapter titles, ### for sub-sections, *** for scene breaks. Remove page numbers, running headers and footers. Join fragmented sentences into proper paragraphs.
 - Footnotes: keep the footnote entry next to its number, in superscript, within third brackets.
 - Work through the whole book in one go, automatically — do not stop between parts and do not ask me to say "continue".
-- Output no explanations and no conversational filler — just do the work, and send the Google Doc link when the whole book is finished.
-
-When the whole book is finished, convert the completed Markdown into a formatted Google Doc (headings, tables, and lists preserved; Bangla text justified, titles and headings centred, Arabic right-aligned), name the Doc with the book's title, and send me the Google Docs link — and also give me the finished document as a downloadable file (.docx), not only the link, so I can download it directly.</textarea>
+- Output no explanations and no conversational filler — just do the work. When the whole book is finished, deliver it as a formatted Google Doc (headings, tables and lists preserved; Bangla text justified, titles and headings centred, Arabic right-aligned), named with the book's title — send me the Google Docs link, and also give me the finished document as a downloadable file (.docx), not only the link, so I can download it directly.</textarea>
       <div class="flex flex-wrap gap-2 mt-3">
         <button id="copyMuseDirectBtn" class="accent-bg text-white rounded-xl px-4 py-2.5 font-bold" data-bn="পুরো প্রম্পট কপি করুন" data-en="Copy the full prompt">Copy the full prompt</button>
         <button class="museDirect-close bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-4 py-2.5 font-bold" data-bn="বন্ধ করুন" data-en="Close">Close</button>
