@@ -135,7 +135,7 @@
 
   <section id="step1" class="bg-white dark:bg-neutral-800 rounded-2xl shadow p-5 mt-6">
     <h2 class="serif text-xl sm:text-2xl font-extrabold" data-bn="১. আপনার বই" data-en="1. Your book">1. Your book</h2>
-    <p class="text-sm text-neutral-600 mt-2" data-bn="আপনার স্ক্যান করা PDF এখানে নয় — ধাপ ২-এর Muse চ্যাটে যাবে। এখানে শুধু বইয়ের নাম, লেখক, প্রচ্ছদ আর আপনার নাম দিন — এগুলোই চূড়ান্ত ইবুকে যাবে।" data-en="Your scanned PDF does not go here — it goes to the Muse chat in Step 2. Here you only set the book title, author, cover and your name — those are what go into the finished ebook.">Your scanned PDF does not go here — it goes to the Muse chat in Step 2. Here you only set the book title, author, cover and your name — those are what go into the finished ebook.</p>
+    <p class="text-sm text-neutral-600 mt-2" data-bn="আপনার স্ক্যান করা PDF এখানে নয় — ধাপ ২-এর Muse চ্যাটে যাবে। এখানে শুধু বইয়ের নাম আর লেখক দিন।" data-en="Your scanned PDF does not go here — it goes to the Muse chat in Step 2. Here you only set the book title and author.">Your scanned PDF does not go here — it goes to the Muse chat in Step 2. Here you only set the book title and author.</p>
     <div class="grid sm:grid-cols-2 gap-3 mt-3">
       <div>
         <label class="block font-bold mb-1" for="title" data-bn="বইয়ের নাম" data-en="Book title">Book title</label>
@@ -146,34 +146,7 @@
         <input type="text" id="author" class="w-full border border-neutral-300 rounded-xl px-3 py-2.5 outline-none focus:border-emerald-600" placeholder="Author name" data-bn-ph="লেখকের নাম" data-en-ph="Author name">
       </div>
     </div>
-    <div class="mt-3">
-      <label class="block font-bold mb-1" for="creator" data-bn="ইবুক নির্মাতার নাম (ক্রেডিট পেজে দেখাবে)" data-en="Ebook creator name (shown on the credit page)">Ebook creator name (shown on the credit page)</label>
-      <input type="text" id="creator" class="w-full border border-neutral-300 rounded-xl px-3 py-2.5 outline-none focus:border-emerald-600" placeholder="Ebook creator name" data-bn-ph="ইবুক নির্মাতার নাম" data-en-ph="Ebook creator name">
-      <label class="block font-bold mb-1 mt-3" for="creatorLink" data-bn="ইবুক নির্মাতার লিংক (ঐচ্ছিক — সোশ্যাল মিডিয়া বা যোগাযোগ)" data-en="Ebook creator link (optional — social media or contact)">Ebook creator link (optional — social media or contact)</label>
-      <input type="text" id="creatorLink" class="w-full border border-neutral-300 rounded-xl px-3 py-2.5 outline-none focus:border-emerald-600" placeholder="https://facebook.com/yourpage" data-bn-ph="https://facebook.com/yourpage" data-en-ph="https://facebook.com/yourpage">
-    </div>
-    <div id="coverSection" class="border-t border-neutral-100 mt-5 pt-4">
-      <h3 class="font-extrabold" data-bn="বইয়ের প্রচ্ছদ (ঐচ্ছিক)" data-en="Book cover (optional)">Book cover (optional)</h3>
-      <p class="text-sm text-neutral-500 mt-1" data-bn="চূড়ান্ত ইবুক বানাতে প্রচ্ছদ লাগবে। কভার থাকলে আপলোড করুন, না থাকলে নিচের বোতামে অনলাইনে খুঁজুন বা লেখা-প্রচ্ছদ বানান। লেখা-প্রচ্ছদের স্টাইল পছন্দ না হলে একই বোতাম আবার চাপুন — স্টাইলের কোনো শেষ নেই, প্রতিবার নতুন ডিজাইন আসবে।" data-en="You will need a cover when you make the final ebook. If you already have a cover, upload it. If not, find one online or make a text cover below. If you don't like a text-cover style, tap the same button again — there is no limit, every tap makes a new design.">You will need a cover when you make the final ebook. If you already have a cover, upload it. If not, find one online or make a text cover below. If you don't like a text-cover style, tap the same button again — there is no limit, every tap makes a new design.</p>
-      <label class="block font-bold mt-4 mb-1" for="coverFile" data-bn="কভার ছবি আপলোড করুন (যদি থাকে)" data-en="Upload a cover image (if you have one)">Upload a cover image (if you have one)</label>
-      <input type="file" id="coverFile" accept="image/*" class="w-full">
-      <p class="text-sm text-neutral-500 mt-1" data-bn="নিচের যেকোনো কভারে “Use as cover” চাপলেই সেটি সরাসরি চূড়ান্ত ইবুকে যাবে — ডাউনলোড করে আবার আপলোড করতে হবে না।" data-en="Tap “Use as cover” on any cover below and it goes straight into your final ebook — no need to download and upload it again.">Tap “Use as cover” on any cover below and it goes straight into your final ebook — no need to download and upload it again.</p>
-      <div class="grid grid-cols-2 gap-2 mt-3">
-        <button id="coverOnlineBtn" class="accent-bg text-white border border-transparent rounded-xl px-2 py-2.5 font-bold text-[13px] disabled:opacity-50" data-bn="অনলাইনে কভার খুঁজুন" data-en="Find a cover online">Find a cover online</button>
-        <button id="coverTextBtn" class="accent-bg text-white border border-transparent rounded-xl px-2 py-2.5 font-bold text-[13px]"><span data-bn="লেখা-প্রচ্ছদ বানান" data-en="Make a text cover">Make a text cover</span><br><span data-bn="(আবার চাপলে নতুন স্টাইল)" data-en="(tap again for a new style)">(tap again for a new style)</span></button>
-      </div>
-      <p id="coverStatus" class="text-sm text-neutral-500 mt-2"></p>
-      <img id="coverImg" class="hidden w-40 rounded-xl shadow mt-3" alt="">
-      <div><button id="coverUseBtn" class="hidden accent-bg text-white rounded-xl px-4 py-2.5 font-bold mt-3" data-bn="⬆ Use as cover" data-en="⬆ Use as cover">⬆ Use as cover</button></div>
-      <div id="coverCarouselWrap" class="hidden mt-3">
-        <div class="flex items-center gap-2">
-          <button id="coverPrevBtn" class="shrink-0 bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-full w-9 h-9 font-bold" aria-label="Previous covers">‹</button>
-          <div id="coverCarousel" class="flex gap-3 overflow-x-auto pb-2 snap-x"></div>
-          <button id="coverNextBtn" class="shrink-0 bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-full w-9 h-9 font-bold" aria-label="Next covers">›</button>
-        </div>
-        <p class="text-sm text-neutral-500 mt-1" data-bn="ডানে/বামে সোয়াইপ করে কভার দেখুন, পছন্দেরটিতে “Use as cover” চাপুন।" data-en="Swipe left/right to browse the covers, then tap “Use as cover” on the one you like.">Swipe left/right to browse the covers, then tap “Use as cover” on the one you like.</p>
-      </div>
-    </div>
+
 
   </section>
 
@@ -213,6 +186,35 @@
         <input type="file" id="docFile" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" class="w-full">
         <p id="docFileStatus" class="text-sm text-neutral-500 mt-1"></p>
     </div>
+    <h3 class="font-extrabold mt-5" data-bn="প্রচ্ছদ ও ক্রেডিট" data-en="Cover and credit">Cover and credit</h3>
+    <div class="mt-3">
+      <label class="block font-bold mb-1" for="creator" data-bn="ইবুক নির্মাতার নাম (ক্রেডিট পেজে দেখাবে)" data-en="Ebook creator name (shown on the credit page)">Ebook creator name (shown on the credit page)</label>
+      <input type="text" id="creator" class="w-full border border-neutral-300 rounded-xl px-3 py-2.5 outline-none focus:border-emerald-600" placeholder="Ebook creator name" data-bn-ph="ইবুক নির্মাতার নাম" data-en-ph="Ebook creator name">
+      <label class="block font-bold mb-1 mt-3" for="creatorLink" data-bn="ইবুক নির্মাতার লিংক (ঐচ্ছিক — সোশ্যাল মিডিয়া বা যোগাযোগ)" data-en="Ebook creator link (optional — social media or contact)">Ebook creator link (optional — social media or contact)</label>
+      <input type="text" id="creatorLink" class="w-full border border-neutral-300 rounded-xl px-3 py-2.5 outline-none focus:border-emerald-600" placeholder="https://facebook.com/yourpage" data-bn-ph="https://facebook.com/yourpage" data-en-ph="https://facebook.com/yourpage">
+    </div>
+    <div id="coverSection" class="border-t border-neutral-100 mt-5 pt-4">
+      <h3 class="font-extrabold" data-bn="বইয়ের প্রচ্ছদ (ঐচ্ছিক)" data-en="Book cover (optional)">Book cover (optional)</h3>
+      <p class="text-sm text-neutral-500 mt-1" data-bn="চূড়ান্ত ইবুক বানাতে প্রচ্ছদ লাগবে। কভার থাকলে আপলোড করুন, না থাকলে নিচের বোতামে অনলাইনে খুঁজুন বা লেখা-প্রচ্ছদ বানান। লেখা-প্রচ্ছদের স্টাইল পছন্দ না হলে একই বোতাম আবার চাপুন — স্টাইলের কোনো শেষ নেই, প্রতিবার নতুন ডিজাইন আসবে।" data-en="You will need a cover when you make the final ebook. If you already have a cover, upload it. If not, find one online or make a text cover below. If you don't like a text-cover style, tap the same button again — there is no limit, every tap makes a new design.">You will need a cover when you make the final ebook. If you already have a cover, upload it. If not, find one online or make a text cover below. If you don't like a text-cover style, tap the same button again — there is no limit, every tap makes a new design.</p>
+      <label class="block font-bold mt-4 mb-1" for="coverFile" data-bn="কভার ছবি আপলোড করুন (যদি থাকে)" data-en="Upload a cover image (if you have one)">Upload a cover image (if you have one)</label>
+      <input type="file" id="coverFile" accept="image/*" class="w-full">
+      <p class="text-sm text-neutral-500 mt-1" data-bn="নিচের যেকোনো কভারে “Use as cover” চাপলেই সেটি সরাসরি চূড়ান্ত ইবুকে যাবে — ডাউনলোড করে আবার আপলোড করতে হবে না।" data-en="Tap “Use as cover” on any cover below and it goes straight into your final ebook — no need to download and upload it again.">Tap “Use as cover” on any cover below and it goes straight into your final ebook — no need to download and upload it again.</p>
+      <div class="grid grid-cols-2 gap-2 mt-3">
+        <button id="coverOnlineBtn" class="accent-bg text-white border border-transparent rounded-xl px-2 py-2.5 font-bold text-[13px] disabled:opacity-50" data-bn="অনলাইনে কভার খুঁজুন" data-en="Find a cover online">Find a cover online</button>
+        <button id="coverTextBtn" class="accent-bg text-white border border-transparent rounded-xl px-2 py-2.5 font-bold text-[13px]"><span data-bn="লেখা-প্রচ্ছদ বানান" data-en="Make a text cover">Make a text cover</span><br><span data-bn="(আবার চাপলে নতুন স্টাইল)" data-en="(tap again for a new style)">(tap again for a new style)</span></button>
+      </div>
+      <p id="coverStatus" class="text-sm text-neutral-500 mt-2"></p>
+      <img id="coverImg" class="hidden w-40 rounded-xl shadow mt-3" alt="">
+      <div><button id="coverUseBtn" class="hidden accent-bg text-white rounded-xl px-4 py-2.5 font-bold mt-3" data-bn="⬆ Use as cover" data-en="⬆ Use as cover">⬆ Use as cover</button></div>
+      <div id="coverCarouselWrap" class="hidden mt-3">
+        <div class="flex items-center gap-2">
+          <button id="coverPrevBtn" class="shrink-0 bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-full w-9 h-9 font-bold" aria-label="Previous covers">‹</button>
+          <div id="coverCarousel" class="flex gap-3 overflow-x-auto pb-2 snap-x"></div>
+          <button id="coverNextBtn" class="shrink-0 bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-full w-9 h-9 font-bold" aria-label="Next covers">›</button>
+        </div>
+        <p class="text-sm text-neutral-500 mt-1" data-bn="ডানে/বামে সোয়াইপ করে কভার দেখুন, পছন্দেরটিতে “Use as cover” চাপুন।" data-en="Swipe left/right to browse the covers, then tap “Use as cover” on the one you like.">Swipe left/right to browse the covers, then tap “Use as cover” on the one you like.</p>
+      </div>
+    </div>
     <button class="collapse-toggle w-full flex justify-between items-center accent-bg text-white border border-transparent rounded-xl px-4 py-3 font-bold mt-5 text-left" data-target="collapse-formats"><span data-bn="কোন ফরম্যাট, কোন কাজে?" data-en="Which format, for which work?">Which format, for which work?</span><span class="collapse-chev">▼</span></button>
     <div id="collapse-formats" class="hidden bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-xl p-4 mt-2">
     <ul class="list-disc pl-5 mt-2 space-y-1 text-[15px]">
@@ -250,9 +252,9 @@
     <div class="bg-white dark:bg-neutral-800 rounded-2xl shadow-xl max-w-lg w-full p-5 max-h-[85vh] overflow-y-auto">
       <h3 class="serif text-xl font-extrabold" data-bn="📘 গাইড — যেভাবে ইবুক বানাবেন" data-en="📘 Guide — how to make an ebook">📘 Guide — how to make an ebook</h3>
       <ol class="list-decimal pl-5 mt-4 space-y-2 text-[15px]">
-        <li><b data-bn="আপনার বই (ধাপ ১):" data-en="Your book (Step 1):">Your book (Step 1):</b> <span data-bn="শিরোনাম, লেখক, প্রচ্ছদ, ক্রেডিট পেজের জন্য আপনার নাম ও ঐচ্ছিক লিংক। স্ক্যান করা PDF এখানে দেবেন না।" data-en="title, author, cover, your name and optional link for the credit page. Your scanned PDF does not go here.">title, author, cover, your name and optional link for the credit page. Your scanned PDF does not go here.</span></li>
+        <li><b data-bn="আপনার বই (ধাপ ১):" data-en="Your book (Step 1):">Your book (Step 1):</b> <span data-bn="শিরোনাম ও লেখক। স্ক্যান করা PDF এখানে দেবেন না।" data-en="title and author. Your scanned PDF does not go here.">title and author. Your scanned PDF does not go here.</span></li>
         <li><b data-bn="Muse রুট (ধাপ ২):" data-en="Muse route (Step 2):">Muse route (Step 2):</b> <span data-bn="Muse চ্যাটে স্ক্যান করা PDF attach করুন, পুরো প্রম্পট পেস্ট করুন, Google Doc লিঙ্কটি নিন — Muse পুরো বই স্বয়ংক্রিয়ভাবে শেষ করে। Muse Bijoy কনভার্সন ও প্রুফরিড করে।" data-en="attach the scanned PDF in a Muse chat, paste the full prompt, and take the Google Doc link — Muse finishes the whole book automatically. Muse handles Bijoy conversion and proofreading.">attach the scanned PDF in a Muse chat, paste the full prompt, and take the Google Doc link — Muse finishes the whole book automatically. Muse handles Bijoy conversion and proofreading.</span></li>
-        <li><b data-bn="ফাইনাল ইবুক (ধাপ ৩):" data-en="Final ebook (Step 3):">Final ebook (Step 3):</b> <span data-bn="Google Doc থেকে .docx ডাউনলোড করুন (File → Download → Microsoft Word), এখানে আপলোড করুন, EPUB ডাউনলোড করুন। AZW3/MOBI-এর জন্য online-convert বা KFX-এর জন্য Calibre-এ EPUB থেকে কনভার্ট করুন, .docx থেকে নয় — প্রচ্ছদ ও ক্রেডিট পেজ EPUB-এ থাকে।" data-en="download the .docx from the Google Doc (File → Download → Microsoft Word), upload it here, and download EPUB. For AZW3/MOBI via online-convert or KFX via Calibre, convert from the EPUB, not the .docx — the cover and credit page live in the EPUB.">download the .docx from the Google Doc (File → Download → Microsoft Word), upload it here, and download EPUB. For AZW3/MOBI via online-convert or KFX via Calibre, convert from the EPUB, not the .docx — the cover and credit page live in the EPUB.</span></li>
+        <li><b data-bn="ফাইনাল ইবুক (ধাপ ৩):" data-en="Final ebook (Step 3):">Final ebook (Step 3):</b> <span data-bn="Google Doc থেকে .docx ডাউনলোড করুন (File → Download → Microsoft Word), এখানে আপলোড করুন, প্রচ্ছদ আর ক্রেডিট পেজের জন্য আপনার নাম ও ঐচ্ছিক লিংক দিন, তারপর EPUB ডাউনলোড করুন। AZW3/MOBI-এর জন্য online-convert বা KFX-এর জন্য Calibre-এ EPUB থেকে কনভার্ট করুন, .docx থেকে নয় — প্রচ্ছদ ও ক্রেডিট পেজ EPUB-এ থাকে।" data-en="download the .docx from the Google Doc (File → Download → Microsoft Word), upload it here, set the cover and your name and optional link for the credit page, then download EPUB. For AZW3/MOBI via online-convert or KFX via Calibre, convert from the EPUB, not the .docx — the cover and credit page live in the EPUB.">download the .docx from the Google Doc (File → Download → Microsoft Word), upload it here, set the cover and your name and optional link for the credit page, then download EPUB. For AZW3/MOBI via online-convert or KFX via Calibre, convert from the EPUB, not the .docx — the cover and credit page live in the EPUB.</span></li>
         <li><b data-bn="শেয়ার করার আগে:" data-en="Before you share:">Before you share:</b> <span data-bn="প্রথমে Our Boighar দেখুন। শুধু নিজের জন্য যেকোনো বই ঠিক আছে; শেয়ার করতে হলে বইটি ১০+ বছরের পুরোনো হতে হবে অথবা লেখক/প্রকাশকের অনুমোদন থাকতে হবে।" data-en="check Our Boighar first. For yourself only, any book is fine; to share, it must be 10+ years old or writer/publisher-approved.">check Our Boighar first. For yourself only, any book is fine; to share, it must be 10+ years old or writer/publisher-approved.</span></li>
       </ol>
       <div class="flex flex-wrap gap-2 mt-4">
