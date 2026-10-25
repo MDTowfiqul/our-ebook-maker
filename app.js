@@ -482,9 +482,12 @@
     if (b.t === 'ul') return '<ul>' + b.items.map(function (it) { return '<li>' + mdInline(it) + '</li>'; }).join('') + '</ul>';
     return '<p>' + mdInline(b.text) + '</p>';
   }
-  async function buildEpub(md, title, author) {
-    if (typeof JSZip === 'undefined') throw new Error('The EPUB library did not load — check connection and try again.');
-    var blocks = mdToBlocks(md);
+  /* v15: shared chapter split. A Google Doc often styles the book
+     title itself as Heading 1, which mdToBlocks turns into a chapter
+     — and the builders add their own title page on top, so the title
+     appeared twice. If the first headed chapter IS the book title,
+     it is not a chapter: its blocks merge into the front matter. */
+  function splitChapters(blocks, title) {
     var chapters = [{ title: title, blocks: [] }];
     blocks.forEach(function (b) {
       if (b.t === 'h2') chapters.push({ title: b.text, blocks: [], heading: true });
@@ -492,6 +495,20 @@
       else chapters[chapters.length - 1].blocks.push(b);
     });
     chapters = chapters.filter(function (c, i) { return i === 0 || c.blocks.length; });
+    var norm = function (t) { return (t || '').replace(/\s+/g, ' ').trim().toLowerCase(); };
+    for (var i = 1; i < chapters.length; i++) {
+      if (chapters[i].heading && norm(chapters[i].title) === norm(title)) {
+        chapters[0].blocks = chapters[0].blocks.concat(chapters[i].blocks);
+        chapters.splice(i, 1);
+        break;
+      }
+    }
+    return chapters;
+  }
+  async function buildEpub(md, title, author) {
+    if (typeof JSZip === 'undefined') throw new Error('The EPUB library did not load — check connection and try again.');
+    var blocks = mdToBlocks(md);
+    var chapters = splitChapters(blocks, title);
     if (!chapters[0].blocks.length) chapters[0].blocks = [{ t: 'h1', text: title }].concat(author ? [{ t: 'p', text: author }] : []);
     /* Title page first, credit page last — like a real book. */
     var titleHtml = '<div style="text-align:center;margin-top:30%"><h1>' + escapeHtml(title) + '</h1>' + (author ? '<p>' + escapeHtml(author) + '</p>' : '') + '</div>';
@@ -579,13 +596,7 @@
      correct, which text-based PDF libraries break. */
   function buildBookHtml(md, title, author) {
     var blocks = mdToBlocks(md);
-    var chapters = [{ title: title, blocks: [] }];
-    blocks.forEach(function (b) {
-      if (b.t === 'h2') chapters.push({ title: b.text, blocks: [], heading: true });
-      else if (b.t === 'h1' && chapters.length === 1 && !chapters[0].blocks.length) { /* title goes to the title page */ }
-      else chapters[chapters.length - 1].blocks.push(b);
-    });
-    chapters = chapters.filter(function (c, i) { return i === 0 || c.blocks.length; });
+    var chapters = splitChapters(blocks, title);
     var sections = ['<section class="titlepage"><h1>' + escapeHtml(title) + '</h1>' + (author ? '<p>' + escapeHtml(author) + '</p>' : '') + '</section>'];
     /* v11: the first, heading-less section is the book's front matter
        (title repeat, মূল / অনুবাদ / প্রকাশনা lines) — centre it like
