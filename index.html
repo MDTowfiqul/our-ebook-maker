@@ -11,8 +11,10 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
   tailwind.config = { darkMode: 'class' };
-  if (localStorage.getItem('oem-theme') === 'dark') document.documentElement.classList.add('dark');
-  document.documentElement.setAttribute('data-color', localStorage.getItem('oem-color') || 'purple');
+  try {
+    if (localStorage.getItem('oem-theme') === 'dark') document.documentElement.classList.add('dark');
+    document.documentElement.setAttribute('data-color', localStorage.getItem('oem-color') || 'purple');
+  } catch (e) {}
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
@@ -172,7 +174,6 @@
       <button class="museDirect-open accent-bg text-white rounded-xl px-5 py-3 font-bold w-full text-center" data-bn="📖 প্রম্পটটি পড়ুন ও কপি করুন" data-en="📖 Read &amp; copy the prompt">📖 Read &amp; copy the prompt</button>
     </div>
 
-    <p id="directCopyStatus" class="text-sm text-neutral-500 mt-2"></p>
     <p class="text-sm text-neutral-500 mt-3" data-bn="শেয়ারের নিয়ম (উপরে ⚠️ বক্স) এই রুটেও একই।" data-en="The sharing rules (⚠️ box above) apply to this route too.">The sharing rules (⚠️ box above) apply to this route too.</p>
   </section>
 
@@ -235,7 +236,7 @@
     </div>
     <button class="collapse-toggle w-full flex justify-between items-center accent-bg text-white border border-transparent rounded-xl px-4 py-3 font-bold mt-5 text-left" data-target="collapse-manual"><span data-bn="EPUB মনমতো না হলে — হাতে করে বানান" data-en="If the Maker's EPUB is not what you want — do it by hand">If the Maker's EPUB is not what you want — do it by hand</span><span class="collapse-chev">▼</span></button>
     <div id="collapse-manual" class="hidden bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-xl p-4 mt-2">
-    <p class="text-sm text-neutral-600 mt-1" data-bn="উপরের EPUB-first নিয়মের ব্যতিক্রম এটাই — এটা কাজ করে শুধু তখনই, যখন প্রচ্ছদ আর ক্রেডিট আপনি নিজে ডকুমেন্টে ঢুকিয়ে দেবেন।" data-en="This is the exception to the EPUB-first rule above — it works only because you put the cover and credit into the document yourself first.">This is the exception to the EPUB-first rule above — it works only because you put the cover and credit into the document yourself first.</p>
+    <p class="text-sm text-neutral-600 mt-1" data-bn="নিচের Kindle অংশের EPUB-first নিয়মের ব্যতিক্রম এটাই — এটা কাজ করে শুধু তখনই, যখন প্রচ্ছদ আর ক্রেডিট আপনি নিজে ডকুমেন্টে ঢুকিয়ে দেবেন।" data-en="This is the exception to the EPUB-first rule in the Kindle section below — it works only because you put the cover and credit into the document yourself first.">This is the exception to the EPUB-first rule in the Kindle section below — it works only because you put the cover and credit into the document yourself first.</p>
     <ol class="list-decimal pl-5 mt-2 space-y-1 text-[15px]">
       <li><span data-bn="Google Docs-এ .docx খুলে পুরোটা পড়ুন, AI-এর ভুল থাকলে ঠিক করুন।" data-en="Open the .docx in Google Docs, read it fully, and fix any AI mistakes.">Open the .docx in Google Docs, read it fully, and fix any AI mistakes.</span></li>
       <li><span data-bn="প্রচ্ছদ: প্রচ্ছদ ছবিটি প্রথম পেজে বসান। ফুল পেজ করতে চাইলে: ছবিতে চাপ দিন → Image options → Size &amp; rotation → “Lock aspect ratio” আনচেক করুন → position “Fix position on page” করুন → ছবিটি পুরো পেজ জুড়ে বড় করুন।" data-en="Cover: put the cover picture as the first page. For a full page: tap the image → Image options → Size & rotation → uncheck “Lock aspect ratio” → position “Fix position on page” → expand it to fill the page.">Cover: put the cover picture as the first page. For a full page: tap the image → Image options → Size & rotation → uncheck “Lock aspect ratio” → position “Fix position on page” → expand it to fill the page.</span></li>
@@ -355,7 +356,7 @@ Follow the original book's style throughout: the finished document must look and
   <div id="privacyModal" class="hidden fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
     <div class="bg-white dark:bg-neutral-800 rounded-2xl shadow-xl max-w-md w-full p-5 max-h-[85vh] overflow-y-auto">
       <h3 class="serif text-xl font-extrabold" data-bn="গোপনীয়তা নীতি" data-en="Privacy policy">Privacy policy</h3>
-      <p class="text-[15px] mt-3" data-bn="এই সাইটের কোনো সার্ভার নেই, কোনো অ্যাকাউন্ট নেই, কিছু আপলোড হয় না। .docx পড়া আর EPUB বানানো সব আপনার ব্রাউজার ট্যাবেই হয়। আপনার স্ক্যান করা PDF শুধু আপনার নিজের Muse চ্যাটে যায় — এই সাইট সেটি কখনো দেখে না, আপলোডও করে না।" data-en="This site has no server, no account, and nothing is uploaded. Reading the .docx and building EPUB all happen in your browser tab. Your scanned PDF goes only to your own Muse chat — this site never sees it and never uploads it.">This site has no server, no account, and nothing is uploaded. Reading the .docx and building EPUB all happen in your browser tab. Your scanned PDF goes only to your own Muse chat — this site never sees it and never uploads it.</p>
+      <p class="text-[15px] mt-3" data-bn="এই সাইটের কোনো সার্ভার নেই, কোনো অ্যাকাউন্ট নেই, কিছু আপলোড হয় না। .docx পড়া আর EPUB বানানো সব আপনার ব্রাউজার ট্যাবেই হয়। আপনার স্ক্যান করা PDF শুধু আপনার নিজের Muse চ্যাটে যায় — এই সাইট সেটি কখনো দেখে না, আপলোডও করে না। একটাই ব্যতিক্রম প্রচ্ছদ খোঁজা: “Find a cover online” চাপলে শুধু আপনার লেখা বইয়ের নাম ও লেখক সার্চ কোয়েরি হিসেবে Open Library ও Google Books-এ যায় — আপনার ফাইল কখনো পাঠানো হয় না।" data-en="This site has no server, no account, and nothing is uploaded. Reading the .docx and building EPUB all happen in your browser tab. Your scanned PDF goes only to your own Muse chat — this site never sees it and never uploads it. The one exception is cover search: when you tap “Find a cover online”, only the title and author you typed are sent as a search query to Open Library and Google Books — your files are never sent.">This site has no server, no account, and nothing is uploaded. Reading the .docx and building EPUB all happen in your browser tab. Your scanned PDF goes only to your own Muse chat — this site never sees it and never uploads it. The one exception is cover search: when you tap “Find a cover online”, only the title and author you typed are sent as a search query to Open Library and Google Books — your files are never sent.</p>
       <div class="flex flex-wrap gap-2 mt-4">
         <button class="privacy-close bg-white dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 rounded-xl px-4 py-2.5 font-bold" data-bn="বন্ধ করুন" data-en="Close">Close</button>
       </div>

@@ -1,13 +1,16 @@
-/* Our Ebook Maker v9 — Muse-first.
+/* Our Ebook Maker — Muse-first.
    The book comes from a Muse chat: the user attaches a scanned PDF
-   there, pastes the full prompt from Step 2, answers "continue" after
-   each DONE, and gets a formatted Google Doc. They download the .docx
-   from that Doc and upload it here in Step 3. This site then builds
-   EPUB and PDF in the browser (plus the manual online-convert and
-   Calibre paths for Kindle formats), with the cover and credit page
-   from Step 1. Nothing is uploaded anywhere by this site: the .docx
-   is read locally with JSZip, and the PDF itself only ever goes to
-   the user's own Muse chat. Libraries (CDN): JSZip only. */
+   there, pastes the full prompt from Step 2, and gets a formatted
+   Google Doc (whole book, no DONE/continue round trip). They download
+   the .docx from that Doc and upload it here in Step 3. This site
+   then builds the EPUB in the browser (plus the manual online-convert
+   and Calibre paths for Kindle formats), with the cover and credit
+   page set in Step 3. Nothing the user uploads leaves the browser:
+   the .docx is read locally with JSZip, and the PDF itself only ever
+   goes to the user's own Muse chat. Libraries (CDN): JSZip for the
+   .docx/EPUB work, Tailwind for styling, Google Fonts for text.
+   (A dormant one-click PDF builder remains in this file from v13–v16
+   so the button can return; nothing calls it today.) */
 (function () {
   'use strict';
   var $ = function (id) { return document.getElementById(id); };
@@ -21,7 +24,8 @@
   var state = { proofText: '', coverBlob: null, coverExt: 'png', textCoverBlob: null };
 
   /* ---- Language (EN/BN toggle, like Our Boighar) ---- */
-  var LANG = localStorage.getItem('oem-lang') || 'en';
+  var LANG = 'en';
+  try { LANG = localStorage.getItem('oem-lang') || 'en'; } catch (e) {}
   var DYNAMIC_IDS = { coverStatus: 1, docFileStatus: 1, finalStatus: 1 };
   function L(en, bn) { return LANG === 'bn' ? bn : en; }
   function applyLang() {
@@ -49,7 +53,8 @@
     var tt = $('theme-toggle'); if (tt) tt.textContent = dark ? '☀️' : '🌙';
     var di = $('drawer-theme-icon'); if (di) di.textContent = dark ? '☀️' : '🌙';
     var dl2 = $('drawer-theme-label'); if (dl2) dl2.textContent = dark ? L('Dark', 'অন্ধকার') : L('Light', 'আলো');
-    var cur = localStorage.getItem('oem-color') || 'purple';
+    var cur = 'purple';
+    try { cur = localStorage.getItem('oem-color') || 'purple'; } catch (e) {}
     document.querySelectorAll('.swatch').forEach(function (s) { s.classList.toggle('on', s.getAttribute('data-setcolor') === cur); });
   }
   function toggleTheme() {
@@ -147,15 +152,6 @@
   document.querySelectorAll('.museDirect-close').forEach(function (b) { b.addEventListener('click', function () { closeModal($('museDirectModal')); }); });
   var copyMuseDirectBtn = $('copyMuseDirectBtn');
   if (copyMuseDirectBtn) copyMuseDirectBtn.addEventListener('click', function () { copyTextarea('museDirectPromptText', copyMuseDirectBtn, 'কপি হয়েছে!', 'Copied!'); });
-  document.querySelectorAll('.copy-direct-prompt').forEach(function (b) {
-    b.addEventListener('click', function () {
-      var ta = $('museDirectPromptText');
-      if (!ta) return;
-      copyTextarea('museDirectPromptText', b, 'কপি হয়েছে!', 'Copied!');
-      var st = $('directCopyStatus');
-      if (st) st.textContent = L('প্রম্পট কপি হয়েছে — Muse চ্যাটে PDF-এর সঙ্গে পেস্ট করুন।', 'Prompt copied — paste it in a Muse chat together with the PDF.');
-    });
-  });
 
   function download(blob, filename) {
     var a = document.createElement('a');
@@ -186,6 +182,36 @@
     var doc = zip.file('word/document.xml');
     if (!doc) throw new Error('Not a readable .docx file.');
     var xml = await doc.async('string');
+    /* v30: real Word footnotes used to vanish silently — only the main
+       document was read. Now each footnote's text is inlined at its
+       reference as [number: text], so nothing is lost. ids 0 and 1 are
+       Word's separator and continuation marks, not real footnotes. */
+    var footnotes = {};
+    var fnFile = zip.file('word/footnotes.xml');
+    if (fnFile) {
+      var fnXml = await fnFile.async('string');
+      var fnRe = /<w:footnote[^>]*w:id="(\d+)"[^>]*>([\s\S]*?)<\/w:footnote>/g, fm;
+      while ((fm = fnRe.exec(fnXml)) !== null) {
+        if (fm[1] === '0' || fm[1] === '1') continue;
+        var ft = [], fp;
+        var fpRe = /<w:p[ >][\s\S]*?<\/w:p>/g;
+        while ((fp = fpRe.exec(fm[2])) !== null) {
+          var fb = fp[0].replace(/<w:tab[^>]*\/>/g, ' ').replace(/<w:br[^>]*\/>/g, ' ');
+          var fparts = [], ftm;
+          var ftRe = /<w:t[^>]*>([^<]*)<\/w:t>/g;
+          while ((ftm = ftRe.exec(fb)) !== null) fparts.push(ftm[1]);
+          var ftext = decodeXmlEntities(fparts.join('')).trim();
+          if (ftext) ft.push(ftext);
+        }
+        if (ft.length) footnotes[fm[1]] = ft.join(' ');
+      }
+    }
+    function inlineFootnotes(fragment) {
+      return fragment.replace(/<w:footnoteReference[^>]*w:id="(\d+)"[^>]*\/?>(?:<\/w:footnoteReference>)?/g, function (m, id) {
+        if (!footnotes[id]) return '';
+        return '<w:r><w:t xml:space="preserve">[' + id + ': ' + escapeXml(footnotes[id]) + ']</w:t></w:r>';
+      });
+    }
     /* Pass 1: collect blocks in document order. Tables become one line
        per row (cells joined with ' | ') instead of loose paragraphs. */
     var raw = [];
@@ -202,7 +228,7 @@
             var cp;
             var cpRe = /<w:p[ >][\s\S]*?<\/w:p>/g;
             while ((cp = cpRe.exec(cm[0])) !== null) {
-              var cb = cp[0].replace(/<w:tab[^>]*\/>/g, ' ').replace(/<w:br[^>]*\/>/g, ' ');
+              var cb = inlineFootnotes(cp[0]).replace(/<w:tab[^>]*\/>/g, ' ').replace(/<w:br[^>]*\/>/g, ' ');
               var ps = [], tr;
               var trRe = /<w:t[^>]*>([^<]*)<\/w:t>/g;
               while ((tr = trRe.exec(cb)) !== null) ps.push(tr[1]);
@@ -215,7 +241,7 @@
         }
         rows.forEach(function (r) { raw.push({ table: true, text: r }); });
       } else {
-        var p = bm[1];
+        var p = inlineFootnotes(bm[1]);
         var style = (p.match(/<w:pStyle w:val="([^"]+)"/) || [])[1] || '';
         var body = p.replace(/<w:tab[^>]*\/>/g, ' ').replace(/<w:br[^>]*\/>/g, ' ');
         var parts = [], tm;
@@ -502,31 +528,41 @@
   function mdInline(s) {
     return escapeHtml(s).replace(/\*([^\s*](?:[^*]*[^\s*])?)\*/g, '<em>$1</em>');
   }
-  function mdPlain(s) {
-    return String(s).replace(/\*([^*]+)\*/g, '$1').trim();
+  /* First strong directional character: Arabic-script passages read
+     right-to-left, everything else left-to-right. Used so Arabic
+     paragraphs in the EPUB are right-aligned instead of justified. */
+  function paraDir(text) {
+    var t = String(text || '');
+    for (var i = 0; i < t.length; i++) {
+      var c = t.charCodeAt(i);
+      if ((c >= 0x0600 && c <= 0x06FF) || (c >= 0x0750 && c <= 0x077F) || (c >= 0x08A0 && c <= 0x08FF) || (c >= 0xFB50 && c <= 0xFDFF) || (c >= 0xFE70 && c <= 0xFEFF)) return 'rtl';
+      if ((c >= 0x0980 && c <= 0x09FF) || (c >= 0x0041 && c <= 0x005A) || (c >= 0x0061 && c <= 0x007A)) return 'ltr';
+    }
+    return '';
   }
   function mdToBlocks(md) {
-    var blocks = [], para = [], ul = [];
+    var blocks = [], para = [], ul = [], quote = [];
     function flushPara() { if (para.length) { blocks.push({ t: 'p', text: para.join(' ') }); para = []; } }
     function flushUl() { if (ul.length) { blocks.push({ t: 'ul', items: ul.slice() }); ul = []; } }
+    function flushQuote() { if (quote.length) { blocks.push({ t: 'quote', text: quote.join(' ') }); quote = []; } }
     md.split('\n').forEach(function (raw) {
       var line = raw.trim();
-      if (!line) { flushPara(); flushUl(); return; }
+      if (!line) { flushPara(); flushUl(); flushQuote(); return; }
       if (/^#{1,3}\s+/.test(line)) {
-        flushPara(); flushUl();
+        flushPara(); flushUl(); flushQuote();
         var level = line.match(/^#+/)[0].length;
         blocks.push({ t: 'h' + level, text: line.replace(/^#+\s+/, '') });
       } else if (line === '***' || line === '---') {
-        flushPara(); flushUl(); blocks.push({ t: 'hr' });
+        flushPara(); flushUl(); flushQuote(); blocks.push({ t: 'hr' });
       } else if (line.indexOf('> ') === 0) {
-        flushUl(); para.push(line.slice(2));
+        flushPara(); flushUl(); quote.push(line.slice(2));
       } else if (line.indexOf('- ') === 0) {
-        flushPara(); ul.push(line.slice(2));
+        flushPara(); flushQuote(); ul.push(line.slice(2));
       } else {
-        flushUl(); para.push(line);
+        flushUl(); flushQuote(); para.push(line);
       }
     });
-    flushPara(); flushUl();
+    flushPara(); flushUl(); flushQuote();
     return blocks;
   }
   function detectLang(text) {
@@ -573,24 +609,15 @@
       + '<p>[বিঃদ্রঃ - এই ই-বুকটি AI Generate কৃত, তাই বইটিতে ভুল থাকা স্বাভাবিক]</p>';
     return html;
   }
-  function docxPara(text, style, jc, pageBreakBefore) {
-    var lines = String(text).split('\n').map(function (ln) {
-      return '<w:r><w:t xml:space="preserve">' + escapeXml(ln) + '</w:t></w:r>';
-    }).join('<w:r><w:br/></w:r>');
-    var pr = '<w:pPr>'
-      + (style ? '<w:pStyle w:val="' + style + '"/>' : '')
-      + (jc ? '<w:jc w:val="' + jc + '"/>' : '')
-      + (pageBreakBefore ? '<w:pageBreakBefore/>' : '')
-      + '<w:spacing w:after="120" w:line="276" w:lineRule="auto"/>' + '</w:pPr>';
-    return '<w:p>' + pr + lines + '</w:p>';
-  }
   function blockToXhtml(b) {
-    if (b.t === 'h1') return '<h1>' + mdInline(b.text) + '</h1>';
-    if (b.t === 'h2') return '<h2>' + mdInline(b.text) + '</h2>';
-    if (b.t === 'h3') return '<h3>' + mdInline(b.text) + '</h3>';
+    var dir = paraDir(b.text) === 'rtl' ? ' dir="rtl"' : '';
+    if (b.t === 'h1') return '<h1' + dir + '>' + mdInline(b.text) + '</h1>';
+    if (b.t === 'h2') return '<h2' + dir + '>' + mdInline(b.text) + '</h2>';
+    if (b.t === 'h3') return '<h3' + dir + '>' + mdInline(b.text) + '</h3>';
     if (b.t === 'hr') return '<hr/>';
-    if (b.t === 'ul') return '<ul>' + b.items.map(function (it) { return '<li>' + mdInline(it) + '</li>'; }).join('') + '</ul>';
-    return '<p>' + mdInline(b.text) + '</p>';
+    if (b.t === 'quote') return '<blockquote><p' + dir + '>' + mdInline(b.text) + '</p></blockquote>';
+    if (b.t === 'ul') return '<ul>' + b.items.map(function (it) { var id = paraDir(it) === 'rtl' ? ' dir="rtl"' : ''; return '<li' + id + '>' + mdInline(it) + '</li>'; }).join('') + '</ul>';
+    return '<p' + dir + '>' + mdInline(b.text) + '</p>';
   }
   /* v16: shared chapter split. (1) The book's printed contents
      section is dropped — the digital linked headings are the
@@ -645,14 +672,26 @@
     if (typeof JSZip === 'undefined') throw new Error('The EPUB library did not load — check connection and try again.');
     var blocks = mdToBlocks(md);
     var chapters = splitChapters(blocks, title);
-    if (!chapters[0].blocks.length) chapters[0].blocks = [{ t: 'h1', text: title }].concat(author ? [{ t: 'p', text: author }] : []);
+    /* v30: an empty front-matter chapter used to be filled with a
+       repeat of the title page. Now it is dropped, unless the whole
+       book is empty — then the title page content is the book. */
+    if (chapters.length && !chapters[0].blocks.length && !chapters[0].heading) chapters.shift();
+    if (!chapters.length) chapters.push({ title: title, blocks: [{ t: 'h1', text: title }].concat(author ? [{ t: 'p', text: author }] : []) });
+    /* v30: real front matter (title repeat, translator, publication
+       lines) keeps its content but gets its own index label, so the
+       index no longer shows the book title twice in a row. */
+    if (chapters.length > 1 && chapters[0].blocks.length && !chapters[0].heading) {
+      chapters[0].navTitle = detectLang(title || '') === 'bn' ? 'প্রারম্ভিক অংশ' : 'Front matter';
+    }
     /* Title page first, credit page last — like a real book. */
-    var titleHtml = '<div style="text-align:center;margin-top:30%"><h1>' + escapeHtml(title) + '</h1>' + (author ? '<p>' + escapeHtml(author) + '</p>' : '') + '</div>';
+    var titleDir = paraDir(title) === 'rtl' ? ' dir="rtl"' : '';
+    var titleHtml = '<div style="text-align:center;margin-top:30%"' + titleDir + '><h1>' + escapeHtml(title) + '</h1>' + (author ? '<p>' + escapeHtml(author) + '</p>' : '') + '</div>';
     var creditHtml = creditBlockHtml(title);
     chapters.unshift({ title: title, html: titleHtml });
     chapters.push({ title: 'About this ebook', html: creditHtml });
     var lang = detectLang(md);
-    var uid = 'urn:uuid:oem-' + Date.now() + '-' + Math.floor(Math.random() * 1e9);
+    var uid = 'urn:uuid:' + ((typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : ('oem-' + Date.now() + '-' + Math.floor(Math.random() * 1e9)));
+    state.coverFailed = false;
     var cover = null;
     if (state.coverBlob && state.coverBlob.size) {
       cover = { blob: state.coverBlob, ext: state.coverExt || 'png', type: state.coverBlob.type || 'image/png' };
@@ -663,9 +702,10 @@
           if (cres.ok && typeof cres.blob === 'function') {
             var cblob = await cres.blob();
             if (cblob && cblob.size) cover = { blob: cblob, ext: (cblob.type || '').indexOf('jpeg') !== -1 ? 'jpg' : 'png', type: (cblob.type || 'image/png') };
-          }
+            else state.coverFailed = true;
+          } else state.coverFailed = true;
         }
-      } catch (e) { cover = null; }
+      } catch (e) { cover = null; state.coverFailed = true; }
     }
     /* v16: final guard — a huge cover photo must never bloat the
        EPUB again, whatever path the cover arrived by. */
@@ -683,7 +723,7 @@
        Same-origin first, CDN fallback; without it the EPUB still builds
        and falls back to the reader's font. */
     var fontBuf = null;
-    var fontUrls = ['HindSiliguri-Regular.ttf', 'fonts/HindSiliguri-Regular.ttf',
+    var fontUrls = ['HindSiliguri-Regular.ttf',
       'https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/hindsiliguri/HindSiliguri-Regular.ttf'];
     for (var fi = 0; fi < fontUrls.length && !fontBuf; fi++) {
       try {
@@ -702,29 +742,37 @@
     var zip = new JSZip();
     zip.file('mimetype', 'application/epub', { compression: 'STORE' });
     zip.file('META-INF/container.xml', '<?xml version="1.0" encoding="UTF-8"?><container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container"><rootfiles><rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/></rootfiles></container>');
-    var manifest = '<item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml"/>';
+    var manifest = '<item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml"/><item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>';
     var spine = '';
     chapters.forEach(function (ch, i) {
       var file = 'chap' + (i + 1) + '.xhtml';
       manifest += '<item id="chap' + (i + 1) + '" href="' + file + '" media-type="application/xhtml+xml"/>';
       spine += '<itemref idref="chap' + (i + 1) + '"/>';
-      var body = ch.html ? ch.html : (ch.heading ? '<h2>' + escapeHtml(ch.title) + '</h2>\n' : '') + ch.blocks.map(blockToXhtml).join('\n');
+      var chTitle = ch.navTitle || ch.title;
+      var chDir = (ch.heading && paraDir(ch.title) === 'rtl') ? ' dir="rtl"' : '';
+      var body = ch.html ? ch.html : (ch.heading ? '<h2' + chDir + '>' + escapeHtml(ch.title) + '</h2>\n' : '') + ch.blocks.map(blockToXhtml).join('\n');
       var epubCss = (fontBuf ? "@font-face{font-family:'Hind Siliguri';src:url('fonts/HindSiliguri-Regular.ttf');}" : '')
-        + "body{font-family:'Hind Siliguri',serif;line-height:1.7}h1,h2,h3{text-align:center}p{text-align:justify;margin:0 0 1em 0}";
-      zip.file('OEBPS/' + file, '<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head><title>' + escapeHtml(ch.title) + '</title><style>' + epubCss + '</style></head><body>' + body + '</body></html>');
+        + "body{font-family:'Hind Siliguri',serif;line-height:1.7}h1,h2,h3{text-align:center}p{text-align:justify;margin:0 0 1em 0}p[dir=\"rtl\"]{text-align:right}li[dir=\"rtl\"]{text-align:right}blockquote{margin:1em 0 1em 1em;padding-left:1em;border-left:3px solid #ccc}";
+      zip.file('OEBPS/' + file, '<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head><title>' + escapeHtml(chTitle) + '</title><style>' + epubCss + '</style></head><body>' + body + '</body></html>');
     });
     if (cover) {
-      manifest += '<item id="cover" href="cover.' + cover.ext + '" media-type="' + cover.type + '"/>';
+      manifest += '<item id="cover" href="cover.' + cover.ext + '" media-type="' + cover.type + '" properties="cover-image"/>';
       zip.file('OEBPS/cover.' + cover.ext, cover.blob);
     }
     if (fontBuf) {
       manifest += '<item id="font-bn" href="fonts/HindSiliguri-Regular.ttf" media-type="application/x-font-ttf"/>';
       zip.file('OEBPS/fonts/HindSiliguri-Regular.ttf', fontBuf);
     }
-    zip.file('OEBPS/content.opf', '<?xml version="1.0" encoding="UTF-8"?><package xmlns="http://www.idpf.org/2007/opf" unique-identifier="bookid" version="2.0"><metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf"><dc:title>' + escapeXml(title) + '</dc:title><dc:creator>' + escapeXml(author || creditName()) + '</dc:creator><dc:language>' + lang + '</dc:language><dc:identifier id="bookid">' + uid + '</dc:identifier>' + (cover ? '<meta name="cover" content="cover"/>' : '') + '</metadata><manifest>' + manifest + '</manifest><spine toc="ncx">' + spine + '</spine></package>');
+    var modified = new Date().toISOString().replace(/\.\d+Z$/, 'Z');
+    zip.file('OEBPS/content.opf', '<?xml version="1.0" encoding="UTF-8"?><package xmlns="http://www.idpf.org/2007/opf" unique-identifier="bookid" version="3.0"><metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf"><dc:title>' + escapeXml(title) + '</dc:title><dc:creator>' + escapeXml(author || creditName()) + '</dc:creator><dc:language>' + lang + '</dc:language><dc:identifier id="bookid">' + uid + '</dc:identifier><meta property="dcterms:modified">' + modified + '</meta>' + (cover ? '<meta name="cover" content="cover"/>' : '') + '</metadata><manifest>' + manifest + '</manifest><spine toc="ncx">' + spine + '</spine></package>');
     var nav = chapters.map(function (ch, i) {
-      return '<navPoint id="nav' + (i + 1) + '" playOrder="' + (i + 1) + '"><navLabel><text>' + escapeXml(ch.title) + '</text></navLabel><content src="chap' + (i + 1) + '.xhtml"/></navPoint>';
+      return '<navPoint id="nav' + (i + 1) + '" playOrder="' + (i + 1) + '"><navLabel><text>' + escapeXml(ch.navTitle || ch.title) + '</text></navLabel><content src="chap' + (i + 1) + '.xhtml"/></navPoint>';
     }).join('');
+    var navLabel = detectLang(title || '') === 'bn' ? 'সূচিপত্র' : 'Contents';
+    var navDoc = chapters.map(function (ch, i) {
+      return '<li><a href="chap' + (i + 1) + '.xhtml">' + escapeHtml(ch.navTitle || ch.title) + '</a></li>';
+    }).join('');
+    zip.file('OEBPS/nav.xhtml', '<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops"><head><title>' + escapeHtml(title) + '</title></head><body><nav epub:type="toc"><h2>' + navLabel + '</h2><ol>' + navDoc + '</ol></nav></body></html>');
     zip.file('OEBPS/toc.ncx', '<?xml version="1.0" encoding="UTF-8"?><ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1"><head><meta name="dtb:uid" content="' + uid + '"/><meta name="dtb:depth" content="1"/><meta name="dtb:totalPageCount" content="0"/><meta name="dtb:maxPageNumber" content="0"/></head><docTitle><text>' + escapeXml(title) + '</text></docTitle><navMap>' + nav + '</navMap></ncx>');
     return zip.generateAsync({ type: 'blob', mimeType: 'application/epub+zip' });
   }
@@ -737,6 +785,8 @@
       download(blob, safeName((titleEl.value || 'book').trim()) + '.epub');
       finalStatusEl.textContent = L('EPUB downloaded — finished, with your cover if you made one. No manual steps left.',
         'EPUB ডাউনলোড হয়েছে — প্রচ্ছদসহ তৈরি। আর হাতে কিছু করতে হবে না।');
+      if (state.coverFailed) finalStatusEl.textContent += ' ' + L('But the cover could not be fetched, so this EPUB has no cover page.',
+        'তবে প্রচ্ছদ আনা যায়নি, তাই এই EPUB-এ প্রচ্ছদ পেজ নেই।');
     } catch (e) {
       finalStatusEl.textContent = L('EPUB build failed: ' + e.message, 'EPUB বানানো ব্যর্থ: ' + e.message);
     }
@@ -913,6 +963,8 @@
       finalStatusEl.textContent = L('Document loaded — pick a format below.',
         'ডকুমেন্ট লোড হয়েছে — নিচে ফরম্যাট বাছুন।');
     } catch (e) {
+      state.proofText = '';
+      if (proofEpubBtn) proofEpubBtn.disabled = true;
       docFileStatusEl.textContent = L('Could not read that .docx: ', 'এই .docx পড়া যায়নি: ') + e.message;
     }
   });
