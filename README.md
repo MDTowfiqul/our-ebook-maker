@@ -9,6 +9,10 @@ the manual online-convert / Calibre paths).
 
 ## How it works — 3 steps, all visible
 
+Opening the site shows a one-time pop-up advertising the video
+tutorial (YouTube) — closing it remembers the dismissal, so repeat
+visitors are not shown it again.
+
 1. **Your book** — title and author only. The scanned PDF itself
    does not go here.
 2. **Muse route — scanned PDF to Google Doc** — open a Muse chat,

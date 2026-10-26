@@ -136,6 +136,28 @@
     var m = $(id);
     if (m) m.addEventListener('click', function (ev) { if (ev.target === m) closeModal(m); });
   });
+  /* v31: video-ad popup — shows once per visitor, shortly after open.
+     Closing it (button or backdrop) or tapping Watch remembers the
+     dismissal, so repeat visitors are not nagged. */
+  function closeVideoAd() {
+    closeModal($('videoAdModal'));
+    try { localStorage.setItem('oem-video-ad-seen', '1'); } catch (e) {}
+  }
+  document.querySelectorAll('.videoAd-close').forEach(function (b) {
+    b.addEventListener('click', closeVideoAd);
+  });
+  document.querySelectorAll('.videoAd-watch').forEach(function (b) {
+    b.addEventListener('click', closeVideoAd);
+  });
+  (function () {
+    var m = $('videoAdModal');
+    if (m) m.addEventListener('click', function (ev) { if (ev.target === m) closeVideoAd(); });
+  })();
+  try {
+    if (!localStorage.getItem('oem-video-ad-seen')) {
+      setTimeout(function () { openModal($('videoAdModal')); }, 1500);
+    }
+  } catch (e) {}
   function copyTextarea(id, btn, doneBn, doneEn) {
     var ta = $(id); if (!ta) return;
     var done = function () {
